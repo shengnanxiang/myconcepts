@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyConcepts · 开发中</title>
+  <title>MyConcepts · AiKen 相机 Demo</title>
   <style>
     :root {
       --bg: #0f1115;
@@ -14,6 +14,8 @@
       --muted: #8b93a3;
       --accent: #6c8cff;
       --accent-2: #ff7a59;
+      --bezel: #b97a4f;
+      --phone-bg: #0b0b0d;
       --radius: 14px;
     }
     * { box-sizing: border-box; }
@@ -26,14 +28,9 @@
       height: 100vh;
       overflow: hidden;
     }
+    .layout { display: flex; height: 100vh; width: 100%; }
 
-    .layout {
-      display: flex;
-      height: 100vh;
-      width: 100%;
-    }
-
-    /* ---------- 左半边：展示区 (2/3) ---------- */
+    /* ===== 左 2/3 ===== */
     .stage {
       flex: 0 0 66.6667%;
       max-width: 66.6667%;
@@ -45,203 +42,362 @@
     .stage__header {
       padding: 20px 28px;
       border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 12px;
     }
-    .stage__header h1 {
-      font-size: 18px;
-      margin: 0;
-      font-weight: 600;
-    }
+    .stage__header h1 { font-size: 18px; margin: 0; font-weight: 600; }
     .badge {
-      font-size: 12px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgba(255, 122, 89, 0.15);
-      color: var(--accent-2);
+      font-size: 12px; padding: 3px 10px; border-radius: 999px;
+      background: rgba(255, 122, 89, 0.15); color: var(--accent-2);
       border: 1px solid rgba(255, 122, 89, 0.3);
     }
     .stage__body {
       flex: 1;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.05fr;
       gap: 24px;
       padding: 28px;
       overflow: auto;
     }
-    .card {
+
+    /* 左侧：手机交互 */
+    .demo-wrap { display: flex; flex-direction: column; gap: 14px; }
+    .demo-card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 18px;
       display: flex;
       flex-direction: column;
+      gap: 14px;
     }
     .card__title {
-      font-size: 13px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 14px;
+      font-size: 13px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
     }
-    .phone {
-      flex: 1;
-      min-height: 420px;
-      border-radius: 22px;
-      background: linear-gradient(160deg, #20283a, #141823);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .step-bar {
+      display: flex; flex-wrap: wrap; gap: 6px;
     }
-    .phone__placeholder {
-      text-align: center;
-      color: var(--muted);
-      padding: 24px;
-    }
-    .phone__placeholder .dot {
-      width: 54px; height: 54px;
-      border-radius: 50%;
-      margin: 0 auto 14px;
+    .step-btn {
+      flex: 1 1 auto;
+      padding: 7px 10px;
+      font-size: 12px;
       background: var(--panel-2);
       border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-    }
-    .phone__placeholder p { margin: 6px 0; font-size: 13px; }
-    .output {
-      flex: 1;
-      min-height: 420px;
-      border-radius: 14px;
-      background: var(--panel-2)
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='40' height='40' fill='%231f242e'/><path d='M0 20h40M20 0v40' stroke='%232a303c' stroke-width='1'/></svg>");
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-      padding: 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
     }
-
-    /* ---------- 右半边：留言区 (1/3) ---------- */
-    .comments {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: var(--panel);
-      overflow: hidden;
-    }
-    .comments__header {
-      padding: 20px 22px;
-      border-bottom: 1px solid var(--border);
-    }
-    .comments__header h2 {
-      font-size: 16px;
-      margin: 0;
-      font-weight: 600;
-    }
-    .comments__header span {
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .comments__list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .comment {
-      display: flex;
-      gap: 12px;
-    }
-    .comment__avatar {
-      flex: 0 0 36px;
-      width: 36px; height: 36px;
-      border-radius: 50%;
+    .step-btn:hover { color: var(--text); border-color: var(--accent); }
+    .step-btn.active {
       background: var(--accent);
       color: #fff;
+      border-color: var(--accent);
+    }
+    .phone-stage {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 520px;
+    }
+
+    /* 真机手机框 */
+    .phone {
+      width: 290px;
+      height: 580px;
+      background: var(--phone-bg);
+      border-radius: 36px;
+      border: 8px solid var(--bezel);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.5),
+                  inset 0 0 0 2px #2a1a10;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone__notch {
+      position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 22px; background: #000; border-radius: 0 0 14px 14px;
+      z-index: 5;
+    }
+    .phone__screen {
+      position: absolute; inset: 6px;
+      border-radius: 30px;
+      background: #0b0b0d;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .phone__statusbar {
+      padding: 14px 22px 0;
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: #fff; font-weight: 600;
+    }
+    .phone__screen-body {
+      flex: 1; position: relative; overflow: hidden;
+    }
+    .phone__tabbar {
+      border-top: 1px solid #1c1c1c;
+      padding: 10px 0 18px;
+      display: flex; justify-content: space-around;
+      font-size: 11px;
+    }
+    .phone__tabbar .tab {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      color: #555; cursor: pointer; user-select: none;
+    }
+    .phone__tabbar .tab svg { width: 22px; height: 22px; }
+    .phone__tabbar .tab.active { color: #fff; }
+    .phone__tabbar .tab.active svg { stroke: #fff; fill: none; }
+
+    /* ===== Camera 页 ===== */
+    .cam-screen { padding: 14px 20px 0; height: 100%; display: flex; flex-direction: column; }
+    .connected {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #9aa0a6; margin-bottom: 18px;
+    }
+    .connected::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      background: #2ecc71; box-shadow: 0 0 6px #2ecc71;
+    }
+    .cam-style {
+      text-align: center; font-size: 16px; font-weight: 700;
+      letter-spacing: 0.06em; color: #fff; margin-bottom: 18px; min-height: 22px;
+    }
+    .cam-style.has-style { color: #ff3b3b; }
+    .ring-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .ring {
+      width: 180px; height: 180px; border-radius: 50%;
+      background:
+        conic-gradient(var(--ring-color, #2a2a2a) 0deg 360deg);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .ring::before {
+      content: ""; position: absolute; inset: 8px;
+      border-radius: 50%; background: #0b0b0d;
+    }
+    .ring-inner {
+      position: relative; text-align: center; color: #fff; z-index: 1;
+    }
+    .ring-num { font-size: 38px; font-weight: 700; letter-spacing: 0.04em; }
+    .ring-label { font-size: 11px; color: #888; letter-spacing: 0.2em; margin-top: 2px; }
+    .unload-btn {
+      margin: 18px 0 8px;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      background: #1a1a1a;
+      color: #555;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
+      cursor: not-allowed;
+      transition: all 0.2s;
+    }
+    .unload-btn span { margin-right: 8px; }
+    .unload-btn.enabled { background: #ff3b3b; color: #fff; cursor: pointer; }
+    .unload-btn.enabled:hover { background: #ff5252; }
+
+    /* ===== Style List 页 ===== */
+    .style-screen { padding: 14px 20px 0; height: 100%; display: flex; flex-direction: column; }
+    .style-screen__top {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 18px; color: #fff; margin-bottom: 14px;
+    }
+    .back-btn { font-size: 18px; color: #fff; cursor: pointer; user-select: none; }
+    .filters {
+      display: flex; gap: 14px; font-size: 11px; color: #777;
+      margin-bottom: 14px; letter-spacing: 0.08em;
+    }
+    .filters span { cursor: pointer; padding-bottom: 6px; }
+    .filters span.active { color: #fff; border-bottom: 2px solid #fff; }
+    .style-list { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+    .style-list::-webkit-scrollbar { width: 0; }
+    .style-card {
+      background: #15151a; border-radius: 10px; padding: 14px; margin-bottom: 12px;
+      border: 1px solid #222;
+    }
+    .style-card__head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .style-card__name { font-size: 14px; font-weight: 700; letter-spacing: 0.05em; }
+    .style-card__name.cine { color: #ff3b3b; }
+    .style-card__name.gold { color: #f5c518; }
+    .style-card__exp { font-size: 10px; color: #888; letter-spacing: 0.08em; }
+    .style-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .style-tags span {
+      font-size: 9px; padding: 3px 8px; border-radius: 4px;
+      background: #2a2a2a; color: #aaa; letter-spacing: 0.08em;
+    }
+    .style-thumbs {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 6px; margin-bottom: 12px;
+    }
+    .style-thumbs div {
+      aspect-ratio: 1; border-radius: 4px;
+      background-size: cover; background-position: center;
+    }
+    .select-btn {
+      width: 100%; padding: 10px; border: none; border-radius: 6px;
+      color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      cursor: pointer;
+    }
+    .select-btn.cine { background: #ff3b3b; }
+    .select-btn.gold { background: #f5c518; color: #111; }
+    .select-btn.selected { background: #2a2a2a; color: #999; }
+
+    /* ===== 卷轴详情页（步骤 06）===== */
+    .roll-screen { padding: 12px 18px 0; height: 100%; display: flex; flex-direction: column; }
+    .roll-head {
+      display: flex; justify-content: space-between; align-items: center;
+      color: #ff3b3b; font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+    .roll-head .sub { color: #888; font-size: 10px; letter-spacing: 0.1em; font-weight: 400; }
+    .roll-back, .roll-select {
+      cursor: pointer; color: #fff; user-select: none;
+    }
+    .roll-grid {
+      flex: 1; overflow-y: auto; padding: 10px 0;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .roll-grid::-webkit-scrollbar { width: 0; }
+    .roll-cell {
+      position: relative; aspect-ratio: 1;
+      background: #111; border-radius: 4px;
+      background-size: cover; background-position: center;
+    }
+    .roll-cell::after {
+      content: attr(data-num); position: absolute; bottom: 2px; left: 0; right: 0;
+      text-align: center; font-size: 8px; color: #f5c518; letter-spacing: 0.1em;
+    }
+    .save-pill {
+      align-self: center; margin: 8px 0 12px;
+      padding: 10px 28px; border-radius: 999px;
+      background: rgba(255,255,255,0.95); color: #111;
+      font-size: 12px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .roll-cell.skeleton {
+      background: linear-gradient(110deg, #1a1a1a 8%, #2a2a2a 18%, #1a1a1a 33%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s linear infinite;
+    }
+    @keyframes shimmer {
+      to { background-position: -200% 0; }
+    }
+
+    /* ===== Dark Room 页（步骤 07）===== */
+    .darkroom-list { padding: 12px 18px 0; height: 100%; display: flex; flex-direction: column; }
+    .dr-head { display: flex; justify-content: space-between; padding-bottom: 14px; color: #fff; }
+    .dr-head .select { color: #888; font-size: 13px; cursor: pointer; }
+    .dr-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid #1c1c1c; cursor: pointer;
+    }
+    .dr-thumb {
+      width: 56px; height: 56px; border-radius: 6px; flex-shrink: 0;
+      background-size: cover; background-position: center;
+    }
+    .dr-meta { flex: 1; }
+    .dr-meta .name { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .dr-meta .sub { font-size: 10px; color: #777; letter-spacing: 0.06em; }
+    .dr-arrow { color: #555; font-size: 16px; }
+
+    /* 右侧输出区 */
+    .output-card { display: flex; flex-direction: column; }
+    .output {
+      flex: 1; min-height: 520px;
+      border-radius: 14px;
+      background: #0b0b0d
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='40' height='40' fill='%230b0b0d'/><path d='M0 20h40M20 0v40' stroke='%231a1a1a' stroke-width='1'/></svg>");
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 13px; text-align: center;
+      padding: 24px; position: relative; overflow: hidden;
+    }
+    .output .empty { line-height: 1.7; }
+    .output .filmstrip {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 18px;
+      padding: 24px;
+    }
+    .film-row {
+      display: flex; gap: 10px;
+    }
+    .film-frame {
+      width: 110px; height: 110px;
+      background-size: cover; background-position: center;
+      border-radius: 4px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .film-frame::before, .film-frame::after {
+      content: ""; position: absolute; left: 0; right: 0; height: 8px;
+      background: #111;
+      background-image: linear-gradient(90deg, #000 0 4px, transparent 4px 14px);
+      background-size: 14px 8px;
+    }
+    .film-frame::before { top: -8px; }
+    .film-frame::after { bottom: -8px; }
+    .film-caption { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+    .film-caption strong { color: var(--accent-2); }
+
+    /* ===== 右侧留言区 ===== */
+    .comments {
+      flex: 1; display: flex; flex-direction: column;
+      background: var(--panel); overflow: hidden;
+    }
+    .comments__header { padding: 20px 22px; border-bottom: 1px solid var(--border); }
+    .comments__header h2 { font-size: 16px; margin: 0; font-weight: 600; }
+    .comments__header span { font-size: 12px; color: var(--muted); }
+    .comments__list {
+      flex: 1; overflow-y: auto; padding: 18px 22px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .comment { display: flex; gap: 12px; }
+    .comment__avatar {
+      flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent); color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 600;
     }
     .comment__body { flex: 1; }
-    .comment__meta {
-      display: flex; align-items: baseline; gap: 8px;
-      margin-bottom: 4px;
-    }
+    .comment__meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
     .comment__name { font-size: 14px; font-weight: 600; }
     .comment__time { font-size: 11px; color: var(--muted); }
     .comment__text {
-      font-size: 14px;
-      line-height: 1.55;
-      color: var(--text);
-      margin: 0;
-      word-break: break-word;
+      font-size: 14px; line-height: 1.55; margin: 0; word-break: break-word;
     }
-    .comment__empty {
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-      margin-top: 40px;
-    }
+    .comment__empty { color: var(--muted); font-size: 13px; text-align: center; margin-top: 40px; }
     .comments__form {
-      border-top: 1px solid var(--border);
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      border-top: 1px solid var(--border); padding: 14px 18px;
+      display: flex; flex-direction: column; gap: 10px;
     }
     .comments__form input.name {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px; color: var(--text);
+      font-size: 13px; outline: none;
     }
     .comments__form input.name:focus { border-color: var(--accent); }
-    .comments__form .row {
-      display: flex;
-      gap: 10px;
-    }
+    .comments__form .row { display: flex; gap: 10px; }
     .comments__form textarea {
-      flex: 1;
-      resize: none;
-      height: 56px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: var(--text);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
+      flex: 1; resize: none; height: 56px;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 12px; color: var(--text);
+      font-size: 14px; font-family: inherit; outline: none;
     }
     .comments__form textarea:focus { border-color: var(--accent); }
     .comments__form button {
-      flex: 0 0 auto;
-      align-self: stretch;
-      padding: 0 18px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter 0.15s;
+      padding: 0 18px; background: var(--accent); color: #fff;
+      border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: filter 0.15s;
     }
     .comments__form button:hover { filter: brightness(1.08); }
-    .comments__form button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    @media (max-width: 900px) {
+    @media (max-width: 980px) {
       .layout { flex-direction: column; height: auto; }
       .stage { flex: none; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
       body { overflow: auto; }
@@ -251,33 +407,76 @@
 </head>
 <body>
   <div class="layout">
-    <!-- 左半边：展示区 -->
+    <!-- ===== 左 2/3 ===== -->
     <section class="stage">
       <div class="stage__header">
-        <h1>MyConcepts</h1>
+        <h1>MyConcepts · AiKen Camera</h1>
         <span class="badge">开发中 · Demo</span>
       </div>
       <div class="stage__body">
-        <!-- 手机交互 App -->
-        <div class="card">
-          <div class="card__title">App 交互预览</div>
-          <div class="phone">
-            <div class="phone__placeholder">
-              <div class="dot">📱</div>
-              <p>手机交互 App</p>
-              <p>此处将展示 Figma 设计的交互流程<br>（拍照 → AI 生成 → 输出）</p>
+
+        <!-- 手机交互 Demo -->
+        <div class="demo-wrap">
+          <div class="demo-card">
+            <div class="card__title">App 交互预览（点击步骤切换）</div>
+            <div class="step-bar" id="stepBar">
+              <button class="step-btn active" data-step="1">01 初始</button>
+              <button class="step-btn" data-step="2">02 已拍 29</button>
+              <button class="step-btn" data-step="3">03 风格列表</button>
+              <button class="step-btn" data-step="4">04 已选风格</button>
+              <button class="step-btn" data-step="5">05 拍满 36</button>
+              <button class="step-btn" data-step="6">06 卷轴照片</button>
+              <button class="step-btn" data-step="7">07 Dark Room</button>
+            </div>
+
+            <div class="phone-stage">
+              <div class="phone">
+                <div class="phone__notch"></div>
+                <div class="phone__screen">
+                  <div class="phone__statusbar">
+                    <span>9:41</span>
+                    <span style="opacity:.8">📶 🔋</span>
+                  </div>
+                  <div class="phone__screen-body" id="phoneBody">
+                    <!-- JS 渲染 -->
+                  </div>
+                  <div class="phone__tabbar" id="tabBar">
+                    <div class="tab active" data-tab="camera">
+                      <svg viewBox="0 0 24 24" stroke="#555" stroke-width="1.6" fill="none"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/></svg>
+                      Camera
+                    </div>
+                    <div class="tab" data-tab="style">
+                      <svg viewBox="0 0 24 24" stroke="#555" stroke-width="1.6" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+                      Style
+                    </div>
+                    <div class="tab" data-tab="darkroom">
+                      <svg viewBox="0 0 24 24" stroke="#555" stroke-width="1.6" fill="none"><path d="M4 7h16M6 7v12a1 1 0 001 1h10a1 1 0 001-1V7M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2"/></svg>
+                      Dark Room
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
         <!-- 输出照片效果 -->
-        <div class="card">
-          <div class="card__title">最终输出照片</div>
-          <div class="output">AI 生成的最终照片效果将展示在这里</div>
+        <div class="output-card">
+          <div class="demo-card">
+            <div class="card__title">最终输出照片</div>
+            <div class="output" id="output">
+              <div class="empty">
+                点击上方的「06 卷轴照片」或「07 Dark Room」<br>
+                即可在右侧区域看到套用胶片风格后的照片输出效果
+              </div>
+            </div>
+          </div>
         </div>
+
       </div>
     </section>
 
-    <!-- 右半边：留言区 -->
+    <!-- ===== 右 1/3 留言 ===== -->
     <aside class="comments">
       <div class="comments__header">
         <h2>留言互动</h2>
@@ -297,80 +496,333 @@
   </div>
 
   <script>
-    (function () {
-      const STORAGE_KEY = "myconcepts_comments_v1";
-      const listEl = document.getElementById("commentList");
-      const emptyTip = document.getElementById("emptyTip");
-      const countEl = document.getElementById("commentCount");
-      const form = document.getElementById("commentForm");
-      const nameInput = document.getElementById("nameInput");
-      const textInput = document.getElementById("textInput");
-      const submitBtn = document.getElementById("submitBtn");
+    /* ===== 状态管理 ===== */
+    const state = {
+      currentStep: 1,            // 当前演示的步骤
+      shotsLeft: 36,             // 剩余张数
+      selectedStyle: null,       // 选中的风格
+      devStyle: 'cinestill',     // 当前 demo 演示默认风格
+      outputVisible: false
+    };
 
-      function load() {
-        try {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        } catch (e) {
-          return [];
-        }
-      }
-      function save(arr) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-      }
-      function timeAgo(ts) {
-        const diff = Math.floor((Date.now() - ts) / 1000);
-        if (diff < 60) return "刚刚";
-        if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
-        if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
-        const d = new Date(ts);
-        return `${d.getMonth() + 1}月${d.getDate()}日`;
-      }
-      function escapeHtml(s) {
-        return s.replace(/[&<>"']/g, (c) => ({
-          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-        }[c]));
-      }
-      function render() {
-        const arr = load().slice().reverse();
-        listEl.innerHTML = "";
-        if (arr.length === 0) {
-          listEl.appendChild(emptyTip);
-          countEl.textContent = "还没有留言";
-          return;
-        }
-        countEl.textContent = `共 ${arr.length} 条留言`;
-        arr.forEach((c) => {
-          const wrap = document.createElement("div");
-          wrap.className = "comment";
-          const initial = (c.name || "匿").trim().charAt(0).toUpperCase();
-          wrap.innerHTML = `
-            <div class="comment__avatar">${escapeHtml(initial)}</div>
-            <div class="comment__body">
-              <div class="comment__meta">
-                <span class="comment__name">${escapeHtml(c.name || "匿名")}</span>
-                <span class="comment__time">${timeAgo(c.ts)}</span>
+    /* 缩略图占位色（用 SVG 渐变模拟胶片色调，避免引入外链）*/
+    function thumb(scheme) {
+      // 不同风格不同色调
+      const palettes = {
+        cine:  ['#0a1a3a', '#7a1a3a', '#ff5a3a', '#1a0a2a'],
+        gold:  ['#3a2a1a', '#d4a85a', '#f5d27a', '#7a5a2a'],
+        velvia:['#1a4a2a', '#3a8a4a', '#ffaa3a', '#0a2a1a'],
+        bw:    ['#222', '#666', '#999', '#333'],
+        warm:  ['#5a3a1a', '#d4884a', '#f5b878', '#8a5a2a'],
+        cold:  ['#1a3a5a', '#3a7aaa', '#aaccdd', '#2a4a6a']
+      };
+      const c = palettes[scheme] || palettes.cine;
+      const id = Math.floor(Math.random() * c.length);
+      return `background:linear-gradient(135deg, ${c[id]}, ${c[(id+1)%c.length]})`;
+    }
+
+    /* ===== 各页面渲染 ===== */
+    function renderCamera(shotsLeft, styleName) {
+      const hasStyle = !!styleName;
+      const full = shotsLeft === 0;
+      const pct = (36 - shotsLeft) / 36;
+      const deg = pct * 360;
+      const ringColor = hasStyle
+        ? (full ? '#ff3b3b' : '#ff3b3b')
+        : '#2a2a2a';
+
+      const btnLabel = full
+        ? 'UNLOAD & DEVELOP'
+        : 'UNLOAD EARLY';
+      const enabled = hasStyle;
+
+      return `
+        <div class="cam-screen">
+          <div class="connected">CONNECTED</div>
+          <div class="cam-style ${hasStyle ? 'has-style' : ''}">
+            ${hasStyle ? styleName : 'SELECT A STYLE'}
+          </div>
+          <div class="ring-wrap">
+            <div class="ring" style="background: conic-gradient(${ringColor} 0deg ${deg}deg, #2a2a2a ${deg}deg 360deg);">
+              <div class="ring-inner">
+                <div class="ring-num">${String(shotsLeft).padStart(2,'0')}</div>
+                <div class="ring-label">LEFT</div>
               </div>
-              <p class="comment__text">${escapeHtml(c.text)}</p>
-            </div>`;
-          listEl.appendChild(wrap);
-        });
+            </div>
+          </div>
+          <button class="unload-btn ${enabled ? 'enabled' : ''}" ${enabled ? '' : 'disabled'}>
+            <span>↓</span>${btnLabel}
+          </button>
+        </div>
+      `;
+    }
+
+    function renderStyleList() {
+      const styles = [
+        { key:'cine',   name:'CINESTILL 800T', exp:'36 EXP',
+          tags:['TUNGSTEN','HALATION','COLD'],
+          color:'#ff3b3b', css:'cine',
+          thumbs:['#7a1a3a','#3a8aff','#1a0a2a'] },
+        { key:'gold',   name:'GOLD 200', exp:'36 EXP',
+          tags:['WARM','VINTAGE','CLASSIC'],
+          color:'#f5c518', css:'gold',
+          thumbs:['#d4a85a','#3a2a1a','#7a5a2a'] }
+      ];
+      return `
+        <div class="style-screen">
+          <div class="style-screen__top">
+            <span class="back-btn" id="backFromStyle">←</span>
+          </div>
+          <div class="filters">
+            <span class="active">ALL</span>
+            <span>B&amp;W</span>
+            <span>WARM</span>
+            <span>COLD</span>
+            <span>STYLE</span>
+          </div>
+          <div class="style-list">
+            ${styles.map(s => `
+              <div class="style-card">
+                <div class="style-card__head">
+                  <div class="style-card__name ${s.css}">${s.name}</div>
+                  <div class="style-card__exp">${s.exp}</div>
+                </div>
+                <div class="style-tags">${s.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+                <div class="style-thumbs">
+                  ${s.thumbs.map(c=>`<div style="background:${c}"></div>`).join('')}
+                </div>
+                <button class="select-btn ${s.css} ${state.selectedStyle===s.key?'selected':''}" data-pick="${s.key}">
+                  ${state.selectedStyle===s.key ? '✓ SELECTED' : 'SELECT →'}
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRoll() {
+      // 步骤 06：套用 Cinestill 800T 风格的 36 张卷轴
+      const cells = [];
+      for (let i=1; i<=12; i++) {
+        const palette = ['#1a0a2a','#3a1a2a','#7a2a1a','#ff5a3a','#0a1a3a','#3a8aff','#1a2a3a','#5a3a1a','#0a2a1a','#3a8a4a','#2a1a3a','#aaa'];
+        cells.push(`<div class="roll-cell" style="background:${palette[i-1]}" data-num="${String(i).padStart(2,'0')}"></div>`);
       }
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const text = textInput.value.trim();
-        if (!text) return;
-        const arr = load();
-        arr.push({
-          name: nameInput.value.trim(),
-          text: text,
-          ts: Date.now()
-        });
-        save(arr);
-        textInput.value = "";
-        render();
+      return `
+        <div class="roll-screen">
+          <div class="roll-head">
+            <span class="roll-back" id="rollBack">←</span>
+            <div style="text-align:center">
+              <div>CINESTILL 800T</div>
+              <div class="sub">36 Frames</div>
+            </div>
+            <span class="roll-select">▢</span>
+          </div>
+          <div class="roll-grid">${cells.join('')}</div>
+          <div class="save-pill">↓ Save All</div>
+        </div>
+      `;
+    }
+
+    function renderDarkRoom() {
+      const rolls = [
+        { name:'Velvia 50',   exp:'36 EXP', date:'May 29, 2026', color:'#3a8a4a', bg:'linear-gradient(135deg,#1a4a2a,#3a8a4a)' },
+        { name:'Gold 200',    exp:'36 EXP', date:'May 29, 2026', color:'#f5c518', bg:'linear-gradient(135deg,#3a2a1a,#d4a85a)' },
+        { name:'Cinestill 800T', exp:'36 EXP', date:'May 29, 2026', color:'#ff3b3b', bg:'linear-gradient(135deg,#1a0a2a,#7a1a3a)' },
+        { name:'HP5 Plus',    exp:'18 EXP', date:'May 4, 2026',  color:'#ccc',    bg:'linear-gradient(135deg,#222,#777)' }
+      ];
+      return `
+        <div class="darkroom-list">
+          <div class="dr-head">
+            <span class="roll-back" id="drBack">←</span>
+            <span class="select">Select</span>
+          </div>
+          <div style="overflow-y:auto; flex:1;">
+            ${rolls.map(r => `
+              <div class="dr-item" data-roll="${r.name}">
+                <div class="dr-thumb" style="background:${r.bg}"></div>
+                <div class="dr-meta">
+                  <div class="name" style="color:${r.color}">${r.name}</div>
+                  <div class="sub">${r.exp} · ${r.date}</div>
+                </div>
+                <div class="dr-arrow">›</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /* ===== 步骤映射 ===== */
+    function renderByStep(step) {
+      state.currentStep = step;
+      document.querySelectorAll('#stepBar .step-btn').forEach(b =>
+        b.classList.toggle('active', +b.dataset.step === step)
+      );
+
+      // tabbar active 同步
+      const tabMap = { 1:'camera', 2:'camera', 3:'style', 4:'camera', 5:'camera', 6:'camera', 7:'darkroom' };
+      setActiveTab(tabMap[step]);
+
+      const body = document.getElementById('phoneBody');
+      if (step === 1) body.innerHTML = renderCamera(36, null);
+      else if (step === 2) body.innerHTML = renderCamera(7, null);
+      else if (step === 3) body.innerHTML = renderStyleList();
+      else if (step === 4) body.innerHTML = renderCamera(7, 'CINESTILL 800T');
+      else if (step === 5) body.innerHTML = renderCamera(0, 'CINESTILL 800T');
+      else if (step === 6) body.innerHTML = renderRoll();
+      else if (step === 7) body.innerHTML = renderDarkRoom();
+
+      bindPhoneEvents();
+      updateOutput(step);
+    }
+
+    function updateOutput(step) {
+      const out = document.getElementById('output');
+      if (step === 6) {
+        out.innerHTML = `
+          <div class="filmstrip">
+            <div class="film-row">
+              <div class="film-frame" style="background:linear-gradient(135deg,#1a0a2a,#7a2a1a)"></div>
+              <div class="film-frame" style="background:linear-gradient(135deg,#3a1a2a,#ff5a3a)"></div>
+              <div class="film-frame" style="background:linear-gradient(135deg,#0a1a3a,#3a8aff)"></div>
+            </div>
+            <div class="film-caption">
+              <strong>CINESTILL 800T</strong> · 36 张 · 已完成冲扫
+            </div>
+            <div style="font-size:11px;color:var(--muted);max-width:340px;line-height:1.6;text-align:center;">
+              Tungsten 灯光下偏冷，红色高光会晕染（halation）。<br>
+              夜景霓虹、室内人像的经典选择。
+            </div>
+          </div>
+        `;
+      } else if (step === 7) {
+        out.innerHTML = `
+          <div class="filmstrip">
+            <div class="film-row">
+              <div class="film-frame" style="background:linear-gradient(135deg,#1a4a2a,#3a8a4a)"></div>
+              <div class="film-frame" style="background:linear-gradient(135deg,#3a2a1a,#d4a85a)"></div>
+              <div class="film-frame" style="background:linear-gradient(135deg,#1a0a2a,#7a1a3a)"></div>
+            </div>
+            <div class="film-caption">
+              <strong>Dark Room</strong> · 共 4 卷 · 共 126 张
+            </div>
+            <div style="font-size:11px;color:var(--muted);max-width:340px;line-height:1.6;text-align:center;">
+              每卷独立冲扫，点入查看每张照片并支持「Save All」导出。
+            </div>
+          </div>
+        `;
+      } else {
+        out.innerHTML = `<div class="empty">
+          点击上方的「06 卷轴照片」或「07 Dark Room」<br>
+          即可在此区域看到套用胶片风格后的照片输出效果
+        </div>`;
+      }
+    }
+
+    function setActiveTab(name) {
+      document.querySelectorAll('#tabBar .tab').forEach(t =>
+        t.classList.toggle('active', t.dataset.tab === name)
+      );
+    }
+
+    /* ===== 手机内交互绑定 ===== */
+    function bindPhoneEvents() {
+      // 风格列表 → SELECT 按钮
+      document.querySelectorAll('[data-pick]').forEach(btn => {
+        btn.onclick = () => {
+          const key = btn.dataset.pick;
+          state.selectedStyle = key;
+          // 选中后跳回 Camera 步骤 04
+          renderByStep(4);
+        };
       });
+      // 返回箭头
+      const back = document.getElementById('backFromStyle');
+      if (back) back.onclick = () => renderByStep(1);
+      const rb = document.getElementById('rollBack');
+      if (rb) rb.onclick = () => renderByStep(7);
+      const drb = document.getElementById('drBack');
+      if (drb) drb.onclick = () => renderByStep(7);
+      // Dark Room 卷轴 → 卷详情
+      document.querySelectorAll('[data-roll]').forEach(item => {
+        item.onclick = () => renderByStep(6);
+      });
+    }
+
+    /* ===== 步骤按钮 ===== */
+    document.querySelectorAll('#stepBar .step-btn').forEach(btn => {
+      btn.addEventListener('click', () => renderByStep(+btn.dataset.step));
+    });
+
+    /* ===== 底部 Tab 也能切换主步骤 ===== */
+    document.querySelectorAll('#tabBar .tab').forEach(t => {
+      t.addEventListener('click', () => {
+        if (t.dataset.tab === 'camera')   renderByStep(1);
+        if (t.dataset.tab === 'style')    renderByStep(3);
+        if (t.dataset.tab === 'darkroom') renderByStep(7);
+      });
+    });
+
+    /* ===== 留言功能（localStorage）===== */
+    const STORAGE_KEY = "myconcepts_comments_v1";
+    const listEl = document.getElementById("commentList");
+    const emptyTip = document.getElementById("emptyTip");
+    const countEl = document.getElementById("commentCount");
+    const form = document.getElementById("commentForm");
+    const nameInput = document.getElementById("nameInput");
+    const textInput = document.getElementById("textInput");
+
+    const load = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } };
+    const save = (a) => localStorage.setItem(STORAGE_KEY, JSON.stringify(a));
+    const escapeHtml = (s) => s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    function timeAgo(ts) {
+      const d = Math.floor((Date.now() - ts) / 1000);
+      if (d < 60) return "刚刚";
+      if (d < 3600) return Math.floor(d/60) + " 分钟前";
+      if (d < 86400) return Math.floor(d/3600) + " 小时前";
+      const x = new Date(ts);
+      return `${x.getMonth()+1}月${x.getDate()}日`;
+    }
+    function render() {
+      const arr = load().slice().reverse();
+      listEl.innerHTML = "";
+      if (arr.length === 0) {
+        listEl.appendChild(emptyTip);
+        countEl.textContent = "还没有留言";
+        return;
+      }
+      countEl.textContent = `共 ${arr.length} 条留言`;
+      arr.forEach(c => {
+        const wrap = document.createElement("div");
+        wrap.className = "comment";
+        const initial = (c.name || "匿").trim().charAt(0).toUpperCase();
+        wrap.innerHTML = `
+          <div class="comment__avatar">${escapeHtml(initial)}</div>
+          <div class="comment__body">
+            <div class="comment__meta">
+              <span class="comment__name">${escapeHtml(c.name || "匿名")}</span>
+              <span class="comment__time">${timeAgo(c.ts)}</span>
+            </div>
+            <p class="comment__text">${escapeHtml(c.text)}</p>
+          </div>`;
+        listEl.appendChild(wrap);
+      });
+    }
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const t = textInput.value.trim();
+      if (!t) return;
+      const arr = load();
+      arr.push({ name: nameInput.value.trim(), text: t, ts: Date.now() });
+      save(arr);
+      textInput.value = "";
       render();
-    })();
+    });
+
+    /* ===== 初始化 ===== */
+    renderByStep(1);
+    render();
   </script>
 </body>
 </html>
