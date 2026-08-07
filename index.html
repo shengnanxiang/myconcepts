@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一些想法</title>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --card-bg: #ffffff;
+      --primary: #4c6ef5;
+      --primary-hover: #3b5bdb;
+      --text: #212529;
+      --text-secondary: #6c757d;
+      --text-muted: #adb5bd;
+      --border: #e9ecef;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-hover: 0 8px 30px rgba(0,0,0,0.10);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* ── 头部 ── */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.5px;
+    }
+
+    .header .dot {
+      color: var(--primary);
+    }
+
+    .header p {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── 卡片列表 ── */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-arrow {
+      font-size: 1rem;
+      color: var(--text-muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .card:hover .card-arrow {
+      transform: translateX(3px);
+      color: var(--primary);
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .card-meta {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: #edf2ff;
+      color: var(--primary);
+    }
+
+    .tag.soon {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    /* ── 页脚 ── */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .footer span {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 头部 -->
+    <div class="header">
+      <h1>一些想法<span class="dot">.</span></h1>
+      <p>正在孵化的实验项目</p>
+    </div>
+
+    <!-- 项目卡片列表 -->
+    <div class="card-list">
+
+      <a class="card" href="developing.html">
+        <div class="card-header">
+          <span class="card-title">等待3小时冲扫的意义</span>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card-desc">
+          在即影即有的数字时代，用真实的胶片等待冲扫的那3个小时，也许是某种被遗忘的意义所在。
+        </div>
+        <div class="card-meta">
+          <span class="tag">胶片摄影</span>
+          <span class="tag">冲扫</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+      myconcepts <span>·</span> 一些想法正在生长
+    </div>
+
+  </div>
+</body>
+</html>
