@@ -15,6 +15,16 @@
       --accent: #6c8cff;
       --accent-2: #ff7a59;
       --radius: 14px;
+
+      /* 胶片 App 主题色 */
+      --phone-frame: #c98765;
+      --phone-frame-2: #a06850;
+      --app-bg: #050505;
+      --app-text: #ffffff;
+      --app-muted: #6c6c70;
+      --green: #4ade80;
+      --red: #ef4444;
+      --yellow: #fbbf24;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -27,37 +37,24 @@
       overflow: hidden;
     }
 
-    .layout {
-      display: flex;
-      height: 100vh;
-      width: 100%;
-    }
+    .layout { display: flex; height: 100vh; width: 100%; }
 
     /* ---------- 左半边：展示区 (2/3) ---------- */
     .stage {
       flex: 0 0 66.6667%;
       max-width: 66.6667%;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       border-right: 1px solid var(--border);
       overflow: hidden;
     }
     .stage__header {
       padding: 20px 28px;
       border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 12px;
     }
-    .stage__header h1 {
-      font-size: 18px;
-      margin: 0;
-      font-weight: 600;
-    }
+    .stage__header h1 { font-size: 18px; margin: 0; font-weight: 600; }
     .badge {
-      font-size: 12px;
-      padding: 3px 10px;
-      border-radius: 999px;
+      font-size: 12px; padding: 3px 10px; border-radius: 999px;
       background: rgba(255, 122, 89, 0.15);
       color: var(--accent-2);
       border: 1px solid rgba(255, 122, 89, 0.3);
@@ -75,168 +72,479 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 18px;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
     }
     .card__title {
-      font-size: 13px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: 13px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
       margin-bottom: 14px;
     }
+
+    /* ---------- 手机外壳 ---------- */
     .phone {
       flex: 1;
-      min-height: 420px;
-      border-radius: 22px;
-      background: linear-gradient(160deg, #20283a, #141823);
-      border: 1px solid var(--border);
+      min-height: 460px;
+      border-radius: 36px;
+      padding: 8px;
+      background: linear-gradient(155deg, var(--phone-frame), var(--phone-frame-2));
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.08);
+      display: flex;
+    }
+    .phone__screen {
+      flex: 1;
+      border-radius: 28px;
+      background: var(--app-bg);
+      color: var(--app-text);
       position: relative;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
     }
-    .phone__placeholder {
+    .phone__notch {
+      position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+      width: 100px; height: 24px;
+      background: #000; border-radius: 14px; z-index: 10;
+    }
+
+    /* ---------- App 状态栏 ---------- */
+    .status-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 22px 8px;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.02em;
+      position: relative; z-index: 5;
+    }
+    .status-bar .right { display: flex; gap: 4px; align-items: center; }
+    .status-bar svg { width: 14px; height: 10px; }
+
+    /* ---------- App 屏幕通用 ---------- */
+    .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .screen.hidden { display: none; }
+
+    /* ---------- 连接状态 ---------- */
+    .conn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 22px 14px;
+      font-size: 11px; font-weight: 600;
+      color: var(--app-muted); letter-spacing: 0.1em;
+    }
+    .conn .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    }
+
+    /* ---------- 相机主屏 ---------- */
+    .camera-screen { padding: 0 22px; align-items: center; }
+    .film-title {
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.15em;
+      margin: 6px 0 26px;
       text-align: center;
-      color: var(--muted);
-      padding: 24px;
+      min-height: 18px;
     }
-    .phone__placeholder .dot {
-      width: 54px; height: 54px;
-      border-radius: 50%;
-      margin: 0 auto 14px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
+    .film-title.cinestill { color: var(--red); }
+    .film-title.gold { color: var(--yellow); }
+    .ring-wrap {
+      position: relative;
+      width: 200px; height: 200px;
+      margin: 8px 0 28px;
+    }
+    .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 6; }
+    .ring-fg {
+      fill: none; stroke-width: 6; stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease, stroke 0.3s;
+    }
+    .ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .ring-count {
+      font-size: 56px; font-weight: 300; line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .ring-label {
+      font-size: 10px; letter-spacing: 0.25em;
+      color: var(--app-muted); margin-top: 6px;
+    }
+    .shutter {
+      width: 100%; max-width: 220px;
+      padding: 14px;
+      background: #1a1a1a;
+      color: #555;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.15em;
+      cursor: not-allowed;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .shutter.active {
+      background: #fff; color: #000;
+      border-color: #fff;
+      cursor: pointer;
+    }
+    .shutter.active:hover { transform: translateY(-1px); }
+    .shutter.done {
+      background: var(--red); color: #fff; border-color: var(--red);
+      cursor: pointer;
+    }
+    .shutter.done:hover { filter: brightness(1.1); }
+
+    /* ---------- 底部 Tab Bar ---------- */
+    .tab-bar {
+      display: flex; justify-content: space-around;
+      padding: 14px 0 22px;
+      border-top: 1px solid #1a1a1a;
+      margin-top: auto;
+    }
+    .tab {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      background: none; border: none; color: var(--app-muted);
+      font-size: 10px; cursor: pointer;
+      transition: color 0.15s;
+    }
+    .tab.active { color: var(--app-text); }
+    .tab svg { width: 22px; height: 22px; }
+    .tab:hover { color: var(--app-text); }
+
+    /* ---------- 选胶卷屏 ---------- */
+    .select-screen { padding: 0 16px; }
+    .select-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 6px 16px;
+    }
+    .back-btn {
+      width: 28px; height: 28px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
+      background: none; border: none; color: var(--app-text);
+      cursor: pointer; border-radius: 50%;
     }
-    .phone__placeholder p { margin: 6px 0; font-size: 13px; }
-    .output {
+    .back-btn:hover { background: #1a1a1a; }
+    .select-tabs {
+      display: flex; gap: 16px;
+      padding: 0 6px 14px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .select-tabs::-webkit-scrollbar { display: none; }
+    .select-tab {
+      color: var(--app-muted); cursor: pointer;
+      padding-bottom: 6px; white-space: nowrap;
+      border-bottom: 2px solid transparent;
+    }
+    .select-tab.active { color: var(--app-text); border-bottom-color: var(--app-text); }
+    .film-list {
+      flex: 1; overflow-y: auto;
+      padding: 0 6px 8px;
+      display: flex; flex-direction: column; gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
+    }
+    .film-list::-webkit-scrollbar { width: 4px; }
+    .film-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .film-card {
+      background: #0f0f0f;
+      border: 1px solid #1a1a1a;
+      border-radius: 12px;
+      padding: 14px;
+      transition: border-color 0.2s;
+    }
+    .film-card:hover { border-color: #2a2a2a; }
+    .film-card-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .film-card-name {
+      font-size: 18px; font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+    .film-card-name.cinestill { color: var(--red); }
+    .film-card-name.gold { color: var(--yellow); }
+    .film-card-exp {
+      font-size: 9px; color: var(--app-muted);
+      letter-spacing: 0.1em; font-weight: 600;
+    }
+    .film-tags { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .film-tag {
+      font-size: 9px; padding: 3px 8px;
+      border-radius: 4px;
+      background: #1a1a1a; color: var(--app-muted);
+      letter-spacing: 0.08em; font-weight: 600;
+    }
+    .film-previews {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 4px; margin-bottom: 12px;
+    }
+    .film-preview {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      background-size: cover; background-position: center;
+    }
+    .film-select-btn {
+      width: 100%; padding: 10px;
+      border: none; border-radius: 6px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: filter 0.15s, transform 0.1s;
+    }
+    .film-select-btn.cinestill { background: var(--red); color: #fff; }
+    .film-select-btn.gold { background: var(--yellow); color: #000; }
+    .film-select-btn:hover { filter: brightness(1.1); }
+    .film-select-btn:active { transform: scale(0.98); }
+
+    /* ---------- 冲扫中 ---------- */
+    .develop-screen {
+      align-items: center; justify-content: center;
+      padding: 0 22px;
+    }
+    .develop-anim {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent, var(--red));
+      animation: spin 1s linear infinite;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .develop-anim::after {
+      content: ''; position: absolute; inset: 8px;
+      background: var(--app-bg); border-radius: 50%;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .develop-text {
+      font-size: 13px; letter-spacing: 0.2em;
+      color: var(--app-muted); font-weight: 600;
+    }
+    .develop-sub {
+      font-size: 11px; color: #444;
+      margin-top: 6px; letter-spacing: 0.15em;
+    }
+
+    /* ---------- 胶卷条屏 ---------- */
+    .strip-screen { padding: 0 12px; }
+    .strip-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 10px 12px;
+    }
+    .strip-title {
+      text-align: center; flex: 1;
+    }
+    .strip-title .name {
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.15em;
+    }
+    .strip-title .name.cinestill { color: var(--red); }
+    .strip-title .name.gold { color: var(--yellow); }
+    .strip-title .sub {
+      font-size: 10px; color: var(--app-muted);
+      margin-top: 2px; letter-spacing: 0.05em;
+    }
+    .strip-empty {
+      width: 24px; height: 24px;
+      border: 1px solid var(--app-muted);
+      border-radius: 4px;
+      background: none;
+    }
+    .strip-list {
+      flex: 1; overflow-y: auto;
+      padding: 0 4px 12px;
+      display: flex; flex-direction: column; gap: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
+    }
+    .strip-list::-webkit-scrollbar { width: 4px; }
+    .strip-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .strip-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      background: #0a0a0a;
+      border-radius: 6px;
+      padding: 6px 8px;
+      position: relative;
+    }
+    .strip-row::before, .strip-row::after {
+      content: ''; position: absolute;
+      top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom,
+        #1a1a1a 0%, #1a1a1a 30%, transparent 30%,
+        transparent 70%, #1a1a1a 70%, #1a1a1a 100%);
+    }
+    .strip-row::before { left: 3px; }
+    .strip-row::after { right: 3px; }
+    .frame {
+      aspect-ratio: 3/2;
+      border-radius: 3px;
+      background-size: cover; background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .frame::after {
+      content: attr(data-label);
+      position: absolute; bottom: 3px; left: 4px;
+      font-size: 8px; font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+      letter-spacing: 0.05em;
+    }
+    .frame.empty { background: #1a1a1a; }
+    .frame.empty::after { color: #444; text-shadow: none; }
+    .save-all-btn {
+      margin: 0 auto 14px;
+      padding: 10px 22px;
+      background: #fff; color: #000;
+      border: none; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+      transition: transform 0.1s;
+    }
+    .save-all-btn:hover { transform: translateY(-1px); }
+    .save-all-btn svg { width: 12px; height: 12px; }
+
+    /* ---------- 暗房列表 ---------- */
+    .darkroom-screen { padding: 0 14px; }
+    .darkroom-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 8px 14px;
+      font-size: 12px; letter-spacing: 0.1em; font-weight: 600;
+    }
+    .darkroom-select-btn {
+      background: none; border: none;
+      color: var(--app-muted); font-size: 12px;
+      cursor: pointer; letter-spacing: 0.1em; font-weight: 600;
+    }
+    .darkroom-select-btn:hover { color: var(--app-text); }
+    .darkroom-list {
+      flex: 1; overflow-y: auto;
+      padding: 0 4px 12px;
+      display: flex; flex-direction: column; gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
+    }
+    .darkroom-list::-webkit-scrollbar { width: 4px; }
+    .darkroom-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .roll-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px;
+      background: #0f0f0f;
+      border: 1px solid #1a1a1a;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+    }
+    .roll-card:hover { border-color: #2a2a2a; transform: translateY(-1px); }
+    .roll-thumb {
+      width: 60px; height: 44px;
+      border-radius: 6px;
+      background-size: cover; background-position: center;
+      flex-shrink: 0;
+    }
+    .roll-info { flex: 1; min-width: 0; }
+    .roll-name {
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .roll-name.cinestill { color: var(--red); }
+    .roll-name.gold { color: var(--yellow); }
+    .roll-name.velvia { color: #4ade80; }
+    .roll-name.hp5 { color: #d1d5db; }
+    .roll-meta {
+      font-size: 10px; color: var(--app-muted);
+      margin-top: 3px; letter-spacing: 0.04em;
+    }
+    .roll-arrow { color: var(--app-muted); font-size: 16px; }
+    .darkroom-empty {
       flex: 1;
-      min-height: 420px;
-      border-radius: 14px;
-      background: var(--panel-2)
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='40' height='40' fill='%231f242e'/><path d='M0 20h40M20 0v40' stroke='%232a303c' stroke-width='1'/></svg>");
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      color: var(--app-muted); font-size: 12px;
+      letter-spacing: 0.1em;
+    }
+    .darkroom-empty svg { width: 48px; height: 48px; opacity: 0.4; }
+
+    /* ---------- 右侧信息卡 ---------- */
+    .info-card { gap: 14px; }
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
       font-size: 13px;
-      text-align: center;
-      padding: 24px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .info-value { font-weight: 600; }
+    .info-value.cinestill { color: var(--red); }
+    .info-value.gold { color: var(--yellow); }
+    .info-desc {
+      font-size: 13px; line-height: 1.65; color: var(--text);
+      opacity: 0.85;
+      padding: 12px;
+      background: var(--panel-2);
+      border-radius: 10px;
+      border-left: 3px solid var(--accent-2);
     }
 
     /* ---------- 右半边：留言区 (1/3) ---------- */
-    .comments {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: var(--panel);
-      overflow: hidden;
-    }
-    .comments__header {
-      padding: 20px 22px;
-      border-bottom: 1px solid var(--border);
-    }
-    .comments__header h2 {
-      font-size: 16px;
-      margin: 0;
-      font-weight: 600;
-    }
-    .comments__header span {
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .comments { flex: 1; display: flex; flex-direction: column; background: var(--panel); overflow: hidden; }
+    .comments__header { padding: 20px 22px; border-bottom: 1px solid var(--border); }
+    .comments__header h2 { font-size: 16px; margin: 0; font-weight: 600; }
+    .comments__header span { font-size: 12px; color: var(--muted); }
     .comments__list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      flex: 1; overflow-y: auto; padding: 18px 22px;
+      display: flex; flex-direction: column; gap: 16px;
     }
-    .comment {
-      display: flex;
-      gap: 12px;
-    }
+    .comment { display: flex; gap: 12px; }
     .comment__avatar {
-      flex: 0 0 36px;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #fff;
+      flex: 0 0 36px; width: 36px; height: 36px;
+      border-radius: 50%; background: var(--accent); color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 600;
     }
     .comment__body { flex: 1; }
-    .comment__meta {
-      display: flex; align-items: baseline; gap: 8px;
-      margin-bottom: 4px;
-    }
+    .comment__meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
     .comment__name { font-size: 14px; font-weight: 600; }
     .comment__time { font-size: 11px; color: var(--muted); }
     .comment__text {
-      font-size: 14px;
-      line-height: 1.55;
-      color: var(--text);
-      margin: 0;
-      word-break: break-word;
+      font-size: 14px; line-height: 1.55;
+      color: var(--text); margin: 0; word-break: break-word;
     }
     .comment__empty {
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-      margin-top: 40px;
+      color: var(--muted); font-size: 13px;
+      text-align: center; margin-top: 40px;
     }
     .comments__form {
       border-top: 1px solid var(--border);
       padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      display: flex; flex-direction: column; gap: 10px;
     }
     .comments__form input.name {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px;
+      color: var(--text); font-size: 13px; outline: none;
     }
     .comments__form input.name:focus { border-color: var(--accent); }
-    .comments__form .row {
-      display: flex;
-      gap: 10px;
-    }
+    .comments__form .row { display: flex; gap: 10px; }
     .comments__form textarea {
-      flex: 1;
-      resize: none;
-      height: 56px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: var(--text);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
+      flex: 1; resize: none; height: 56px;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 12px;
+      color: var(--text); font-size: 14px;
+      font-family: inherit; outline: none;
     }
     .comments__form textarea:focus { border-color: var(--accent); }
     .comments__form button {
-      flex: 0 0 auto;
-      align-self: stretch;
-      padding: 0 18px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter 0.15s;
+      flex: 0 0 auto; align-self: stretch; padding: 0 18px;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: filter 0.15s;
     }
     .comments__form button:hover { filter: brightness(1.08); }
     .comments__form button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -260,19 +568,185 @@
       <div class="stage__body">
         <!-- 手机交互 App -->
         <div class="card">
-          <div class="card__title">App 交互预览</div>
+          <div class="card__title">App 交互预览 · 胶片相机</div>
           <div class="phone">
-            <div class="phone__placeholder">
-              <div class="dot">📱</div>
-              <p>手机交互 App</p>
-              <p>此处将展示 Figma 设计的交互流程<br>（拍照 → AI 生成 → 输出）</p>
+            <div class="phone__screen">
+              <div class="phone__notch"></div>
+
+              <!-- 屏幕 1: 相机主屏 -->
+              <div class="screen camera-screen" id="screen-camera">
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <div class="right">
+                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
+                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
+                  </div>
+                </div>
+                <div class="conn"><span class="dot"></span><span>CONNECTED</span></div>
+                <div class="film-title" id="film-title"></div>
+                <div class="ring-wrap">
+                  <svg viewBox="0 0 200 200">
+                    <circle class="ring-bg" cx="100" cy="100" r="94"/>
+                    <circle class="ring-fg" id="ring-fg" cx="100" cy="100" r="94"
+                      stroke-dasharray="590" stroke-dashoffset="590"/>
+                  </svg>
+                  <div class="ring-center">
+                    <div class="ring-count" id="ring-count">36</div>
+                    <div class="ring-label">LEFT</div>
+                  </div>
+                </div>
+                <button class="shutter" id="shutter-btn" disabled>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 4v16M4 12h16"/>
+                  </svg>
+                  <span id="shutter-label">SELECT A FILM FIRST</span>
+                </button>
+                <nav class="tab-bar">
+                  <button class="tab active" data-tab="camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    Camera
+                  </button>
+                  <button class="tab" data-tab="darkroom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
+                    </svg>
+                    Dark Room
+                  </button>
+                  <button class="tab" data-tab="more">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                    More
+                  </button>
+                </nav>
+              </div>
+
+              <!-- 屏幕 2: 选胶卷 -->
+              <div class="screen select-screen hidden" id="screen-select">
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <div class="right">
+                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
+                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
+                  </div>
+                </div>
+                <div class="select-header">
+                  <button class="back-btn" data-action="back-to-camera">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                </div>
+                <div class="select-tabs">
+                  <div class="select-tab active" data-cat="all">ALL</div>
+                  <div class="select-tab" data-cat="bw">B&amp;W</div>
+                  <div class="select-tab" data-cat="warm">WARM</div>
+                  <div class="select-tab" data-cat="cold">COLD</div>
+                  <div class="select-tab" data-cat="style">STYLE</div>
+                </div>
+                <div class="film-list" id="film-list">
+                  <!-- 动态生成 -->
+                </div>
+              </div>
+
+              <!-- 屏幕 3: 冲扫中 -->
+              <div class="screen develop-screen hidden" id="screen-develop">
+                <div class="develop-anim"></div>
+                <div class="develop-text" id="develop-text">DEVELOPING</div>
+                <div class="develop-sub">UNLOADING FILM · 36 FRAMES</div>
+              </div>
+
+              <!-- 屏幕 4: 胶卷条 -->
+              <div class="screen strip-screen hidden" id="screen-strip">
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <div class="right">
+                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
+                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
+                  </div>
+                </div>
+                <div class="strip-header">
+                  <button class="back-btn" data-action="back-to-camera">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <div class="strip-title">
+                    <div class="name" id="strip-film-name">CINESTILL 800T</div>
+                    <div class="sub" id="strip-frame-count">36 Frames</div>
+                  </div>
+                  <div style="width:28px"></div>
+                </div>
+                <div class="strip-list" id="strip-list"></div>
+                <button class="save-all-btn" id="save-all-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16M4 12h16"/></svg>
+                  Save All
+                </button>
+              </div>
+
+              <!-- 屏幕 5: 暗房列表 -->
+              <div class="screen darkroom-screen hidden" id="screen-darkroom">
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <div class="right">
+                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
+                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
+                  </div>
+                </div>
+                <div class="darkroom-header">
+                  <button class="back-btn" data-action="back-to-camera">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <button class="darkroom-select-btn">Select</button>
+                </div>
+                <div class="darkroom-list" id="darkroom-list"></div>
+                <nav class="tab-bar">
+                  <button class="tab" data-tab="camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    Camera
+                  </button>
+                  <button class="tab active" data-tab="darkroom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
+                    </svg>
+                    Dark Room
+                  </button>
+                  <button class="tab" data-tab="more">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                    More
+                  </button>
+                </nav>
+              </div>
+
+              <!-- 屏幕 6: More 占位 -->
+              <div class="screen develop-screen hidden" id="screen-more">
+                <div class="develop-text">MORE</div>
+                <div class="develop-sub">Coming soon</div>
+              </div>
             </div>
           </div>
         </div>
-        <!-- 输出照片效果 -->
-        <div class="card">
-          <div class="card__title">最终输出照片</div>
-          <div class="output">AI 生成的最终照片效果将展示在这里</div>
+
+        <!-- 右侧信息卡 -->
+        <div class="card info-card">
+          <div class="card__title">当前状态</div>
+          <div class="info-row">
+            <span class="info-label">胶卷</span>
+            <span class="info-value" id="info-film">未装卷</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">已拍 / 总数</span>
+            <span class="info-value" id="info-shots">0 / 36</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">已保存胶卷</span>
+            <span class="info-value" id="info-rolls">0</span>
+          </div>
+          <div class="info-desc">
+            这是一个交互 Demo：装入胶卷、按 36 次快门、冲扫后查看成像。所有数据保存在浏览器 localStorage。
+          </div>
         </div>
       </div>
     </section>
@@ -297,80 +771,426 @@
   </div>
 
   <script>
-    (function () {
-      const STORAGE_KEY = "myconcepts_comments_v1";
-      const listEl = document.getElementById("commentList");
-      const emptyTip = document.getElementById("emptyTip");
-      const countEl = document.getElementById("commentCount");
-      const form = document.getElementById("commentForm");
-      const nameInput = document.getElementById("nameInput");
-      const textInput = document.getElementById("textInput");
-      const submitBtn = document.getElementById("submitBtn");
+  // =================== 胶片相机 App 逻辑 ===================
+  const FILMS = [
+    {
+      id: 'cinestill',
+      name: 'CINESTILL 800T',
+      cssClass: 'cinestill',
+      tags: ['TUNGSTEN', 'HALATION', 'COLD'],
+      cat: 'cold',
+      exp: '36 EXP',
+      previews: ['cinestill-1', 'cinestill-2', 'cinestill-3']
+    },
+    {
+      id: 'gold',
+      name: 'GOLD 200',
+      cssClass: 'gold',
+      tags: ['WARM', 'VINTAGE', 'CLASSIC'],
+      cat: 'warm',
+      exp: '36 EXP',
+      previews: ['gold-1', 'gold-2', 'gold-3']
+    }
+  ];
 
-      function load() {
-        try {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        } catch (e) {
-          return [];
+  // 为不同胶卷生成不同色调的"样片"和"胶卷帧"
+  function previewStyle(seed, filmId) {
+    const palettes = {
+      cinestill: [
+        ['#1a1a2e', '#e94560', '#0f3460'],
+        ['#16213e', '#e94560', '#533483'],
+        ['#1a1a2e', '#ff6b6b', '#2d4059']
+      ],
+      gold: [
+        ['#f6c90e', '#e07a5f', '#3d2c2e'],
+        ['#f4a261', '#e76f51', '#264653'],
+        ['#f6bd60', '#f7ede2', '#84a59d']
+      ]
+    };
+    const palette = palettes[filmId] || palettes.cinestill;
+    const idx = seed % palette.length;
+    const [c1, c2, c3] = palette[idx];
+    // 不同角度的渐变，模拟不同场景
+    const angle = (seed * 47) % 360;
+    return `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+  }
+
+  const SAMPLE_PREVIEWS = {};
+  FILMS.forEach(f => {
+    SAMPLE_PREVIEWS[f.id] = [];
+    for (let i = 0; i < 3; i++) {
+      SAMPLE_PREVIEWS[f.id].push(previewStyle(i + 1, f.id));
+    }
+  });
+
+  const STORAGE = {
+    film: 'mc_film',
+    shots: 'mc_shots',
+    rolls: 'mc_rolls'
+  };
+
+  const state = {
+    film: null,
+    shots: 0,
+    rolls: [],
+    screen: 'camera', // camera | select | develop | strip | darkroom | more
+    activeCat: 'all'
+  };
+
+  // 初始化
+  try {
+    const f = localStorage.getItem(STORAGE.film);
+    if (f) state.film = JSON.parse(f);
+    const s = localStorage.getItem(STORAGE.shots);
+    if (s) state.shots = parseInt(s, 10) || 0;
+    const r = localStorage.getItem(STORAGE.rolls);
+    if (r) state.rolls = JSON.parse(r);
+  } catch (e) {}
+
+  const $ = (id) => document.getElementById(id);
+  const RING_CIRCUMFERENCE = 2 * Math.PI * 94; // ≈ 590
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE.film, JSON.stringify(state.film));
+      localStorage.setItem(STORAGE.shots, String(state.shots));
+      localStorage.setItem(STORAGE.rolls, JSON.stringify(state.rolls));
+    } catch (e) {}
+  }
+
+  function showScreen(name) {
+    ['camera', 'select', 'develop', 'strip', 'darkroom', 'more'].forEach(s => {
+      $(`screen-${s}`).classList.toggle('hidden', s !== name);
+    });
+    state.screen = name;
+  }
+
+  function renderCamera() {
+    const filmObj = state.film ? FILMS.find(f => f.id === state.film) : null;
+    const title = $('film-title');
+    title.textContent = filmObj ? filmObj.name.toUpperCase() : 'SELECT A STYLE';
+    title.className = 'film-title' + (filmObj ? ' ' + filmObj.cssClass : '');
+
+    const remaining = 36 - state.shots;
+    $('ring-count').textContent = String(remaining).padStart(2, '0');
+
+    const ratio = state.shots / 36;
+    const offset = RING_CIRCUMFERENCE * (1 - ratio);
+    const ringFg = $('ring-fg');
+    ringFg.setAttribute('stroke-dashoffset', offset);
+    ringFg.style.stroke = filmObj
+      ? (filmObj.id === 'cinestill' ? '#ef4444' : '#fbbf24')
+      : '#444';
+
+    const shutter = $('shutter-btn');
+    const label = $('shutter-label');
+    shutter.classList.remove('active', 'done');
+    if (!filmObj) {
+      shutter.disabled = true;
+      label.textContent = 'SELECT A FILM FIRST';
+    } else if (state.shots >= 36) {
+      shutter.disabled = false;
+      shutter.classList.add('done');
+      label.textContent = 'UNLOAD & DEVELOP';
+    } else {
+      shutter.disabled = false;
+      shutter.classList.add('active');
+      label.textContent = `TAKE SHOT · ${36 - state.shots} LEFT`;
+    }
+
+    // tab 高亮
+    document.querySelectorAll('#screen-camera .tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === 'camera');
+    });
+  }
+
+  function renderFilmList() {
+    const list = $('film-list');
+    list.innerHTML = '';
+    FILMS.forEach(film => {
+      const card = document.createElement('div');
+      card.className = 'film-card';
+      card.innerHTML = `
+        <div class="film-card-head">
+          <div class="film-card-name ${film.cssClass}">${film.name}</div>
+          <div class="film-card-exp">${film.exp}</div>
+        </div>
+        <div class="film-tags">
+          ${film.tags.map(t => `<span class="film-tag">${t}</span>`).join('')}
+        </div>
+        <div class="film-previews">
+          ${SAMPLE_PREVIEWS[film.id].map(bg => `<div class="film-preview" style="background:${bg}"></div>`).join('')}
+        </div>
+        <button class="film-select-btn ${film.cssClass}" data-film="${film.id}">SELECT &gt;</button>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function renderStrip() {
+    if (!state.film) return;
+    const filmObj = FILMS.find(f => f.id === state.film);
+    $('strip-film-name').textContent = filmObj.name;
+    $('strip-film-name').className = 'name ' + filmObj.cssClass;
+    $('strip-frame-count').textContent = `${state.shots} Frames`;
+
+    const list = $('strip-list');
+    list.innerHTML = '';
+    const total = 36;
+    const rows = Math.ceil(total / 3);
+    for (let r = 0; r < rows; r++) {
+      const row = document.createElement('div');
+      row.className = 'strip-row';
+      for (let i = 0; i < 3; i++) {
+        const idx = r * 3 + i;
+        const taken = idx < state.shots;
+        const labelNum = String(r + 1).padStart(2, '0');
+        const labelLetter = ['A', '', 'B'][i] || '';
+        const label = `${labelNum}${labelLetter}`;
+        const frame = document.createElement('div');
+        frame.className = 'frame' + (taken ? '' : ' empty');
+        frame.setAttribute('data-label', label);
+        if (taken) {
+          frame.style.background = previewStyle(idx, state.film);
         }
+        row.appendChild(frame);
       }
-      function save(arr) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-      }
-      function timeAgo(ts) {
-        const diff = Math.floor((Date.now() - ts) / 1000);
-        if (diff < 60) return "刚刚";
-        if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
-        if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
-        const d = new Date(ts);
-        return `${d.getMonth() + 1}月${d.getDate()}日`;
-      }
-      function escapeHtml(s) {
-        return s.replace(/[&<>"']/g, (c) => ({
-          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-        }[c]));
-      }
-      function render() {
-        const arr = load().slice().reverse();
-        listEl.innerHTML = "";
-        if (arr.length === 0) {
-          listEl.appendChild(emptyTip);
-          countEl.textContent = "还没有留言";
-          return;
-        }
-        countEl.textContent = `共 ${arr.length} 条留言`;
-        arr.forEach((c) => {
-          const wrap = document.createElement("div");
-          wrap.className = "comment";
-          const initial = (c.name || "匿").trim().charAt(0).toUpperCase();
-          wrap.innerHTML = `
-            <div class="comment__avatar">${escapeHtml(initial)}</div>
-            <div class="comment__body">
-              <div class="comment__meta">
-                <span class="comment__name">${escapeHtml(c.name || "匿名")}</span>
-                <span class="comment__time">${timeAgo(c.ts)}</span>
-              </div>
-              <p class="comment__text">${escapeHtml(c.text)}</p>
-            </div>`;
-          listEl.appendChild(wrap);
-        });
-      }
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const text = textInput.value.trim();
-        if (!text) return;
-        const arr = load();
-        arr.push({
-          name: nameInput.value.trim(),
-          text: text,
-          ts: Date.now()
-        });
-        save(arr);
-        textInput.value = "";
-        render();
+      list.appendChild(row);
+    }
+  }
+
+  function renderDarkroom() {
+    const list = $('darkroom-list');
+    list.innerHTML = '';
+    if (state.rolls.length === 0) {
+      list.innerHTML = `
+        <div class="darkroom-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <circle cx="9" cy="11" r="2"/>
+            <path d="M21 16l-5-5-9 9"/>
+          </svg>
+          <div>暂无保存的胶卷</div>
+        </div>
+      `;
+      return;
+    }
+    state.rolls.slice().reverse().forEach(roll => {
+      const card = document.createElement('div');
+      card.className = 'roll-card';
+      card.innerHTML = `
+        <div class="roll-thumb" style="background:${previewStyle(roll.firstSeed || 1, roll.film)}"></div>
+        <div class="roll-info">
+          <div class="roll-name ${roll.cssClass}">${roll.name}</div>
+          <div class="roll-meta">${roll.shots} EXP · ${roll.dateStr}</div>
+        </div>
+        <div class="roll-arrow">›</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function renderInfo() {
+    const filmObj = state.film ? FILMS.find(f => f.id === state.film) : null;
+    const infoFilm = $('info-film');
+    infoFilm.textContent = filmObj ? filmObj.name : '未装卷';
+    infoFilm.className = 'info-value' + (filmObj ? ' ' + filmObj.cssClass : '');
+    $('info-shots').textContent = `${state.shots} / 36`;
+    $('info-rolls').textContent = String(state.rolls.length);
+  }
+
+  function render() {
+    renderCamera();
+    renderInfo();
+  }
+
+  // === 事件绑定 ===
+  // 主屏快门
+  $('shutter-btn').addEventListener('click', () => {
+    if (!state.film) {
+      showScreen('select');
+      return;
+    }
+    if (state.shots >= 36) {
+      developFilm();
+      return;
+    }
+    // 拍一张
+    state.shots += 1;
+    save();
+    render();
+    // 闪光动效
+    const flash = document.createElement('div');
+    Object.assign(flash.style, {
+      position: 'fixed', inset: '0',
+      background: '#fff', opacity: '0.6',
+      pointerEvents: 'none', zIndex: '9999',
+      transition: 'opacity 0.2s'
+    });
+    document.body.appendChild(flash);
+    requestAnimationFrame(() => { flash.style.opacity = '0'; });
+    setTimeout(() => flash.remove(), 220);
+
+    if (state.shots >= 36) {
+      // 自动进入冲扫提示
+      setTimeout(() => developFilm(), 400);
+    }
+  });
+
+  // 选胶卷返回
+  document.querySelectorAll('[data-action="back-to-camera"]').forEach(b => {
+    b.addEventListener('click', () => showScreen('camera'));
+  });
+
+  // 选胶卷 - 分类切换
+  document.querySelectorAll('.select-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.select-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.activeCat = tab.dataset.cat;
+      // 简单过滤
+      const cards = document.querySelectorAll('.film-card');
+      cards.forEach(c => {
+        const filmId = c.querySelector('[data-film]').dataset.film;
+        const film = FILMS.find(f => f.id === filmId);
+        const match = state.activeCat === 'all' || film.cat === state.activeCat;
+        c.style.display = match ? 'block' : 'none';
       });
-      render();
-    })();
+    });
+  });
+
+  // 选胶卷 - 选择按钮 (事件委托)
+  $('film-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-film]');
+    if (!btn) return;
+    state.film = btn.dataset.film;
+    save();
+    showScreen('camera');
+    render();
+  });
+
+  // 标签栏切换
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      if (target === 'camera') {
+        if (state.screen === 'camera') return;
+        showScreen('camera');
+        render();
+      } else if (target === 'darkroom') {
+        showScreen('darkroom');
+        renderDarkroom();
+        document.querySelectorAll('#screen-darkroom .tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === 'darkroom');
+        });
+      } else if (target === 'more') {
+        showScreen('more');
+      }
+    });
+  });
+
+  // 冲扫流程
+  function developFilm() {
+    if (state.shots === 0) return;
+    showScreen('develop');
+    setTimeout(() => {
+      showScreen('strip');
+      renderStrip();
+    }, 1800);
+  }
+
+  // 保存全部到暗房
+  $('save-all-btn').addEventListener('click', () => {
+    if (!state.film || state.shots === 0) return;
+    const filmObj = FILMS.find(f => f.id === state.film);
+    const now = new Date();
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dateStr = `${monthNames[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+    state.rolls.push({
+      film: state.film,
+      cssClass: filmObj.cssClass,
+      name: filmObj.name,
+      shots: state.shots,
+      firstSeed: 1,
+      dateStr
+    });
+    // 重置
+    state.film = null;
+    state.shots = 0;
+    save();
+    showScreen('camera');
+    render();
+  });
+
+  // 初始化
+  renderFilmList();
+  render();
+
+  // =================== 留言板逻辑 ===================
+  const COMMENTS_KEY = "myconcepts_comments_v1";
+  const listEl = document.getElementById("commentList");
+  const emptyTip = document.getElementById("emptyTip");
+  const countEl = document.getElementById("commentCount");
+  const form = document.getElementById("commentForm");
+  const nameInput = document.getElementById("nameInput");
+  const textInput = document.getElementById("textInput");
+
+  function loadComments() {
+    try { return JSON.parse(localStorage.getItem(COMMENTS_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function saveComments(arr) {
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(arr));
+  }
+  function timeAgo(ts) {
+    const diff = Math.floor((Date.now() - ts) / 1000);
+    if (diff < 60) return "刚刚";
+    if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
+    if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
+    const d = new Date(ts);
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+  }
+  function renderComments() {
+    const arr = loadComments().slice().reverse();
+    listEl.innerHTML = "";
+    if (arr.length === 0) {
+      listEl.appendChild(emptyTip);
+      countEl.textContent = "还没有留言";
+      return;
+    }
+    countEl.textContent = `共 ${arr.length} 条留言`;
+    arr.forEach((c) => {
+      const wrap = document.createElement("div");
+      wrap.className = "comment";
+      const initial = (c.name || "匿").trim().charAt(0).toUpperCase();
+      wrap.innerHTML = `
+        <div class="comment__avatar">${escapeHtml(initial)}</div>
+        <div class="comment__body">
+          <div class="comment__meta">
+            <span class="comment__name">${escapeHtml(c.name || "匿名")}</span>
+            <span class="comment__time">${timeAgo(c.ts)}</span>
+          </div>
+          <p class="comment__text">${escapeHtml(c.text)}</p>
+        </div>`;
+      listEl.appendChild(wrap);
+    });
+  }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const text = textInput.value.trim();
+    if (!text) return;
+    const arr = loadComments();
+    arr.push({ name: nameInput.value.trim(), text: text, ts: Date.now() });
+    saveComments(arr);
+    textInput.value = "";
+    renderComments();
+  });
+  renderComments();
   </script>
 </body>
 </html>
