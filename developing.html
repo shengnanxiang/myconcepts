@@ -68,8 +68,9 @@
       flex: 1;
       display: flex;
       padding: 28px;
-      overflow: auto;
-      align-items: stretch;
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
     }
     .card {
       background: var(--panel);
@@ -78,12 +79,14 @@
       padding: 18px;
       display: flex; flex-direction: column;
       flex: 1;
+      min-height: 0;
     }
     /* App 交互卡片：无标题，手机居中 */
     .card--app {
       align-items: center;
       justify-content: center;
       padding: 24px;
+      min-height: 0;
     }
     .card__title {
       font-size: 13px; color: var(--muted);
@@ -92,11 +95,11 @@
     }
 
     /* ---------- 手机外壳 ---------- */
+    /* 用高度反推宽度：iPhone 14 Pro 比例 390:844，padding 8px×2 + border 余量 */
     .phone {
       flex: 0 0 auto;
-      width: 390px;
-      min-width: 390px;
-      max-width: 390px;
+      height: 100%;
+      max-height: 100%;
       aspect-ratio: 390 / 844;
       border-radius: 36px;
       padding: 8px;
