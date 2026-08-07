@@ -502,7 +502,8 @@
       shotsLeft: 36,             // 剩余张数
       selectedStyle: null,       // 选中的风格
       devStyle: 'cinestill',     // 当前 demo 演示默认风格
-      outputVisible: false
+      outputVisible: false,
+      activeRoll: 'chengHuangMiao'
     };
 
     /* 缩略图占位色（用 SVG 渐变模拟胶片色调，避免引入外链）*/
@@ -520,6 +521,44 @@
       const id = Math.floor(Math.random() * c.length);
       return `background:linear-gradient(135deg, ${c[id]}, ${c[(id+1)%c.length]})`;
     }
+
+    /* ===== 真实胶卷照片数据 ===== */
+    const PHOTO_BASE = 'photos/';
+    const ROLLS = [
+      { key:'chengHuangMiao', name:'城隍庙',     color:'#ff7a3a', files:[
+        'DSC_0745.jpg','DSC_0747.jpg','DSC_0751.jpg','DSC_0757.jpg','DSC_0759.jpg','DSC_0770.jpg',
+        'DSC_0773.jpg','DSC_0774.jpg','DSC_0775.jpg','DSC_0777.jpg','DSC_0779.jpg','DSC_0783.jpg',
+        'DSC_0786.jpg','DSC_0790.jpg','DSC_0793.jpg','DSC_0796.jpg','DSC_0798.jpg','DSC_0807.jpg',
+        'DSC_0811.jpg','DSC_0814.jpg','DSC_0817.jpg','DSC_0820.jpg','DSC_0821.jpg','DSC_0822.jpg',
+        'DSC_0823.jpg','DSC_0825.jpg'
+      ]},
+      { key:'heiBai', name:'黑白', color:'#cccccc', files:[
+        'DSC_0385.jpg','DSC_0440.jpg','DSC_3357.jpg','DSC_3474.jpg','DSC_3546.jpg','DSC04307.jpg',
+        'DSC04332.jpg','IMG_2183.jpg','NIK_1904.jpg','NIK_1935.jpg','NIK_1939.jpg','NIK_1940.jpg',
+        'NIK_1943.jpg','NIK_1966.jpg'
+      ]},
+      { key:'riChang', name:'日常', color:'#f5c518', files:[
+        'DSC_0660.jpg','DSC_0662.jpg','DSC_0664.jpg','DSC_0666.jpg','DSC_0669.jpg','DSC_0673.jpg',
+        'DSC_0674.jpg','DSC_0675.jpg','DSC_3840.jpg','DSC_3878.jpg','DSC_3881.jpg','DSC_4120.jpg',
+        'DSC_4123.jpg','DSC04172.jpg','DSC04416.jpg','DSC4267.jpg','R0013941.jpg','R0013954.jpg'
+      ]},
+      { key:'shuXiDiFang', name:'熟悉的地方', color:'#3a8aff', files:[
+        'DSC_0081.jpg','DSC_0086.jpg','DSC_0088.jpg','DSC_0170.jpg','DSC_0180.jpg','DSC_0181.jpg',
+        'DSC_0183.jpg','DSC_0186.jpg','DSC_0187.jpg','DSC_0193.jpg','DSC_0194.jpg','DSC_0196.jpg',
+        'NIK_1992.jpg','NIK_1993.jpg','NIK_1995.jpg','NIK_1998.jpg','NIK_2009.jpg','NIK_2015.jpg'
+      ]},
+      { key:'xiaoWuLang', name:'小五郎', color:'#ff3b3b', files:[
+        '_DSC4254.jpg','DSC_0489.jpg','DSC_0598.jpg','DSC_0599.jpg','DSC_0600.jpg','DSC_0601.jpg',
+        'DSC_0635.jpg','DSC_0655.jpg','DSC_0656.jpg','DSC_0659.jpg','DSC_0676.jpg','DSC_0678.jpg',
+        'DSC_0841.jpg','DSC_0887.jpg','DSC_0890.jpg','DSC_3529.jpg','DSC_3631.jpg','DSC_3810.jpg',
+        'DSC_3914.jpg','DSC_4085.jpg','DSC_4093.jpg','DSC_4095.jpg','DSC_4097.jpg','DSC_4101.jpg',
+        'DSC_4117.jpg','DSC04092.jpg','DSC04093.jpg','DSC04407.jpg','IMG_20250721_180730.jpg',
+        'NIK_2140.jpg','R0013958.jpg','R0013961.jpg','R0013964.jpg','R0013965.jpg'
+      ]}
+    ];
+    // 中文目录名需 encodeURI
+    const rollImg = (roll, file) =>
+      PHOTO_BASE + encodeURIComponent(roll.name) + '/' + encodeURIComponent(file);
 
     /* ===== 各页面渲染 ===== */
     function renderCamera(shotsLeft, styleName) {
@@ -562,11 +601,11 @@
         { key:'cine',   name:'CINESTILL 800T', exp:'36 EXP',
           tags:['TUNGSTEN','HALATION','COLD'],
           color:'#ff3b3b', css:'cine',
-          thumbs:['#7a1a3a','#3a8aff','#1a0a2a'] },
+          roll:'shuXiDiFang' },
         { key:'gold',   name:'GOLD 200', exp:'36 EXP',
           tags:['WARM','VINTAGE','CLASSIC'],
           color:'#f5c518', css:'gold',
-          thumbs:['#d4a85a','#3a2a1a','#7a5a2a'] }
+          roll:'riChang' }
       ];
       return `
         <div class="style-screen">
@@ -581,7 +620,10 @@
             <span>STYLE</span>
           </div>
           <div class="style-list">
-            ${styles.map(s => `
+            ${styles.map(s => {
+              const r = ROLLS.find(x => x.key === s.roll);
+              const t1 = r.files[0], t2 = r.files[2], t3 = r.files[5];
+              return `
               <div class="style-card">
                 <div class="style-card__head">
                   <div class="style-card__name ${s.css}">${s.name}</div>
@@ -589,48 +631,43 @@
                 </div>
                 <div class="style-tags">${s.tags.map(t=>`<span>${t}</span>`).join('')}</div>
                 <div class="style-thumbs">
-                  ${s.thumbs.map(c=>`<div style="background:${c}"></div>`).join('')}
+                  <div style="background-image:url('${rollImg(r,t1)}');background-size:cover;background-position:center"></div>
+                  <div style="background-image:url('${rollImg(r,t2)}');background-size:cover;background-position:center"></div>
+                  <div style="background-image:url('${rollImg(r,t3)}');background-size:cover;background-position:center"></div>
                 </div>
                 <button class="select-btn ${s.css} ${state.selectedStyle===s.key?'selected':''}" data-pick="${s.key}">
                   ${state.selectedStyle===s.key ? '✓ SELECTED' : 'SELECT →'}
                 </button>
-              </div>
-            `).join('')}
+              </div>`;
+            }).join('')}
           </div>
         </div>
       `;
     }
 
-    function renderRoll() {
-      // 步骤 06：套用 Cinestill 800T 风格的 36 张卷轴
-      const cells = [];
-      for (let i=1; i<=12; i++) {
-        const palette = ['#1a0a2a','#3a1a2a','#7a2a1a','#ff5a3a','#0a1a3a','#3a8aff','#1a2a3a','#5a3a1a','#0a2a1a','#3a8a4a','#2a1a3a','#aaa'];
-        cells.push(`<div class="roll-cell" style="background:${palette[i-1]}" data-num="${String(i).padStart(2,'0')}"></div>`);
-      }
+    function renderRoll(rollKey) {
+      // 步骤 06：展示整卷真实照片
+      const r = ROLLS.find(x => x.key === rollKey) || ROLLS[0];
+      const cells = r.files.map((f, i) =>
+        `<div class="roll-cell" style="background-image:url('${rollImg(r,f)}');background-size:cover;background-position:center" data-num="${String(i+1).padStart(2,'0')}"></div>`
+      ).join('');
       return `
         <div class="roll-screen">
           <div class="roll-head">
             <span class="roll-back" id="rollBack">←</span>
             <div style="text-align:center">
-              <div>CINESTILL 800T</div>
-              <div class="sub">36 Frames</div>
+              <div style="color:${r.color}">${r.name}</div>
+              <div class="sub">${r.files.length} Frames</div>
             </div>
             <span class="roll-select">▢</span>
           </div>
-          <div class="roll-grid">${cells.join('')}</div>
+          <div class="roll-grid">${cells}</div>
           <div class="save-pill">↓ Save All</div>
         </div>
       `;
     }
 
     function renderDarkRoom() {
-      const rolls = [
-        { name:'Velvia 50',   exp:'36 EXP', date:'May 29, 2026', color:'#3a8a4a', bg:'linear-gradient(135deg,#1a4a2a,#3a8a4a)' },
-        { name:'Gold 200',    exp:'36 EXP', date:'May 29, 2026', color:'#f5c518', bg:'linear-gradient(135deg,#3a2a1a,#d4a85a)' },
-        { name:'Cinestill 800T', exp:'36 EXP', date:'May 29, 2026', color:'#ff3b3b', bg:'linear-gradient(135deg,#1a0a2a,#7a1a3a)' },
-        { name:'HP5 Plus',    exp:'18 EXP', date:'May 4, 2026',  color:'#ccc',    bg:'linear-gradient(135deg,#222,#777)' }
-      ];
       return `
         <div class="darkroom-list">
           <div class="dr-head">
@@ -638,12 +675,12 @@
             <span class="select">Select</span>
           </div>
           <div style="overflow-y:auto; flex:1;">
-            ${rolls.map(r => `
-              <div class="dr-item" data-roll="${r.name}">
-                <div class="dr-thumb" style="background:${r.bg}"></div>
+            ${ROLLS.map(r => `
+              <div class="dr-item" data-roll="${r.key}">
+                <div class="dr-thumb" style="background-image:url('${rollImg(r, r.files[0])}');background-size:cover;background-position:center"></div>
                 <div class="dr-meta">
                   <div class="name" style="color:${r.color}">${r.name}</div>
-                  <div class="sub">${r.exp} · ${r.date}</div>
+                  <div class="sub">${r.files.length} Frames</div>
                 </div>
                 <div class="dr-arrow">›</div>
               </div>
@@ -670,7 +707,7 @@
       else if (step === 3) body.innerHTML = renderStyleList();
       else if (step === 4) body.innerHTML = renderCamera(7, 'CINESTILL 800T');
       else if (step === 5) body.innerHTML = renderCamera(0, 'CINESTILL 800T');
-      else if (step === 6) body.innerHTML = renderRoll();
+      else if (step === 6) body.innerHTML = renderRoll(state.activeRoll || 'chengHuangMiao');
       else if (step === 7) body.innerHTML = renderDarkRoom();
 
       bindPhoneEvents();
@@ -680,35 +717,34 @@
     function updateOutput(step) {
       const out = document.getElementById('output');
       if (step === 6) {
+        const r = ROLLS.find(x => x.key === (state.activeRoll || 'chengHuangMiao')) || ROLLS[0];
+        const frames = r.files.slice(0, 6).map(f =>
+          `<div class="film-frame" style="background-image:url('${rollImg(r,f)}');background-size:cover;background-position:center"></div>`
+        ).join('');
         out.innerHTML = `
           <div class="filmstrip">
-            <div class="film-row">
-              <div class="film-frame" style="background:linear-gradient(135deg,#1a0a2a,#7a2a1a)"></div>
-              <div class="film-frame" style="background:linear-gradient(135deg,#3a1a2a,#ff5a3a)"></div>
-              <div class="film-frame" style="background:linear-gradient(135deg,#0a1a3a,#3a8aff)"></div>
-            </div>
+            <div class="film-row">${frames}</div>
             <div class="film-caption">
-              <strong>CINESTILL 800T</strong> · 36 张 · 已完成冲扫
+              <strong style="color:${r.color}">${r.name}</strong> · 共 ${r.files.length} 张 · 已完成冲扫
             </div>
-            <div style="font-size:11px;color:var(--muted);max-width:340px;line-height:1.6;text-align:center;">
-              Tungsten 灯光下偏冷，红色高光会晕染（halation）。<br>
-              夜景霓虹、室内人像的经典选择。
+            <div style="font-size:11px;color:var(--muted);max-width:420px;line-height:1.6;text-align:center;">
+              套用该卷胶片风格后的最终输出效果。点击左侧「07 Dark Room」可切换其他卷查看。
             </div>
           </div>
         `;
       } else if (step === 7) {
+        const total = ROLLS.reduce((s, r) => s + r.files.length, 0);
+        const thumbs = ROLLS.map(r =>
+          `<div class="film-frame" style="background-image:url('${rollImg(r, r.files[0])}');background-size:cover;background-position:center"></div>`
+        ).join('');
         out.innerHTML = `
           <div class="filmstrip">
-            <div class="film-row">
-              <div class="film-frame" style="background:linear-gradient(135deg,#1a4a2a,#3a8a4a)"></div>
-              <div class="film-frame" style="background:linear-gradient(135deg,#3a2a1a,#d4a85a)"></div>
-              <div class="film-frame" style="background:linear-gradient(135deg,#1a0a2a,#7a1a3a)"></div>
-            </div>
+            <div class="film-row">${thumbs}</div>
             <div class="film-caption">
-              <strong>Dark Room</strong> · 共 4 卷 · 共 126 张
+              <strong>Dark Room</strong> · 共 ${ROLLS.length} 卷 · 共 ${total} 张
             </div>
-            <div style="font-size:11px;color:var(--muted);max-width:340px;line-height:1.6;text-align:center;">
-              每卷独立冲扫，点入查看每张照片并支持「Save All」导出。
+            <div style="font-size:11px;color:var(--muted);max-width:420px;line-height:1.6;text-align:center;">
+              每卷独立冲扫。点击左侧某一卷即可进入查看该卷所有照片并预览输出效果。
             </div>
           </div>
         `;
@@ -746,7 +782,7 @@
       if (drb) drb.onclick = () => renderByStep(7);
       // Dark Room 卷轴 → 卷详情
       document.querySelectorAll('[data-roll]').forEach(item => {
-        item.onclick = () => renderByStep(6);
+        item.onclick = () => { state.activeRoll = item.dataset.roll; renderByStep(6); };
       });
     }
 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyConcepts · 概念原型库</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1f242e;
+      --border: #2a303c;
+      --text: #e6e9ef;
+      --muted: #8b93a3;
+      --accent: #6c8cff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 24px;
+    }
+    .hero { text-align: center; margin-bottom: 56px; }
+    .hero h1 {
+      font-size: 34px; font-weight: 700; margin: 0 0 12px;
+      letter-spacing: 0.02em;
+    }
+    .hero p {
+      font-size: 15px; color: var(--muted); margin: 0; max-width: 480px;
+      line-height: 1.7; margin: 0 auto;
+    }
+    .grid {
+      width: 100%; max-width: 760px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    }
+    .card__thumb {
+      height: 160px; border-radius: 10px;
+      background: linear-gradient(135deg, #2a1a10, #7a3a2a 60%, #ff7a59);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      position: relative;
+    }
+    .card__thumb::after {
+      content: "3h"; position: absolute; right: 14px; bottom: 10px;
+      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85);
+      letter-spacing: 0.1em;
+      background: rgba(0,0,0,0.35); padding: 3px 10px; border-radius: 999px;
+    }
+    .card__title { font-size: 18px; font-weight: 600; margin: 0; }
+    .card__meta {
+      font-size: 12px; color: var(--muted);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .card__status {
+      font-size: 11px; padding: 3px 9px; border-radius: 999px;
+      background: rgba(255, 122, 89, 0.15); color: #ff7a59;
+      border: 1px solid rgba(255, 122, 89, 0.3);
+    }
+    .card__desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin: 0; }
+    .card__arrow {
+      margin-top: auto; font-size: 13px; color: var(--accent);
+      display: flex; align-items: center; gap: 6px; font-weight: 600;
+    }
+    footer {
+      margin-top: 64px; font-size: 12px; color: var(--muted); text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>MyConcepts</h1>
+    <p>我的概念原型库。这里收集日常探索的产品概念与交互 Demo，点击卡片进入对应的原型演示。</p>
+  </div>
+
+  <main class="grid">
+    <a class="card" href="developing.html" target="_blank" rel="noopener">
+      <div class="card__thumb">📷</div>
+      <h2 class="card__title">冲扫 3 小时的意义</h2>
+      <div class="card__meta">
+        <span class="card__status">开发中</span>
+        <span>2026-08</span>
+        <span>AiKen 相机</span>
+      </div>
+      <p class="card__desc">
+        AiKen 是一台模拟胶卷体验的数码相机：每次最多拍 36 张，可选胶片风格，
+        随时「取出冲扫」让照片进入 Dark Room。本项目还原了选风格、环形进度、
+        冲扫、卷轴与 Dark Room 的完整交互，右侧可留言互动。
+      </p>
+      <span class="card__arrow">打开原型 →</span>
+    </a>
+  </main>
+
+  <footer>MyConcepts · 用概念去理解产品</footer>
+</body>
+</html>
