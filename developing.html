@@ -66,11 +66,10 @@
     }
     .stage__body {
       flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      display: flex;
       padding: 28px;
       overflow: auto;
+      align-items: stretch;
     }
     .card {
       background: var(--panel);
@@ -78,6 +77,13 @@
       border-radius: var(--radius);
       padding: 18px;
       display: flex; flex-direction: column;
+      flex: 1;
+    }
+    /* App 交互卡片：无标题，手机居中 */
+    .card--app {
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
     .card__title {
       font-size: 13px; color: var(--muted);
@@ -87,8 +93,11 @@
 
     /* ---------- 手机外壳 ---------- */
     .phone {
-      flex: 1;
-      min-height: 460px;
+      flex: 0 0 auto;
+      width: 390px;
+      min-width: 390px;
+      max-width: 390px;
+      aspect-ratio: 390 / 844;
       border-radius: 36px;
       padding: 8px;
       background: linear-gradient(155deg, var(--phone-frame-1), var(--phone-frame-2));
@@ -158,6 +167,8 @@
     }
     .film-title.cinestill { color: var(--red); }
     .film-title.gold { color: var(--yellow); }
+    .film-title.hp5 { color: #d1d5db; }
+    .film-title.velvia { color: #4ade80; }
     .film-title.dim { color: var(--app-muted); }
 
     /* 环形进度 */
@@ -166,7 +177,7 @@
       width: 200px; height: 200px;
       margin: 22px 0 26px;
     }
-    .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
     .ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 4; }
     .ring-fg {
       fill: none; stroke-width: 4; stroke-linecap: round;
@@ -216,6 +227,8 @@
     }
     .unload-btn.develop.cinestill { background: var(--red); }
     .unload-btn.develop.gold { background: var(--yellow); color: #000; }
+    .unload-btn.develop.hp5 { background: #d1d5db; color: #000; }
+    .unload-btn.develop.velvia { background: #4ade80; color: #000; }
     .unload-btn.develop:hover { filter: brightness(1.1); }
 
     /* ---------- 底部 Tab Bar ---------- */
@@ -224,6 +237,7 @@
       padding: 12px 0 16px;
       border-top: 1px solid #141414;
       margin-top: auto;
+      align-self: stretch; width: 100%;
       position: relative; z-index: 5;
     }
     .tab {
@@ -305,6 +319,8 @@
     }
     .film-card-name.cinestill { color: var(--red); }
     .film-card-name.gold { color: var(--yellow); }
+    .film-card-name.hp5 { color: #d1d5db; }
+    .film-card-name.velvia { color: #4ade80; }
     .film-card-exp {
       font-size: 9px; color: var(--app-muted);
       letter-spacing: 0.15em; font-weight: 700;
@@ -346,6 +362,8 @@
     }
     .film-select-btn.cinestill { background: var(--red); color: #fff; }
     .film-select-btn.gold { background: var(--yellow); color: #000; }
+    .film-select-btn.hp5 { background: #d1d5db; color: #000; }
+    .film-select-btn.velvia { background: #4ade80; color: #000; }
     .film-select-btn:hover { filter: brightness(1.1); }
     .film-select-btn:active { transform: scale(0.98); }
 
@@ -392,6 +410,8 @@
     }
     .strip-title .name.cinestill { color: var(--red); }
     .strip-title .name.gold { color: var(--yellow); }
+    .strip-title .name.hp5 { color: #d1d5db; }
+    .strip-title .name.velvia { color: #4ade80; }
     .strip-title .sub {
       font-size: 9px; color: var(--app-muted);
       margin-top: 4px; letter-spacing: 0.15em; font-weight: 700;
@@ -560,27 +580,6 @@
     .more-row:hover { color: var(--red); }
     .more-row-arrow { color: var(--app-muted); }
 
-    /* ---------- 右侧信息卡 ---------- */
-    .info-card { gap: 14px; }
-    .info-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
-    .info-value { font-weight: 600; }
-    .info-value.cinestill { color: var(--red); }
-    .info-value.gold { color: var(--yellow); }
-    .info-desc {
-      font-size: 13px; line-height: 1.65; color: var(--text);
-      opacity: 0.85;
-      padding: 12px;
-      background: var(--panel-2);
-      border-radius: 10px;
-      border-left: 3px solid var(--accent-2);
-    }
 
     /* ---------- 右半边：留言区 (1/3) ---------- */
     .comments { flex: 1; display: flex; flex-direction: column; background: var(--panel); overflow: hidden; }
@@ -657,8 +656,7 @@
       </div>
       <div class="stage__body">
         <!-- 手机交互 App -->
-        <div class="card">
-          <div class="card__title">App 交互预览 · 胶片相机</div>
+        <div class="card card--app">
           <div class="phone">
             <div class="phone__screen">
               <div class="phone__notch"></div>
@@ -861,25 +859,6 @@
           </div>
         </div>
 
-        <!-- 右侧信息卡 -->
-        <div class="card info-card">
-          <div class="card__title">当前状态</div>
-          <div class="info-row">
-            <span class="info-label">胶卷</span>
-            <span class="info-value" id="info-film">未装卷</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">已拍 / 总数</span>
-            <span class="info-value" id="info-shots">0 / 36</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">已保存胶卷</span>
-            <span class="info-value" id="info-rolls">0</span>
-          </div>
-          <div class="info-desc">
-            这是一个交互 Demo：点击顶部「选择风格」装入胶卷；点击中间数字拍摄，每点一次少一张；拍满 36 张或点下方「卸载并冲扫」即可查看成像。
-          </div>
-        </div>
       </div>
     </section>
 
@@ -913,9 +892,9 @@
       cat: 'cold',
       exp: '36 张',
       previews: [
-        ['linear-gradient(135deg, #1a3a52 0%, #c83737 60%, #2a1b3d 100%)'],
-        ['linear-gradient(180deg, #0a1f3d 0%, #4a2c5e 40%, #d63d3d 100%)'],
-        ['linear-gradient(45deg, #2d1b4e 0%, #5e3a6b 50%, #e94560 100%)']
+        'photos/日常/DSC_0673.jpg',
+        'photos/日常/DSC_0666.jpg',
+        'photos/日常/DSC_3840.jpg'
       ]
     },
     {
@@ -926,9 +905,35 @@
       cat: 'warm',
       exp: '36 张',
       previews: [
-        ['linear-gradient(135deg, #f4a261 0%, #e76f51 50%, #6b4423 100%)'],
-        ['linear-gradient(180deg, #d4a574 0%, #b8845f 50%, #5c3d2e 100%)'],
-        ['linear-gradient(45deg, #f6bd60 0%, #e07a5f 50%, #3d2c2e 100%)']
+        'photos/熟悉的地方/DSC_0180.jpg',
+        'photos/熟悉的地方/DSC_0183.jpg',
+        'photos/熟悉的地方/NIK_2009.jpg'
+      ]
+    },
+    {
+      id: 'hp5',
+      name: 'HP5 Plus',
+      cssClass: 'hp5',
+      tags: ['黑白', '高反差', '经典'],
+      cat: 'bw',
+      exp: '36 张',
+      previews: [
+        'photos/黑白/DSC_0440.jpg',
+        'photos/黑白/DSC_3546.jpg',
+        'photos/黑白/NIK_1940.jpg'
+      ]
+    },
+    {
+      id: 'velvia',
+      name: 'Velvia 50',
+      cssClass: 'velvia',
+      tags: ['高饱和', '风光', '鲜艳'],
+      cat: 'style',
+      exp: '36 张',
+      previews: [
+        'photos/城隍庙/DSC_0745.jpg',
+        'photos/城隍庙/DSC_0770.jpg',
+        'photos/城隍庙/DSC_0798.jpg'
       ]
     }
   ];
@@ -946,6 +951,18 @@
       ['#f6c90e', '#e07a5f', '#3d2c2e'],
       ['#d4a574', '#b8845f', '#5c3d2e'],
       ['#f6bd60', '#f7ede2', '#84a59d']
+    ],
+    hp5: [
+      ['#3a3a3a', '#9a9a9a', '#1a1a1a'],
+      ['#555555', '#b0b0b0', '#2a2a2a'],
+      ['#444444', '#8a8a8a', '#1e1e1e'],
+      ['#666666', '#cccccc', '#333333']
+    ],
+    velvia: [
+      ['#2d5a3d', '#f4a261', '#1a3a2e'],
+      ['#1a6b3a', '#e07a5f', '#0d2818'],
+      ['#3a7d44', '#f6bd60', '#1b3a2a'],
+      ['#2e8b57', '#e8c547', '#143d2a']
     ]
   };
 
@@ -957,16 +974,18 @@
     return `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
   }
 
-  // 暗房中的示例胶卷（首次访问时填充）
-  const SAMPLE_ROLLS = [
-    { film: 'velvia', cssClass: 'velvia', name: 'Velvia 50', shots: 36, firstSeed: 7,
-      dateStr: formatDate(new Date(2026, 4, 20)) },
-    { film: 'gold', cssClass: 'gold', name: 'GOLD 200', shots: 36, firstSeed: 13,
-      dateStr: formatDate(new Date(2026, 4, 20)) },
-    { film: 'cinestill', cssClass: 'cinestill', name: 'CINESTILL 800T', shots: 36, firstSeed: 22,
-      dateStr: formatDate(new Date(2026, 4, 20)) },
-    { film: 'hp5', cssClass: 'hp5', name: 'HP5 Plus', shots: 18, firstSeed: 3,
-      dateStr: formatDate(new Date(2026, 3, 4)) }
+  // 暗房列表 —— 来自 photos 文件夹，每个文件夹一卷胶卷
+  const PHOTO_ROLLS = [
+    { folder: '小五郎', film: 'cinestill', cssClass: 'cinestill', name: 'CINESTILL 800T', count: 34,
+      thumb: 'photos/小五郎/DSC_9035.jpg' },
+    { folder: '日常', film: 'cinestill', cssClass: 'cinestill', name: 'CINESTILL 800T', count: 18,
+      thumb: 'photos/日常/DSC_0673.jpg' },
+    { folder: '熟悉的地方', film: 'gold', cssClass: 'gold', name: 'GOLD 200', count: 18,
+      thumb: 'photos/熟悉的地方/DSC_0180.jpg' },
+    { folder: '城隍庙', film: 'velvia', cssClass: 'velvia', name: 'Velvia 50', count: 26,
+      thumb: 'photos/城隍庙/DSC_0745.jpg' },
+    { folder: '黑白', film: 'hp5', cssClass: 'hp5', name: 'HP5 Plus', count: 14,
+      thumb: 'photos/黑白/DSC_0440.jpg' }
   ];
 
   function formatDate(d) {
@@ -1011,9 +1030,9 @@
     if (s) state.shots = parseInt(s, 10) || 0;
     const r = localStorage.getItem(STORAGE.rolls);
     if (r) state.rolls = JSON.parse(r);
-    // 首次访问注入示例胶卷
+    // 首次访问用 photos 文件夹作为暗房预设
     if (!localStorage.getItem(STORAGE.sampleSeen)) {
-      state.rolls = SAMPLE_ROLLS.slice();
+      state.rolls = PHOTO_ROLLS.slice();
       localStorage.setItem(STORAGE.sampleSeen, '1');
       localStorage.setItem(STORAGE.rolls, JSON.stringify(state.rolls));
     }
@@ -1046,16 +1065,20 @@
     const remaining = 36 - state.shots;
     const countBtn = $('ring-count-btn');
     countBtn.textContent = String(remaining).padStart(2, '0');
-    // 只有装入胶卷且还有剩余才可点击拍摄
-    countBtn.disabled = !filmObj || remaining <= 0;
+    // 始终可点：未装卷→跳转选择，拍满→无操作
+    countBtn.disabled = false;
 
     const ratio = state.shots / 36;
     const offset = RING_CIRCUMFERENCE * (1 - ratio);
     const ringFg = $('ring-fg');
     ringFg.setAttribute('stroke-dashoffset', offset);
-    ringFg.style.stroke = filmObj
-      ? (filmObj.id === 'cinestill' ? '#ef4444' : '#fbbf24')
-      : '#333';
+    const RING_COLORS = {
+      cinestill: '#ef4444',
+      gold: '#fbbf24',
+      hp5: '#d1d5db',
+      velvia: '#4ade80'
+    };
+    ringFg.style.stroke = filmObj ? (RING_COLORS[filmObj.id] || '#fff') : '#333';
 
     const unloadBtn = $('unload-btn');
     const unloadLabel = $('unload-label');
@@ -1085,8 +1108,8 @@
     FILMS.forEach(film => {
       const card = document.createElement('div');
       card.className = 'film-card';
-      const previewsHTML = film.previews.map(arr =>
-        `<div class="film-preview" style="background:${arr[0]}"></div>`
+      const previewsHTML = film.previews.map(url =>
+        `<div class="film-preview" style="background-image:url(${url});background-size:cover;background-position:center"></div>`
       ).join('');
       card.innerHTML = `
         <div class="film-card-head">
@@ -1161,11 +1184,15 @@
     state.rolls.slice().reverse().forEach(roll => {
       const card = document.createElement('div');
       card.className = 'roll-card';
+      // 优先用照片缩略图，fallback 到色板
+      const thumbBg = roll.thumb
+        ? `background-image:url(${roll.thumb});background-size:cover;background-position:center`
+        : `background:${rollThumbStyle(roll.firstSeed || 1, roll.film)}`;
       card.innerHTML = `
-        <div class="roll-thumb" style="background:${rollThumbStyle(roll.firstSeed || 1, roll.film)}"></div>
+        <div class="roll-thumb" style="${thumbBg}"></div>
         <div class="roll-info">
           <div class="roll-name ${roll.cssClass}">${roll.name}</div>
-          <div class="roll-meta">${roll.shots} 张 · ${roll.dateStr}</div>
+          <div class="roll-meta">${roll.count || roll.shots} 张 · ${roll.dateStr}</div>
         </div>
         <div class="roll-arrow">›</div>
       `;
@@ -1173,18 +1200,8 @@
     });
   }
 
-  function renderInfo() {
-    const filmObj = state.film ? FILMS.find(f => f.id === state.film) : null;
-    const infoFilm = $('info-film');
-    infoFilm.textContent = filmObj ? filmObj.name : '未装卷';
-    infoFilm.className = 'info-value' + (filmObj ? ' ' + filmObj.cssClass : '');
-    $('info-shots').textContent = `${state.shots} / 36`;
-    $('info-rolls').textContent = String(state.rolls.length);
-  }
-
   function render() {
     renderCamera();
-    renderInfo();
   }
 
   // =================== 事件绑定 ===================
