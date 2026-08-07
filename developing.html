@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyConcepts · 开发中</title>
+  <title>MyConcepts · 等待3小时冲扫的意义</title>
   <style>
     :root {
       --bg: #0f1115;
@@ -17,14 +17,19 @@
       --radius: 14px;
 
       /* 胶片 App 主题色 */
-      --phone-frame: #c98765;
+      --phone-frame-1: #d49275;
       --phone-frame-2: #a06850;
-      --app-bg: #050505;
+      --app-bg: #000000;
       --app-text: #ffffff;
       --app-muted: #6c6c70;
+      --app-muted-2: #444444;
+      --app-card: #0a0a0a;
+      --app-border: #1a1a1a;
       --green: #4ade80;
       --red: #ef4444;
       --yellow: #fbbf24;
+      --velvia: #4ade80;
+      --hp5: #d1d5db;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
@@ -86,7 +91,7 @@
       min-height: 460px;
       border-radius: 36px;
       padding: 8px;
-      background: linear-gradient(155deg, var(--phone-frame), var(--phone-frame-2));
+      background: linear-gradient(155deg, var(--phone-frame-1), var(--phone-frame-2));
       box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.08);
       display: flex;
     }
@@ -101,146 +106,179 @@
     }
     .phone__notch {
       position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-      width: 100px; height: 24px;
+      width: 110px; height: 26px;
       background: #000; border-radius: 14px; z-index: 10;
     }
+
+    /* ---------- App 屏幕通用 ---------- */
+    .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+    .screen.hidden { display: none; }
 
     /* ---------- App 状态栏 ---------- */
     .status-bar {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 22px 8px;
-      font-size: 12px; font-weight: 600;
+      padding: 16px 22px 8px;
+      font-size: 13px; font-weight: 600;
       letter-spacing: 0.02em;
       position: relative; z-index: 5;
     }
-    .status-bar .right { display: flex; gap: 4px; align-items: center; }
-    .status-bar svg { width: 14px; height: 10px; }
-
-    /* ---------- App 屏幕通用 ---------- */
-    .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-    .screen.hidden { display: none; }
+    .status-bar .right { display: flex; gap: 6px; align-items: center; }
+    .status-bar svg { width: 16px; height: 11px; }
 
     /* ---------- 连接状态 ---------- */
     .conn {
-      display: flex; align-items: center; gap: 6px;
-      padding: 0 22px 14px;
-      font-size: 11px; font-weight: 600;
-      color: var(--app-muted); letter-spacing: 0.1em;
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 22px 14px;
+      font-size: 10px; font-weight: 700;
+      color: var(--app-muted); letter-spacing: 0.18em;
+      position: relative; z-index: 5;
     }
     .conn .dot {
       width: 7px; height: 7px; border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
     }
 
     /* ---------- 相机主屏 ---------- */
-    .camera-screen { padding: 0 22px; align-items: center; }
+    .camera-screen { align-items: center; }
+
+    /* 标题按钮（点击进入风格选择） */
+    .film-title-btn {
+      background: none; border: none; padding: 6px 22px;
+      font-family: inherit; cursor: pointer;
+      width: 100%; max-width: 280px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 5;
+    }
     .film-title {
-      font-size: 14px; font-weight: 700;
-      letter-spacing: 0.15em;
-      margin: 6px 0 26px;
+      font-size: 15px; font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--app-text);
       text-align: center;
-      min-height: 18px;
     }
     .film-title.cinestill { color: var(--red); }
     .film-title.gold { color: var(--yellow); }
+    .film-title.dim { color: var(--app-muted); }
+
+    /* 环形进度 */
     .ring-wrap {
       position: relative;
       width: 200px; height: 200px;
-      margin: 8px 0 28px;
+      margin: 22px 0 26px;
     }
     .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 6; }
+    .ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 4; }
     .ring-fg {
-      fill: none; stroke-width: 6; stroke-linecap: round;
+      fill: none; stroke-width: 4; stroke-linecap: round;
       transition: stroke-dashoffset 0.5s ease, stroke 0.3s;
     }
     .ring-center {
       position: absolute; inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
+      gap: 6px;
     }
     .ring-count {
       font-size: 56px; font-weight: 300; line-height: 1;
       letter-spacing: -0.02em;
+      background: none; border: none; color: var(--app-text);
+      font-family: inherit; padding: 4px 18px;
+      cursor: pointer; border-radius: 8px;
+      transition: background 0.15s;
     }
+    .ring-count:not(:disabled):hover { background: rgba(255,255,255,0.04); }
+    .ring-count:disabled { cursor: default; }
     .ring-label {
-      font-size: 10px; letter-spacing: 0.25em;
-      color: var(--app-muted); margin-top: 6px;
+      font-size: 9px; letter-spacing: 0.3em;
+      color: var(--app-muted); font-weight: 600;
     }
-    .shutter {
-      width: 100%; max-width: 220px;
-      padding: 14px;
-      background: #1a1a1a;
-      color: #555;
-      border: 1px solid #2a2a2a;
-      border-radius: 10px;
-      font-size: 12px; font-weight: 600;
-      letter-spacing: 0.15em;
+
+    /* 卸载按钮 */
+    .unload-btn {
+      width: 100%; max-width: 240px;
+      padding: 13px 18px;
+      background: #1a1a1a; color: #666;
+      border: none; border-radius: 10px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.2em;
       cursor: not-allowed;
-      transition: all 0.2s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: inherit;
+      transition: all 0.2s;
     }
-    .shutter.active {
-      background: #fff; color: #000;
-      border-color: #fff;
-      cursor: pointer;
+    .unload-btn svg { width: 13px; height: 13px; }
+    .unload-btn.ready {
+      background: #1a1a1a; color: #999; cursor: pointer;
     }
-    .shutter.active:hover { transform: translateY(-1px); }
-    .shutter.done {
-      background: var(--red); color: #fff; border-color: var(--red);
-      cursor: pointer;
+    .unload-btn.ready:hover { background: #222; }
+    .unload-btn.develop {
+      background: var(--red); color: #fff; cursor: pointer;
     }
-    .shutter.done:hover { filter: brightness(1.1); }
+    .unload-btn.develop.cinestill { background: var(--red); }
+    .unload-btn.develop.gold { background: var(--yellow); color: #000; }
+    .unload-btn.develop:hover { filter: brightness(1.1); }
 
     /* ---------- 底部 Tab Bar ---------- */
     .tab-bar {
       display: flex; justify-content: space-around;
-      padding: 14px 0 22px;
-      border-top: 1px solid #1a1a1a;
+      padding: 12px 0 16px;
+      border-top: 1px solid #141414;
       margin-top: auto;
+      position: relative; z-index: 5;
     }
     .tab {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
       background: none; border: none; color: var(--app-muted);
-      font-size: 10px; cursor: pointer;
+      font-size: 9px; cursor: pointer;
       transition: color 0.15s;
+      font-family: inherit; letter-spacing: 0.05em;
+      padding: 4px 10px;
     }
     .tab.active { color: var(--app-text); }
     .tab svg { width: 22px; height: 22px; }
     .tab:hover { color: var(--app-text); }
 
+    /* Home indicator */
+    .home-indicator {
+      width: 110px; height: 4px;
+      background: var(--app-text); opacity: 0.5;
+      border-radius: 2px;
+      margin: 0 auto 6px;
+    }
+
     /* ---------- 选胶卷屏 ---------- */
-    .select-screen { padding: 0 16px; }
+    .select-screen { padding: 0 0 0; }
     .select-header {
       display: flex; align-items: center; gap: 10px;
-      padding: 6px 6px 16px;
+      padding: 6px 6px 10px;
     }
     .back-btn {
-      width: 28px; height: 28px;
+      width: 32px; height: 32px;
       display: flex; align-items: center; justify-content: center;
       background: none; border: none; color: var(--app-text);
       cursor: pointer; border-radius: 50%;
+      font-family: inherit;
     }
     .back-btn:hover { background: #1a1a1a; }
     .select-tabs {
-      display: flex; gap: 16px;
-      padding: 0 6px 14px;
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.1em;
+      display: flex; gap: 20px;
+      padding: 4px 18px 14px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.18em;
       overflow-x: auto;
       scrollbar-width: none;
     }
     .select-tabs::-webkit-scrollbar { display: none; }
     .select-tab {
       color: var(--app-muted); cursor: pointer;
-      padding-bottom: 6px; white-space: nowrap;
+      padding-bottom: 8px; white-space: nowrap;
       border-bottom: 2px solid transparent;
+      font-family: inherit; background: none; border-top: none; border-left: none; border-right: none;
     }
     .select-tab.active { color: var(--app-text); border-bottom-color: var(--app-text); }
     .film-list {
       flex: 1; overflow-y: auto;
-      padding: 0 6px 8px;
+      padding: 4px 14px 8px;
       display: flex; flex-direction: column; gap: 14px;
       scrollbar-width: thin;
       scrollbar-color: #333 transparent;
@@ -248,8 +286,8 @@
     .film-list::-webkit-scrollbar { width: 4px; }
     .film-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .film-card {
-      background: #0f0f0f;
-      border: 1px solid #1a1a1a;
+      background: var(--app-card);
+      border: 1px solid var(--app-border);
       border-radius: 12px;
       padding: 14px;
       transition: border-color 0.2s;
@@ -260,22 +298,23 @@
       margin-bottom: 10px;
     }
     .film-card-name {
-      font-size: 18px; font-weight: 800;
+      font-size: 19px; font-weight: 800;
       letter-spacing: 0.04em;
       line-height: 1.1;
+      font-family: 'Courier New', monospace;
     }
     .film-card-name.cinestill { color: var(--red); }
     .film-card-name.gold { color: var(--yellow); }
     .film-card-exp {
       font-size: 9px; color: var(--app-muted);
-      letter-spacing: 0.1em; font-weight: 600;
+      letter-spacing: 0.15em; font-weight: 700;
     }
     .film-tags { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
     .film-tag {
-      font-size: 9px; padding: 3px 8px;
+      font-size: 9px; padding: 4px 9px;
       border-radius: 4px;
-      background: #1a1a1a; color: var(--app-muted);
-      letter-spacing: 0.08em; font-weight: 600;
+      background: #1a1a1a; color: #999;
+      letter-spacing: 0.12em; font-weight: 700;
     }
     .film-previews {
       display: grid; grid-template-columns: repeat(3, 1fr);
@@ -285,14 +324,25 @@
       aspect-ratio: 1;
       border-radius: 4px;
       background-size: cover; background-position: center;
+      position: relative; overflow: hidden;
+    }
+    .film-preview::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.08) 0%,
+        rgba(0,0,0,0.2) 50%,
+        rgba(0,0,0,0.4) 100%);
     }
     .film-select-btn {
-      width: 100%; padding: 10px;
+      width: 100%; padding: 11px;
       border: none; border-radius: 6px;
       font-size: 11px; font-weight: 700;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.2em;
       cursor: pointer;
       transition: filter 0.15s, transform 0.1s;
+      font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .film-select-btn.cinestill { background: var(--red); color: #fff; }
     .film-select-btn.gold { background: var(--yellow); color: #000; }
@@ -305,7 +355,7 @@
       padding: 0 22px;
     }
     .develop-anim {
-      width: 120px; height: 120px;
+      width: 100px; height: 100px;
       border-radius: 50%;
       background: conic-gradient(from 0deg, transparent, var(--red));
       animation: spin 1s linear infinite;
@@ -318,32 +368,33 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .develop-text {
-      font-size: 13px; letter-spacing: 0.2em;
-      color: var(--app-muted); font-weight: 600;
+      font-size: 12px; letter-spacing: 0.3em;
+      color: var(--app-text); font-weight: 700;
     }
     .develop-sub {
-      font-size: 11px; color: #444;
-      margin-top: 6px; letter-spacing: 0.15em;
+      font-size: 10px; color: var(--app-muted);
+      margin-top: 10px; letter-spacing: 0.18em; font-weight: 600;
     }
 
     /* ---------- 胶卷条屏 ---------- */
-    .strip-screen { padding: 0 12px; }
+    .strip-screen { padding: 0 14px; }
     .strip-header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 10px 12px;
+      padding: 4px 6px 10px;
     }
     .strip-title {
       text-align: center; flex: 1;
     }
     .strip-title .name {
       font-size: 13px; font-weight: 700;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.18em;
+      font-family: 'Courier New', monospace;
     }
     .strip-title .name.cinestill { color: var(--red); }
     .strip-title .name.gold { color: var(--yellow); }
     .strip-title .sub {
-      font-size: 10px; color: var(--app-muted);
-      margin-top: 2px; letter-spacing: 0.05em;
+      font-size: 9px; color: var(--app-muted);
+      margin-top: 4px; letter-spacing: 0.15em; font-weight: 700;
     }
     .strip-empty {
       width: 24px; height: 24px;
@@ -353,8 +404,8 @@
     }
     .strip-list {
       flex: 1; overflow-y: auto;
-      padding: 0 4px 12px;
-      display: flex; flex-direction: column; gap: 8px;
+      padding: 4px 4px 6px;
+      display: flex; flex-direction: column; gap: 6px;
       scrollbar-width: thin;
       scrollbar-color: #333 transparent;
     }
@@ -362,40 +413,45 @@
     .strip-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .strip-row {
       display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+      gap: 6px;
       background: #0a0a0a;
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 6px 8px;
       position: relative;
     }
-    .strip-row::before, .strip-row::after {
-      content: ''; position: absolute;
-      top: 0; bottom: 0; width: 2px;
-      background: linear-gradient(to bottom,
-        #1a1a1a 0%, #1a1a1a 30%, transparent 30%,
-        transparent 70%, #1a1a1a 70%, #1a1a1a 100%);
-    }
-    .strip-row::before { left: 3px; }
-    .strip-row::after { right: 3px; }
     .frame {
       aspect-ratio: 3/2;
-      border-radius: 3px;
+      border-radius: 2px;
       background-size: cover; background-position: center;
       position: relative;
       overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 4px 4px 2px;
     }
-    .frame::after {
-      content: attr(data-label);
-      position: absolute; bottom: 3px; left: 4px;
-      font-size: 8px; font-weight: 700;
-      color: rgba(255,255,255,0.85);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    .frame-top {
+      font-size: 6px; color: rgba(255,255,255,0.4);
+      font-family: 'Courier New', monospace;
       letter-spacing: 0.05em;
+      line-height: 1;
+      white-space: nowrap; overflow: hidden;
     }
-    .frame.empty { background: #1a1a1a; }
-    .frame.empty::after { color: #444; text-shadow: none; }
+    .frame-bottom {
+      font-size: 7px; font-weight: 700;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+      align-self: flex-end;
+    }
+    .frame.empty {
+      background: #141414;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0;
+    }
+    .frame.empty .frame-top,
+    .frame.empty .frame-bottom { display: none; }
     .save-all-btn {
-      margin: 0 auto 14px;
+      margin: 10px auto 14px;
       padding: 10px 22px;
       background: #fff; color: #000;
       border: none; border-radius: 999px;
@@ -403,8 +459,9 @@
       letter-spacing: 0.1em;
       cursor: pointer;
       display: flex; align-items: center; gap: 6px;
-      box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+      box-shadow: 0 4px 20px rgba(255,255,255,0.2);
       transition: transform 0.1s;
+      font-family: inherit;
     }
     .save-all-btn:hover { transform: translateY(-1px); }
     .save-all-btn svg { width: 12px; height: 12px; }
@@ -413,18 +470,19 @@
     .darkroom-screen { padding: 0 14px; }
     .darkroom-header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 8px 14px;
-      font-size: 12px; letter-spacing: 0.1em; font-weight: 600;
+      padding: 6px 4px 14px;
     }
     .darkroom-select-btn {
       background: none; border: none;
-      color: var(--app-muted); font-size: 12px;
-      cursor: pointer; letter-spacing: 0.1em; font-weight: 600;
+      color: var(--app-muted); font-size: 11px;
+      cursor: pointer; letter-spacing: 0.18em; font-weight: 700;
+      font-family: inherit;
+      padding: 6px 4px;
     }
     .darkroom-select-btn:hover { color: var(--app-text); }
     .darkroom-list {
       flex: 1; overflow-y: auto;
-      padding: 0 4px 12px;
+      padding: 0 4px 8px;
       display: flex; flex-direction: column; gap: 10px;
       scrollbar-width: thin;
       scrollbar-color: #333 transparent;
@@ -433,42 +491,74 @@
     .darkroom-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .roll-card {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 12px;
-      background: #0f0f0f;
-      border: 1px solid #1a1a1a;
-      border-radius: 10px;
+      padding: 10px 14px;
+      background: var(--app-card);
+      border: 1px solid var(--app-border);
+      border-radius: 12px;
       cursor: pointer;
       transition: border-color 0.2s, transform 0.1s;
     }
     .roll-card:hover { border-color: #2a2a2a; transform: translateY(-1px); }
     .roll-thumb {
-      width: 60px; height: 44px;
+      width: 64px; height: 48px;
       border-radius: 6px;
       background-size: cover; background-position: center;
       flex-shrink: 0;
+      position: relative; overflow: hidden;
+    }
+    .roll-thumb::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.08) 0%,
+        rgba(0,0,0,0.3) 100%);
     }
     .roll-info { flex: 1; min-width: 0; }
     .roll-name {
       font-size: 14px; font-weight: 700;
       letter-spacing: 0.04em;
+      font-family: 'Courier New', monospace;
     }
     .roll-name.cinestill { color: var(--red); }
     .roll-name.gold { color: var(--yellow); }
-    .roll-name.velvia { color: #4ade80; }
-    .roll-name.hp5 { color: #d1d5db; }
+    .roll-name.velvia { color: var(--velvia); }
+    .roll-name.hp5 { color: var(--hp5); }
     .roll-meta {
       font-size: 10px; color: var(--app-muted);
-      margin-top: 3px; letter-spacing: 0.04em;
+      margin-top: 4px; letter-spacing: 0.08em; font-weight: 600;
     }
-    .roll-arrow { color: var(--app-muted); font-size: 16px; }
+    .roll-arrow { color: var(--app-muted); font-size: 18px; font-weight: 300; }
     .darkroom-empty {
       flex: 1;
       display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 8px;
-      color: var(--app-muted); font-size: 12px;
-      letter-spacing: 0.1em;
+      flex-direction: column; gap: 12px;
+      color: var(--app-muted); font-size: 11px;
+      letter-spacing: 0.2em; font-weight: 700;
+      padding: 40px 20px;
+      text-align: center;
     }
-    .darkroom-empty svg { width: 48px; height: 48px; opacity: 0.4; }
+    .darkroom-empty svg { width: 40px; height: 40px; opacity: 0.3; }
+
+    /* ---------- More 屏 ---------- */
+    .more-screen {
+      padding: 0 18px;
+      align-items: stretch;
+    }
+    .more-section { padding: 12px 0; }
+    .more-section-title {
+      font-size: 10px; color: var(--app-muted);
+      letter-spacing: 0.2em; font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .more-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--app-border);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .more-row:hover { color: var(--red); }
+    .more-row-arrow { color: var(--app-muted); }
 
     /* ---------- 右侧信息卡 ---------- */
     .info-card { gap: 14px; }
@@ -582,8 +672,12 @@
                     <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
                   </div>
                 </div>
-                <div class="conn"><span class="dot"></span><span>CONNECTED</span></div>
-                <div class="film-title" id="film-title"></div>
+                <div class="conn"><span class="dot"></span><span>已连接</span></div>
+
+                <button class="film-title-btn" id="film-title-btn">
+                  <span class="film-title dim" id="film-title">选择风格</span>
+                </button>
+
                 <div class="ring-wrap">
                   <svg viewBox="0 0 200 200">
                     <circle class="ring-bg" cx="100" cy="100" r="94"/>
@@ -591,36 +685,39 @@
                       stroke-dasharray="590" stroke-dashoffset="590"/>
                   </svg>
                   <div class="ring-center">
-                    <div class="ring-count" id="ring-count">36</div>
-                    <div class="ring-label">LEFT</div>
+                    <button class="ring-count" id="ring-count-btn">36</button>
+                    <div class="ring-label">剩余</div>
                   </div>
                 </div>
-                <button class="shutter" id="shutter-btn" disabled>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M12 4v16M4 12h16"/>
+
+                <button class="unload-btn" id="unload-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 4v12M7 11l5 5 5-5M5 20h14"/>
                   </svg>
-                  <span id="shutter-label">SELECT A FILM FIRST</span>
+                  <span id="unload-label">提前卸载</span>
                 </button>
+
                 <nav class="tab-bar">
                   <button class="tab active" data-tab="camera">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
                     </svg>
-                    Camera
+                    相机
                   </button>
                   <button class="tab" data-tab="darkroom">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
                     </svg>
-                    Dark Room
+                    暗房
                   </button>
                   <button class="tab" data-tab="more">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M4 7h16M4 12h16M4 17h16"/>
                     </svg>
-                    More
+                    更多
                   </button>
                 </nav>
+                <div class="home-indicator"></div>
               </div>
 
               <!-- 屏幕 2: 选胶卷 -->
@@ -638,22 +735,23 @@
                   </button>
                 </div>
                 <div class="select-tabs">
-                  <div class="select-tab active" data-cat="all">ALL</div>
-                  <div class="select-tab" data-cat="bw">B&amp;W</div>
-                  <div class="select-tab" data-cat="warm">WARM</div>
-                  <div class="select-tab" data-cat="cold">COLD</div>
-                  <div class="select-tab" data-cat="style">STYLE</div>
+                  <button class="select-tab active" data-cat="all">全部</button>
+                  <button class="select-tab" data-cat="bw">黑白</button>
+                  <button class="select-tab" data-cat="warm">暖调</button>
+                  <button class="select-tab" data-cat="cold">冷调</button>
+                  <button class="select-tab" data-cat="style">风格</button>
                 </div>
                 <div class="film-list" id="film-list">
                   <!-- 动态生成 -->
                 </div>
+                <div class="home-indicator"></div>
               </div>
 
               <!-- 屏幕 3: 冲扫中 -->
               <div class="screen develop-screen hidden" id="screen-develop">
                 <div class="develop-anim"></div>
-                <div class="develop-text" id="develop-text">DEVELOPING</div>
-                <div class="develop-sub">UNLOADING FILM · 36 FRAMES</div>
+                <div class="develop-text" id="develop-text">冲扫中</div>
+                <div class="develop-sub" id="develop-sub">卸载胶卷 · 36 张</div>
               </div>
 
               <!-- 屏幕 4: 胶卷条 -->
@@ -671,15 +769,16 @@
                   </button>
                   <div class="strip-title">
                     <div class="name" id="strip-film-name">CINESTILL 800T</div>
-                    <div class="sub" id="strip-frame-count">36 Frames</div>
+                    <div class="sub" id="strip-frame-count">36 张</div>
                   </div>
-                  <div style="width:28px"></div>
+                  <div style="width:32px"></div>
                 </div>
                 <div class="strip-list" id="strip-list"></div>
                 <button class="save-all-btn" id="save-all-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16M4 12h16"/></svg>
-                  Save All
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v12M7 11l5 5 5-5"/></svg>
+                  全部保存
                 </button>
+                <div class="home-indicator"></div>
               </div>
 
               <!-- 屏幕 5: 暗房列表 -->
@@ -695,35 +794,68 @@
                   <button class="back-btn" data-action="back-to-camera">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
                   </button>
-                  <button class="darkroom-select-btn">Select</button>
+                  <button class="darkroom-select-btn">选择</button>
                 </div>
                 <div class="darkroom-list" id="darkroom-list"></div>
                 <nav class="tab-bar">
                   <button class="tab" data-tab="camera">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
                     </svg>
-                    Camera
+                    相机
                   </button>
                   <button class="tab active" data-tab="darkroom">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
                     </svg>
-                    Dark Room
+                    暗房
                   </button>
                   <button class="tab" data-tab="more">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M4 7h16M4 12h16M4 17h16"/>
                     </svg>
-                    More
+                    更多
                   </button>
                 </nav>
+                <div class="home-indicator"></div>
               </div>
 
-              <!-- 屏幕 6: More 占位 -->
-              <div class="screen develop-screen hidden" id="screen-more">
-                <div class="develop-text">MORE</div>
-                <div class="develop-sub">Coming soon</div>
+              <!-- 屏幕 6: More -->
+              <div class="screen more-screen hidden" id="screen-more">
+                <div class="status-bar">
+                  <span>9:41</span>
+                  <div class="right">
+                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
+                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
+                  </div>
+                </div>
+                <div class="more-section">
+                  <div class="more-section-title">设置</div>
+                  <div class="more-row"><span>通知</span><span class="more-row-arrow">›</span></div>
+                  <div class="more-row"><span>外观</span><span class="more-row-arrow">›</span></div>
+                  <div class="more-row"><span>关于</span><span class="more-row-arrow">›</span></div>
+                </div>
+                <nav class="tab-bar">
+                  <button class="tab" data-tab="camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    相机
+                  </button>
+                  <button class="tab" data-tab="darkroom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
+                    </svg>
+                    暗房
+                  </button>
+                  <button class="tab active" data-tab="more">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                    更多
+                  </button>
+                </nav>
+                <div class="home-indicator"></div>
               </div>
             </div>
           </div>
@@ -745,7 +877,7 @@
             <span class="info-value" id="info-rolls">0</span>
           </div>
           <div class="info-desc">
-            这是一个交互 Demo：装入胶卷、按 36 次快门、冲扫后查看成像。所有数据保存在浏览器 localStorage。
+            这是一个交互 Demo：点击顶部「选择风格」装入胶卷；点击中间数字拍摄，每点一次少一张；拍满 36 张或点下方「卸载并冲扫」即可查看成像。
           </div>
         </div>
       </div>
@@ -777,63 +909,97 @@
       id: 'cinestill',
       name: 'CINESTILL 800T',
       cssClass: 'cinestill',
-      tags: ['TUNGSTEN', 'HALATION', 'COLD'],
+      tags: ['钨丝灯', '光晕', '冷调'],
       cat: 'cold',
-      exp: '36 EXP',
-      previews: ['cinestill-1', 'cinestill-2', 'cinestill-3']
+      exp: '36 张',
+      previews: [
+        ['linear-gradient(135deg, #1a3a52 0%, #c83737 60%, #2a1b3d 100%)'],
+        ['linear-gradient(180deg, #0a1f3d 0%, #4a2c5e 40%, #d63d3d 100%)'],
+        ['linear-gradient(45deg, #2d1b4e 0%, #5e3a6b 50%, #e94560 100%)']
+      ]
     },
     {
       id: 'gold',
       name: 'GOLD 200',
       cssClass: 'gold',
-      tags: ['WARM', 'VINTAGE', 'CLASSIC'],
+      tags: ['暖调', '复古', '经典'],
       cat: 'warm',
-      exp: '36 EXP',
-      previews: ['gold-1', 'gold-2', 'gold-3']
+      exp: '36 张',
+      previews: [
+        ['linear-gradient(135deg, #f4a261 0%, #e76f51 50%, #6b4423 100%)'],
+        ['linear-gradient(180deg, #d4a574 0%, #b8845f 50%, #5c3d2e 100%)'],
+        ['linear-gradient(45deg, #f6bd60 0%, #e07a5f 50%, #3d2c2e 100%)']
+      ]
     }
   ];
 
-  // 为不同胶卷生成不同色调的"样片"和"胶卷帧"
+  // 不同胶卷的色彩调色板（用于胶卷帧样片）
+  const FILM_PALETTES = {
+    cinestill: [
+      ['#0a1f3d', '#e94560', '#1a1a2e'],
+      ['#16213e', '#ff6b6b', '#533483'],
+      ['#1a3a52', '#c83737', '#2a1b3d'],
+      ['#2d1b4e', '#e94560', '#0f3460']
+    ],
+    gold: [
+      ['#f4a261', '#e76f51', '#264653'],
+      ['#f6c90e', '#e07a5f', '#3d2c2e'],
+      ['#d4a574', '#b8845f', '#5c3d2e'],
+      ['#f6bd60', '#f7ede2', '#84a59d']
+    ]
+  };
+
   function previewStyle(seed, filmId) {
-    const palettes = {
-      cinestill: [
-        ['#1a1a2e', '#e94560', '#0f3460'],
-        ['#16213e', '#e94560', '#533483'],
-        ['#1a1a2e', '#ff6b6b', '#2d4059']
-      ],
-      gold: [
-        ['#f6c90e', '#e07a5f', '#3d2c2e'],
-        ['#f4a261', '#e76f51', '#264653'],
-        ['#f6bd60', '#f7ede2', '#84a59d']
-      ]
-    };
-    const palette = palettes[filmId] || palettes.cinestill;
+    const palette = FILM_PALETTES[filmId] || FILM_PALETTES.cinestill;
     const idx = seed % palette.length;
     const [c1, c2, c3] = palette[idx];
-    // 不同角度的渐变，模拟不同场景
     const angle = (seed * 47) % 360;
     return `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
   }
 
-  const SAMPLE_PREVIEWS = {};
-  FILMS.forEach(f => {
-    SAMPLE_PREVIEWS[f.id] = [];
-    for (let i = 0; i < 3; i++) {
-      SAMPLE_PREVIEWS[f.id].push(previewStyle(i + 1, f.id));
-    }
-  });
+  // 暗房中的示例胶卷（首次访问时填充）
+  const SAMPLE_ROLLS = [
+    { film: 'velvia', cssClass: 'velvia', name: 'Velvia 50', shots: 36, firstSeed: 7,
+      dateStr: formatDate(new Date(2026, 4, 20)) },
+    { film: 'gold', cssClass: 'gold', name: 'GOLD 200', shots: 36, firstSeed: 13,
+      dateStr: formatDate(new Date(2026, 4, 20)) },
+    { film: 'cinestill', cssClass: 'cinestill', name: 'CINESTILL 800T', shots: 36, firstSeed: 22,
+      dateStr: formatDate(new Date(2026, 4, 20)) },
+    { film: 'hp5', cssClass: 'hp5', name: 'HP5 Plus', shots: 18, firstSeed: 3,
+      dateStr: formatDate(new Date(2026, 3, 4)) }
+  ];
+
+  function formatDate(d) {
+    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    return `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日`;
+  }
+
+  // 暗房列表中也用对应的视觉色板
+  const ROLL_THUMB_PALETTE = {
+    velvia: [['#2d5a3d', '#f4a261', '#1a3a2e']],
+    gold: [['#f4a261', '#e76f51', '#6b4423']],
+    cinestill: [['#1a3a52', '#e94560', '#2a1b3d']],
+    hp5: [['#3a3a3a', '#9a9a9a', '#1a1a1a']]
+  };
+  function rollThumbStyle(seed, filmId) {
+    const palette = ROLL_THUMB_PALETTE[filmId] || ROLL_THUMB_PALETTE.cinestill;
+    const [c1, c2, c3] = palette[0];
+    const angle = (seed * 31) % 360;
+    return `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+  }
 
   const STORAGE = {
     film: 'mc_film',
     shots: 'mc_shots',
-    rolls: 'mc_rolls'
+    rolls: 'mc_rolls',
+    sampleSeen: 'mc_sample_seen'
   };
 
   const state = {
     film: null,
     shots: 0,
     rolls: [],
-    screen: 'camera', // camera | select | develop | strip | darkroom | more
+    screen: 'camera',
     activeCat: 'all'
   };
 
@@ -845,6 +1011,12 @@
     if (s) state.shots = parseInt(s, 10) || 0;
     const r = localStorage.getItem(STORAGE.rolls);
     if (r) state.rolls = JSON.parse(r);
+    // 首次访问注入示例胶卷
+    if (!localStorage.getItem(STORAGE.sampleSeen)) {
+      state.rolls = SAMPLE_ROLLS.slice();
+      localStorage.setItem(STORAGE.sampleSeen, '1');
+      localStorage.setItem(STORAGE.rolls, JSON.stringify(state.rolls));
+    }
   } catch (e) {}
 
   const $ = (id) => document.getElementById(id);
@@ -868,11 +1040,14 @@
   function renderCamera() {
     const filmObj = state.film ? FILMS.find(f => f.id === state.film) : null;
     const title = $('film-title');
-    title.textContent = filmObj ? filmObj.name.toUpperCase() : 'SELECT A STYLE';
-    title.className = 'film-title' + (filmObj ? ' ' + filmObj.cssClass : '');
+    title.textContent = filmObj ? filmObj.name : '选择风格';
+    title.className = 'film-title' + (filmObj ? ' ' + filmObj.cssClass : ' dim');
 
     const remaining = 36 - state.shots;
-    $('ring-count').textContent = String(remaining).padStart(2, '0');
+    const countBtn = $('ring-count-btn');
+    countBtn.textContent = String(remaining).padStart(2, '0');
+    // 只有装入胶卷且还有剩余才可点击拍摄
+    countBtn.disabled = !filmObj || remaining <= 0;
 
     const ratio = state.shots / 36;
     const offset = RING_CIRCUMFERENCE * (1 - ratio);
@@ -880,22 +1055,22 @@
     ringFg.setAttribute('stroke-dashoffset', offset);
     ringFg.style.stroke = filmObj
       ? (filmObj.id === 'cinestill' ? '#ef4444' : '#fbbf24')
-      : '#444';
+      : '#333';
 
-    const shutter = $('shutter-btn');
-    const label = $('shutter-label');
-    shutter.classList.remove('active', 'done');
+    const unloadBtn = $('unload-btn');
+    const unloadLabel = $('unload-label');
+    unloadBtn.classList.remove('ready', 'develop');
     if (!filmObj) {
-      shutter.disabled = true;
-      label.textContent = 'SELECT A FILM FIRST';
+      unloadBtn.disabled = true;
+      unloadLabel.textContent = '提前卸载';
     } else if (state.shots >= 36) {
-      shutter.disabled = false;
-      shutter.classList.add('done');
-      label.textContent = 'UNLOAD & DEVELOP';
+      unloadBtn.disabled = false;
+      unloadBtn.classList.add('develop', filmObj.cssClass);
+      unloadLabel.textContent = '卸载并冲扫';
     } else {
-      shutter.disabled = false;
-      shutter.classList.add('active');
-      label.textContent = `TAKE SHOT · ${36 - state.shots} LEFT`;
+      unloadBtn.disabled = false;
+      unloadBtn.classList.add('ready');
+      unloadLabel.textContent = '提前卸载';
     }
 
     // tab 高亮
@@ -910,6 +1085,9 @@
     FILMS.forEach(film => {
       const card = document.createElement('div');
       card.className = 'film-card';
+      const previewsHTML = film.previews.map(arr =>
+        `<div class="film-preview" style="background:${arr[0]}"></div>`
+      ).join('');
       card.innerHTML = `
         <div class="film-card-head">
           <div class="film-card-name ${film.cssClass}">${film.name}</div>
@@ -918,10 +1096,11 @@
         <div class="film-tags">
           ${film.tags.map(t => `<span class="film-tag">${t}</span>`).join('')}
         </div>
-        <div class="film-previews">
-          ${SAMPLE_PREVIEWS[film.id].map(bg => `<div class="film-preview" style="background:${bg}"></div>`).join('')}
-        </div>
-        <button class="film-select-btn ${film.cssClass}" data-film="${film.id}">SELECT &gt;</button>
+        <div class="film-previews">${previewsHTML}</div>
+        <button class="film-select-btn ${film.cssClass}" data-film="${film.id}">
+          选择
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
       `;
       list.appendChild(card);
     });
@@ -932,7 +1111,7 @@
     const filmObj = FILMS.find(f => f.id === state.film);
     $('strip-film-name').textContent = filmObj.name;
     $('strip-film-name').className = 'name ' + filmObj.cssClass;
-    $('strip-frame-count').textContent = `${state.shots} Frames`;
+    $('strip-frame-count').textContent = `${state.shots} 张`;
 
     const list = $('strip-list');
     list.innerHTML = '';
@@ -944,14 +1123,18 @@
       for (let i = 0; i < 3; i++) {
         const idx = r * 3 + i;
         const taken = idx < state.shots;
-        const labelNum = String(r + 1).padStart(2, '0');
-        const labelLetter = ['A', '', 'B'][i] || '';
-        const label = `${labelNum}${labelLetter}`;
+        const mainNum = String(idx + 1).padStart(2, '0');
+        const halfNum = `${mainNum}A`;
+        // 用奇数帧放主编号、偶数帧放 A 编号，模拟 Figma 06 的双编号样式
+        const label = (i === 0) ? mainNum : (i === 1 ? halfNum : mainNum);
         const frame = document.createElement('div');
         frame.className = 'frame' + (taken ? '' : ' empty');
-        frame.setAttribute('data-label', label);
         if (taken) {
-          frame.style.background = previewStyle(idx, state.film);
+          frame.style.background = previewStyle(idx + 1, state.film);
+          frame.innerHTML = `
+            <div class="frame-top">${mainNum}${filmObj.name.split(' ')[0]}</div>
+            <div class="frame-bottom">${label}</div>
+          `;
         }
         row.appendChild(frame);
       }
@@ -979,10 +1162,10 @@
       const card = document.createElement('div');
       card.className = 'roll-card';
       card.innerHTML = `
-        <div class="roll-thumb" style="background:${previewStyle(roll.firstSeed || 1, roll.film)}"></div>
+        <div class="roll-thumb" style="background:${rollThumbStyle(roll.firstSeed || 1, roll.film)}"></div>
         <div class="roll-info">
           <div class="roll-name ${roll.cssClass}">${roll.name}</div>
-          <div class="roll-meta">${roll.shots} EXP · ${roll.dateStr}</div>
+          <div class="roll-meta">${roll.shots} 张 · ${roll.dateStr}</div>
         </div>
         <div class="roll-arrow">›</div>
       `;
@@ -1004,18 +1187,21 @@
     renderInfo();
   }
 
-  // === 事件绑定 ===
-  // 主屏快门
-  $('shutter-btn').addEventListener('click', () => {
+  // =================== 事件绑定 ===================
+
+  // 顶部标题 → 进入风格选择
+  $('film-title-btn').addEventListener('click', () => {
+    showScreen('select');
+  });
+
+  // 拍摄：点击进度圈中间的数字
+  function takeShot() {
     if (!state.film) {
+      // 未装卷：跳到选择页
       showScreen('select');
       return;
     }
-    if (state.shots >= 36) {
-      developFilm();
-      return;
-    }
-    // 拍一张
+    if (state.shots >= 36) return;
     state.shots += 1;
     save();
     render();
@@ -1023,18 +1209,24 @@
     const flash = document.createElement('div');
     Object.assign(flash.style, {
       position: 'fixed', inset: '0',
-      background: '#fff', opacity: '0.6',
+      background: '#fff', opacity: '0.7',
       pointerEvents: 'none', zIndex: '9999',
-      transition: 'opacity 0.2s'
+      transition: 'opacity 0.18s'
     });
     document.body.appendChild(flash);
     requestAnimationFrame(() => { flash.style.opacity = '0'; });
-    setTimeout(() => flash.remove(), 220);
+    setTimeout(() => flash.remove(), 200);
 
     if (state.shots >= 36) {
-      // 自动进入冲扫提示
-      setTimeout(() => developFilm(), 400);
+      setTimeout(() => developFilm(), 350);
     }
+  }
+  $('ring-count-btn').addEventListener('click', takeShot);
+
+  // 卸载 / 冲扫按钮
+  $('unload-btn').addEventListener('click', () => {
+    if (!state.film) return;
+    developFilm();
   });
 
   // 选胶卷返回
@@ -1048,7 +1240,6 @@
       document.querySelectorAll('.select-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       state.activeCat = tab.dataset.cat;
-      // 简单过滤
       const cards = document.querySelectorAll('.film-card');
       cards.forEach(c => {
         const filmId = c.querySelector('[data-film]').dataset.film;
@@ -1059,11 +1250,12 @@
     });
   });
 
-  // 选胶卷 - 选择按钮 (事件委托)
+  // 选胶卷 - 选择按钮
   $('film-list').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-film]');
     if (!btn) return;
     state.film = btn.dataset.film;
+    state.shots = 0; // 装入新胶卷清零
     save();
     showScreen('camera');
     render();
@@ -1074,7 +1266,6 @@
     tab.addEventListener('click', () => {
       const target = tab.dataset.tab;
       if (target === 'camera') {
-        if (state.screen === 'camera') return;
         showScreen('camera');
         render();
       } else if (target === 'darkroom') {
@@ -1091,7 +1282,10 @@
 
   // 冲扫流程
   function developFilm() {
-    if (state.shots === 0) return;
+    if (!state.film || state.shots === 0) return;
+    const filmObj = FILMS.find(f => f.id === state.film);
+    const sub = $('develop-sub');
+    sub.textContent = `卸载胶卷 · ${state.shots} 张`;
     showScreen('develop');
     setTimeout(() => {
       showScreen('strip');
@@ -1103,16 +1297,13 @@
   $('save-all-btn').addEventListener('click', () => {
     if (!state.film || state.shots === 0) return;
     const filmObj = FILMS.find(f => f.id === state.film);
-    const now = new Date();
-    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const dateStr = `${monthNames[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
     state.rolls.push({
       film: state.film,
       cssClass: filmObj.cssClass,
       name: filmObj.name,
       shots: state.shots,
-      firstSeed: 1,
-      dateStr
+      firstSeed: Math.floor(Math.random() * 20) + 1,
+      dateStr: formatDate(new Date())
     });
     // 重置
     state.film = null;
