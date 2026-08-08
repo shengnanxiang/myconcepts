@@ -48,45 +48,33 @@
     .stage {
       flex: 0 0 66.6667%;
       max-width: 66.6667%;
-      display: flex; flex-direction: column;
+      /* 沉浸式深色舞台：径向渐变 + 微噪点质感 */
+      background:
+        radial-gradient(120% 80% at 50% 0%, rgba(255,122,89,0.10) 0%, transparent 55%),
+        radial-gradient(90% 70% at 50% 100%, rgba(74,222,128,0.06) 0%, transparent 50%),
+        var(--stage-bg);
       border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
-    .stage__header {
-      padding: 20px 28px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 12px;
-    }
-    .stage__header h1 { font-size: 18px; margin: 0; font-weight: 600; }
-    .badge {
-      font-size: 12px; padding: 3px 10px; border-radius: 999px;
-      background: rgba(255, 122, 89, 0.15);
-      color: var(--accent-2);
-      border: 1px solid rgba(255, 122, 89, 0.3);
-    }
+    /* 舞台底部柔光托底，让手机有「悬浮」感 */
     .stage__body {
       flex: 1;
       display: flex;
-      padding: 28px;
-      overflow: hidden;
       align-items: center;
       justify-content: center;
+      padding: 40px;
+      overflow: hidden;
     }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      display: flex; flex-direction: column;
-      flex: 1;
-      min-height: 0;
-    }
-    /* App 交互卡片：无标题，手机居中 */
     .card--app {
       align-items: center;
       justify-content: center;
-      padding: 24px;
       min-height: 0;
+      background: transparent;
+      border: none;
+      padding: 0;
+      flex: 0 0 auto;
     }
     .card__title {
       font-size: 13px; color: var(--muted);
@@ -95,18 +83,35 @@
     }
 
     /* ---------- 手机外壳 ---------- */
-    /* 用高度反推宽度：iPhone 14 Pro 比例 390:844，padding 8px×2 + border 余量 */
+    /* 用高度反推宽度：iPhone 14 Pro 比例 390:844 */
     .phone {
       flex: 0 0 auto;
       height: 100%;
       max-height: 100%;
       aspect-ratio: 390 / 844;
-      border-radius: 36px;
-      padding: 8px;
-      background: linear-gradient(155deg, var(--phone-frame-1), var(--phone-frame-2));
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.08);
+      border-radius: 44px;
+      padding: 7px;
+      background: linear-gradient(150deg, #2a2a2e 0%, #141416 45%, #0c0c0e 100%);
+      /* 多层阴影：贴地投影 + 悬浮光晕 + 边缘高光 */
+      box-shadow:
+        0 40px 80px -20px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(255,255,255,0.06),
+        inset 0 0 2px 1px rgba(255,255,255,0.12);
       display: flex;
+      position: relative;
     }
+    /* 侧边按键装饰 */
+    .phone::before,
+    .phone::after {
+      content: '';
+      position: absolute;
+      width: 3px;
+      background: linear-gradient(180deg, #3a3a3e, #1a1a1c);
+      border-radius: 2px;
+      left: -3px;
+    }
+    .phone::before { top: 130px; height: 30px; }
+    .phone::after  { top: 170px; height: 60px; box-shadow: 0 64px 0 #2a2a2e; }
     .phone__screen {
       flex: 1;
       border-radius: 28px;
@@ -645,18 +650,14 @@
       .layout { flex-direction: column; height: auto; }
       .stage { flex: none; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
       body { overflow: auto; }
-      .stage__body { grid-template-columns: 1fr; }
+      .stage__body { padding: 24px; }
     }
   </style>
 </head>
 <body>
   <div class="layout">
-    <!-- 左半边：展示区 -->
+    <!-- 左半边：展示区（直接手机画面） -->
     <section class="stage">
-      <div class="stage__header">
-        <h1>MyConcepts</h1>
-        <span class="badge">开发中 · Demo</span>
-      </div>
       <div class="stage__body">
         <!-- 手机交互 App -->
         <div class="card card--app">
