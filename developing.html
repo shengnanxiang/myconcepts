@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MyConcepts · 等待3小时冲扫的意义</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0f1115;
@@ -16,25 +19,29 @@
       --accent-2: #ff7a59;
       --radius: 14px;
 
-      /* 胶片 App 主题色 */
+      /* 胶片 App 主题色 —— 严格对齐 Figma */
       --phone-frame-1: #d49275;
       --phone-frame-2: #a06850;
-      --app-bg: #000000;
-      --app-text: #ffffff;
-      --app-muted: #6c6c70;
-      --app-muted-2: #444444;
-      --app-card: #0a0a0a;
-      --app-border: #1a1a1a;
+      --app-bg: #11100F;
+      --app-text: #F2ECE4;
+      --app-muted: #A39C91;
+      --app-card: #161513;
+      --app-border: #2C2927;
+      --chip-bg: #2C2927;
+      --chip-text: #E6DFD3;
       --green: #4ade80;
-      --red: #ef4444;
-      --yellow: #fbbf24;
-      --velvia: #4ade80;
-      --hp5: #d1d5db;
+      /* 胶片色（Figma 精确值） */
+      --c-cinestill: #E53935;
+      --c-gold: #F6C83C;
+      --c-portra: #FCD02C;
+      --c-velvia: #008000;
+      --c-vision3: #385E77;
+      --c-hp5: #C9C9C9;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      font-family: "Space Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
         "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       background: var(--bg);
       color: var(--text);
@@ -88,7 +95,7 @@
       flex: 0 0 auto;
       height: 100%;
       max-height: 100%;
-      aspect-ratio: 390 / 844;
+      aspect-ratio: 327.20 / 697.45;
       border-radius: 44px;
       padding: 7px;
       background: linear-gradient(150deg, #2a2a2e 0%, #141416 45%, #0c0c0e 100%);
@@ -114,7 +121,7 @@
     .phone::after  { top: 170px; height: 60px; box-shadow: 0 64px 0 #2a2a2e; }
     .phone__screen {
       flex: 1;
-      border-radius: 28px;
+      border-radius: 44px;
       background: var(--app-bg);
       color: var(--app-text);
       position: relative;
@@ -130,63 +137,57 @@
     /* ---------- App 屏幕通用 ---------- */
     .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
     .screen.hidden { display: none; }
+    /* 所有屏幕统一内边距，保证手机尺寸恒定不闪烁 */
+    .app-inner { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 
-    /* ---------- App 状态栏 ---------- */
-    .status-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 22px 8px;
-      font-size: 13px; font-weight: 600;
-      letter-spacing: 0.02em;
-      position: relative; z-index: 5;
-    }
-    .status-bar .right { display: flex; gap: 6px; align-items: center; }
-    .status-bar svg { width: 16px; height: 11px; }
-
-    /* ---------- 连接状态 ---------- */
-    .conn {
-      display: flex; align-items: center; gap: 8px;
-      padding: 4px 22px 14px;
-      font-size: 10px; font-weight: 700;
-      color: var(--app-muted); letter-spacing: 0.18em;
-      position: relative; z-index: 5;
-    }
-    .conn .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
-    }
-
-    /* ---------- 相机主屏 ---------- */
+    /* ---------- 相机主屏（Figma 精确还原） ---------- */
     .camera-screen { align-items: center; }
-
-    /* 标题按钮（点击进入风格选择） */
-    .film-title-btn {
-      background: none; border: none; padding: 6px 22px;
-      font-family: inherit; cursor: pointer;
-      width: 100%; max-width: 280px;
-      display: flex; align-items: center; justify-content: center;
+    .cam-top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      width: 100%; padding: 24px 24px 16px;
       position: relative; z-index: 5;
+    }
+    .cam-conn { display: flex; align-items: center; gap: 8px; }
+    .cam-conn .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px rgba(74,222,128,0.6);
+    }
+    .cam-conn span {
+      font-size: 12px; color: var(--app-muted);
+      letter-spacing: 1.2px; font-weight: 400;
+    }
+    .cam-fill {
+      font-size: 10px; color: var(--app-muted); letter-spacing: 1px; font-weight: 400;
+    }
+
+    /* 胶片名（点击进入选择） */
+    .film-title-btn {
+      background: none; border: none; cursor: pointer;
+      width: 100%; padding: 100px 0 4px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 5; font-family: inherit;
     }
     .film-title {
-      font-size: 15px; font-weight: 700;
-      letter-spacing: 0.2em;
-      color: var(--app-text);
-      text-align: center;
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 0.02em; color: var(--app-text);
+      text-align: center; line-height: 1.15;
     }
-    .film-title.cinestill { color: var(--red); }
-    .film-title.gold { color: var(--yellow); }
-    .film-title.hp5 { color: #d1d5db; }
-    .film-title.velvia { color: #4ade80; }
+    .film-title.cinestill { color: var(--c-cinestill); }
+    .film-title.gold { color: var(--c-gold); }
+    .film-title.portra { color: var(--c-portra); }
+    .film-title.velvia { color: var(--c-velvia); }
+    .film-title.vision3 { color: var(--c-vision3); }
+    .film-title.hp5 { color: var(--c-hp5); }
     .film-title.dim { color: var(--app-muted); }
 
-    /* 环形进度 */
+    /* 环形进度 224px */
     .ring-wrap {
       position: relative;
-      width: 200px; height: 200px;
-      margin: 22px 0 26px;
+      width: 224px; height: 224px;
+      margin: 24px 0;
     }
     .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
-    .ring-bg { fill: none; stroke: #1a1a1a; stroke-width: 4; }
+    .ring-bg { fill: none; stroke: #1f1d1b; stroke-width: 4; }
     .ring-fg {
       fill: none; stroke-width: 4; stroke-linecap: round;
       transition: stroke-dashoffset 0.5s ease, stroke 0.3s;
@@ -198,52 +199,40 @@
       gap: 6px;
     }
     .ring-count {
-      font-size: 56px; font-weight: 300; line-height: 1;
-      letter-spacing: -0.02em;
-      background: none; border: none; color: var(--app-text);
-      font-family: inherit; padding: 4px 18px;
-      cursor: pointer; border-radius: 8px;
+      font-size: 60px; font-weight: 400; line-height: 1;
+      color: var(--app-text); letter-spacing: -0.02em;
+      background: none; border: none; font-family: inherit;
+      padding: 4px 18px; cursor: pointer; border-radius: 8px;
       transition: background 0.15s;
     }
-    .ring-count:not(:disabled):hover { background: rgba(255,255,255,0.04); }
-    .ring-count:disabled { cursor: default; }
+    .ring-count:hover { background: rgba(255,255,255,0.05); }
     .ring-label {
-      font-size: 9px; letter-spacing: 0.3em;
-      color: var(--app-muted); font-weight: 600;
+      font-size: 10px; letter-spacing: 1px;
+      color: var(--app-muted); font-weight: 400;
     }
 
-    /* 卸载按钮 */
+    /* 底部卸载按钮（Figma #2C2927 / #E6DFD3，圆角 6px） */
     .unload-btn {
-      width: 100%; max-width: 240px;
-      padding: 13px 18px;
-      background: #1a1a1a; color: #666;
-      border: none; border-radius: 10px;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.2em;
-      cursor: not-allowed;
+      width: 240px; max-width: 240px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      background: var(--chip-bg); color: var(--chip-text);
+      border: none; border-radius: 6px;
+      font-size: 11px; font-weight: 400; letter-spacing: 1.1px;
+      cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       font-family: inherit;
-      transition: all 0.2s;
+      box-shadow: 0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1);
+      transition: filter 0.15s, transform 0.1s;
     }
-    .unload-btn svg { width: 13px; height: 13px; }
-    .unload-btn.ready {
-      background: #1a1a1a; color: #999; cursor: pointer;
-    }
-    .unload-btn.ready:hover { background: #222; }
-    .unload-btn.develop {
-      background: var(--red); color: #fff; cursor: pointer;
-    }
-    .unload-btn.develop.cinestill { background: var(--red); }
-    .unload-btn.develop.gold { background: var(--yellow); color: #000; }
-    .unload-btn.develop.hp5 { background: #d1d5db; color: #000; }
-    .unload-btn.develop.velvia { background: #4ade80; color: #000; }
-    .unload-btn.develop:hover { filter: brightness(1.1); }
+    .unload-btn:hover { filter: brightness(1.15); }
+    .unload-btn:active { transform: scale(0.98); }
 
     /* ---------- 底部 Tab Bar ---------- */
     .tab-bar {
       display: flex; justify-content: space-around;
       padding: 12px 0 16px;
-      border-top: 1px solid #141414;
+      border-top: 1px solid rgba(255,255,255,0.08);
       margin-top: auto;
       align-self: stretch; width: 100%;
       position: relative; z-index: 5;
@@ -253,8 +242,7 @@
       background: none; border: none; color: var(--app-muted);
       font-size: 9px; cursor: pointer;
       transition: color 0.15s;
-      font-family: inherit; letter-spacing: 0.05em;
-      padding: 4px 10px;
+      font-family: inherit; letter-spacing: 0.05em; padding: 4px 10px;
     }
     .tab.active { color: var(--app-text); }
     .tab svg { width: 22px; height: 22px; }
@@ -264,328 +252,207 @@
     .home-indicator {
       width: 110px; height: 4px;
       background: var(--app-text); opacity: 0.5;
-      border-radius: 2px;
-      margin: 0 auto 6px;
+      border-radius: 2px; margin: 0 auto 6px;
     }
 
-    /* ---------- 选胶卷屏 ---------- */
-    .select-screen { padding: 0 0 0; }
-    .select-header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 6px 6px 10px;
+    /* ---------- 选胶卷屏（Figma 精确还原） ---------- */
+    .select-screen { padding: 0; }
+    .select-top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 24px 24px 16px; width: 100%;
+      position: relative; z-index: 5;
     }
-    .back-btn {
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      background: none; border: none; color: var(--app-text);
-      cursor: pointer; border-radius: 50%;
-      font-family: inherit;
+    .select-title {
+      font-size: 12px; color: var(--app-muted); letter-spacing: 1.2px; font-weight: 400;
     }
-    .back-btn:hover { background: #1a1a1a; }
     .select-tabs {
-      display: flex; gap: 20px;
-      padding: 4px 18px 14px;
-      font-size: 10px; font-weight: 700;
-      letter-spacing: 0.18em;
-      overflow-x: auto;
-      scrollbar-width: none;
+      display: flex; gap: 22px;
+      padding: 4px 24px 12px;
+      font-size: 10px; font-weight: 400;
+      letter-spacing: 1px;
+      overflow-x: auto; scrollbar-width: none;
     }
     .select-tabs::-webkit-scrollbar { display: none; }
     .select-tab {
       color: var(--app-muted); cursor: pointer;
       padding-bottom: 8px; white-space: nowrap;
-      border-bottom: 2px solid transparent;
+      border-bottom: 1.5px solid transparent;
       font-family: inherit; background: none; border-top: none; border-left: none; border-right: none;
     }
-    .select-tab.active { color: var(--app-text); border-bottom-color: var(--app-text); }
+    .select-tab.active { color: #fff; border-bottom-color: #fff; }
     .film-list {
       flex: 1; overflow-y: auto;
-      padding: 4px 14px 8px;
-      display: flex; flex-direction: column; gap: 14px;
-      scrollbar-width: thin;
-      scrollbar-color: #333 transparent;
+      padding: 8px 18px 12px;
+      display: flex; flex-direction: column; gap: 18px;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
     }
     .film-list::-webkit-scrollbar { width: 4px; }
     .film-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .film-card {
       background: var(--app-card);
       border: 1px solid var(--app-border);
-      border-radius: 12px;
-      padding: 14px;
-      transition: border-color 0.2s;
+      border-radius: 8px; padding: 16px;
     }
-    .film-card:hover { border-color: #2a2a2a; }
     .film-card-head {
-      display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;
     }
     .film-card-name {
-      font-size: 19px; font-weight: 800;
-      letter-spacing: 0.04em;
-      line-height: 1.1;
-      font-family: 'Courier New', monospace;
+      font-size: 20px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.1;
     }
-    .film-card-name.cinestill { color: var(--red); }
-    .film-card-name.gold { color: var(--yellow); }
-    .film-card-name.hp5 { color: #d1d5db; }
-    .film-card-name.velvia { color: #4ade80; }
+    .film-card-name.cinestill { color: var(--c-cinestill); }
+    .film-card-name.gold { color: var(--c-gold); }
+    .film-card-name.portra { color: var(--c-portra); }
+    .film-card-name.velvia { color: var(--c-velvia); }
+    .film-card-name.vision3 { color: var(--c-vision3); }
+    .film-card-name.hp5 { color: var(--c-hp5); }
     .film-card-exp {
-      font-size: 9px; color: var(--app-muted);
-      letter-spacing: 0.15em; font-weight: 700;
+      font-size: 10px; color: var(--app-muted); letter-spacing: 1px; font-weight: 400; white-space: nowrap;
     }
-    .film-tags { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .film-tags { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
     .film-tag {
-      font-size: 9px; padding: 4px 9px;
-      border-radius: 4px;
-      background: #1a1a1a; color: #999;
-      letter-spacing: 0.12em; font-weight: 700;
+      font-size: 10px; padding: 4px 9px; border-radius: 4px;
+      background: var(--chip-bg); color: var(--chip-text); letter-spacing: 0.5px; font-weight: 400;
     }
     .film-previews {
       display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 4px; margin-bottom: 12px;
+      gap: 4px; margin-bottom: 14px;
     }
     .film-preview {
-      aspect-ratio: 1;
-      border-radius: 4px;
-      background-size: cover; background-position: center;
-      position: relative; overflow: hidden;
-    }
-    .film-preview::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg,
-        rgba(255,255,255,0.08) 0%,
-        rgba(0,0,0,0.2) 50%,
-        rgba(0,0,0,0.4) 100%);
+      aspect-ratio: 1; border-radius: 3px;
+      background-size: cover; background-position: center; position: relative; overflow: hidden;
     }
     .film-select-btn {
-      width: 100%; padding: 11px;
-      border: none; border-radius: 6px;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.2em;
-      cursor: pointer;
-      transition: filter 0.15s, transform 0.1s;
-      font-family: inherit;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 12px; border: none; border-radius: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.1px;
+      cursor: pointer; transition: filter 0.15s, transform 0.1s;
+      font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .film-select-btn.cinestill { background: var(--red); color: #fff; }
-    .film-select-btn.gold { background: var(--yellow); color: #000; }
-    .film-select-btn.hp5 { background: #d1d5db; color: #000; }
-    .film-select-btn.velvia { background: #4ade80; color: #000; }
+    .film-select-btn.cinestill { background: var(--c-cinestill); color: #fff; }
+    .film-select-btn.gold { background: var(--c-gold); color: #000; }
+    .film-select-btn.portra { background: var(--c-portra); color: #000; }
+    .film-select-btn.velvia { background: var(--c-velvia); color: #fff; }
+    .film-select-btn.vision3 { background: var(--c-vision3); color: #fff; }
+    .film-select-btn.hp5 { background: var(--c-hp5); color: #000; }
     .film-select-btn:hover { filter: brightness(1.1); }
     .film-select-btn:active { transform: scale(0.98); }
 
     /* ---------- 冲扫中 ---------- */
-    .develop-screen {
-      align-items: center; justify-content: center;
-      padding: 0 22px;
-    }
+    .develop-screen { align-items: center; justify-content: center; padding: 0 22px; }
     .develop-anim {
-      width: 100px; height: 100px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, transparent, var(--red));
-      animation: spin 1s linear infinite;
-      margin-bottom: 24px;
-      position: relative;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent, var(--c-cinestill));
+      animation: spin 1s linear infinite; margin-bottom: 24px; position: relative;
     }
-    .develop-anim::after {
-      content: ''; position: absolute; inset: 8px;
-      background: var(--app-bg); border-radius: 50%;
-    }
+    .develop-anim::after { content: ''; position: absolute; inset: 8px; background: var(--app-bg); border-radius: 50%; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .develop-text {
-      font-size: 12px; letter-spacing: 0.3em;
-      color: var(--app-text); font-weight: 700;
-    }
-    .develop-sub {
-      font-size: 10px; color: var(--app-muted);
-      margin-top: 10px; letter-spacing: 0.18em; font-weight: 600;
-    }
+    .develop-text { font-size: 12px; letter-spacing: 1.2px; color: var(--app-text); font-weight: 700; }
+    .develop-sub { font-size: 10px; color: var(--app-muted); margin-top: 10px; letter-spacing: 1px; font-weight: 400; }
 
     /* ---------- 胶卷条屏 ---------- */
-    .strip-screen { padding: 0 14px; }
-    .strip-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 4px 6px 10px;
-    }
-    .strip-title {
-      text-align: center; flex: 1;
-    }
+    .strip-screen { padding: 0 18px; }
+    .strip-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 6px 14px; }
+    .strip-title { text-align: center; flex: 1; }
     .strip-title .name {
-      font-size: 13px; font-weight: 700;
-      letter-spacing: 0.18em;
-      font-family: 'Courier New', monospace;
+      font-size: 20px; font-weight: 700; letter-spacing: 0.02em;
     }
-    .strip-title .name.cinestill { color: var(--red); }
-    .strip-title .name.gold { color: var(--yellow); }
-    .strip-title .name.hp5 { color: #d1d5db; }
-    .strip-title .name.velvia { color: #4ade80; }
-    .strip-title .sub {
-      font-size: 9px; color: var(--app-muted);
-      margin-top: 4px; letter-spacing: 0.15em; font-weight: 700;
-    }
-    .strip-empty {
-      width: 24px; height: 24px;
-      border: 1px solid var(--app-muted);
-      border-radius: 4px;
-      background: none;
-    }
+    .strip-title .name.cinestill { color: var(--c-cinestill); }
+    .strip-title .name.gold { color: var(--c-gold); }
+    .strip-title .name.portra { color: var(--c-portra); }
+    .strip-title .name.velvia { color: var(--c-velvia); }
+    .strip-title .name.vision3 { color: var(--c-vision3); }
+    .strip-title .name.hp5 { color: var(--c-hp5); }
+    .strip-title .sub { font-size: 10px; color: var(--app-muted); margin-top: 4px; letter-spacing: 1px; }
     .strip-list {
-      flex: 1; overflow-y: auto;
-      padding: 4px 4px 6px;
+      flex: 1; overflow-y: auto; padding: 4px 0 6px;
       display: flex; flex-direction: column; gap: 6px;
-      scrollbar-width: thin;
-      scrollbar-color: #333 transparent;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
     }
     .strip-list::-webkit-scrollbar { width: 4px; }
     .strip-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .strip-row {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      background: #0a0a0a;
-      border-radius: 4px;
-      padding: 6px 8px;
-      position: relative;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      background: #0a0a0a; border-radius: 4px; padding: 6px 8px; position: relative;
     }
     .frame {
-      aspect-ratio: 3/2;
-      border-radius: 2px;
-      background-size: cover; background-position: center;
-      position: relative;
-      overflow: hidden;
-      display: flex; flex-direction: column; justify-content: space-between;
-      padding: 4px 4px 2px;
+      aspect-ratio: 3/2; border-radius: 2px; background-size: cover; background-position: center;
+      position: relative; overflow: hidden; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 4px 4px 2px;
     }
     .frame-top {
-      font-size: 6px; color: rgba(255,255,255,0.4);
-      font-family: 'Courier New', monospace;
-      letter-spacing: 0.05em;
-      line-height: 1;
+      font-size: 6px; color: rgba(255,255,255,0.4); letter-spacing: 0.05em; line-height: 1;
       white-space: nowrap; overflow: hidden;
     }
     .frame-bottom {
-      font-size: 7px; font-weight: 700;
-      color: rgba(255,255,255,0.8);
-      letter-spacing: 0.05em;
-      line-height: 1;
-      text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-      align-self: flex-end;
+      font-size: 7px; font-weight: 700; color: rgba(255,255,255,0.8); letter-spacing: 0.05em;
+      line-height: 1; text-shadow: 0 1px 1px rgba(0,0,0,0.5); align-self: flex-end;
     }
-    .frame.empty {
-      background: #141414;
-      display: flex; align-items: center; justify-content: center;
-      padding: 0;
-    }
-    .frame.empty .frame-top,
-    .frame.empty .frame-bottom { display: none; }
+    .frame.empty { background: #141414; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .frame.empty .frame-top, .frame.empty .frame-bottom { display: none; }
     .save-all-btn {
-      margin: 10px auto 14px;
-      padding: 10px 22px;
-      background: #fff; color: #000;
-      border: none; border-radius: 999px;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-      box-shadow: 0 4px 20px rgba(255,255,255,0.2);
-      transition: transform 0.1s;
-      font-family: inherit;
+      margin: 10px auto 14px; padding: 10px 22px;
+      background: #fff; color: #000; border: none; border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+      transition: transform 0.1s; font-family: inherit;
     }
     .save-all-btn:hover { transform: translateY(-1px); }
     .save-all-btn svg { width: 12px; height: 12px; }
 
     /* ---------- 暗房列表 ---------- */
-    .darkroom-screen { padding: 0 14px; }
-    .darkroom-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 4px 14px;
-    }
+    .darkroom-screen { padding: 0 18px; }
+    .darkroom-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 6px 16px; }
     .darkroom-select-btn {
-      background: none; border: none;
-      color: var(--app-muted); font-size: 11px;
-      cursor: pointer; letter-spacing: 0.18em; font-weight: 700;
-      font-family: inherit;
-      padding: 6px 4px;
+      background: none; border: none; color: var(--app-muted); font-size: 11px;
+      cursor: pointer; letter-spacing: 1px; font-weight: 400; font-family: inherit; padding: 6px 4px;
     }
     .darkroom-select-btn:hover { color: var(--app-text); }
     .darkroom-list {
-      flex: 1; overflow-y: auto;
-      padding: 0 4px 8px;
-      display: flex; flex-direction: column; gap: 10px;
-      scrollbar-width: thin;
-      scrollbar-color: #333 transparent;
+      flex: 1; overflow-y: auto; padding: 0 4px 8px;
+      display: flex; flex-direction: column; gap: 12px;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
     }
     .darkroom-list::-webkit-scrollbar { width: 4px; }
     .darkroom-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
     .roll-card {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 14px;
-      background: var(--app-card);
-      border: 1px solid var(--app-border);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.1s;
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+      background: var(--app-card); border: 1px solid var(--app-border);
+      border-radius: 8px; cursor: pointer; transition: border-color 0.2s, transform 0.1s;
     }
-    .roll-card:hover { border-color: #2a2a2a; transform: translateY(-1px); }
+    .roll-card:hover { border-color: #3a3633; transform: translateY(-1px); }
     .roll-thumb {
-      width: 64px; height: 48px;
-      border-radius: 6px;
-      background-size: cover; background-position: center;
-      flex-shrink: 0;
+      width: 64px; height: 48px; border-radius: 6px;
+      background-size: cover; background-position: center; flex-shrink: 0;
       position: relative; overflow: hidden;
     }
-    .roll-thumb::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg,
-        rgba(255,255,255,0.08) 0%,
-        rgba(0,0,0,0.3) 100%);
-    }
     .roll-info { flex: 1; min-width: 0; }
-    .roll-name {
-      font-size: 14px; font-weight: 700;
-      letter-spacing: 0.04em;
-      font-family: 'Courier New', monospace;
-    }
-    .roll-name.cinestill { color: var(--red); }
-    .roll-name.gold { color: var(--yellow); }
-    .roll-name.velvia { color: var(--velvia); }
-    .roll-name.hp5 { color: var(--hp5); }
-    .roll-meta {
-      font-size: 10px; color: var(--app-muted);
-      margin-top: 4px; letter-spacing: 0.08em; font-weight: 600;
-    }
+    .roll-name { font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
+    .roll-name.cinestill { color: var(--c-cinestill); }
+    .roll-name.gold { color: var(--c-gold); }
+    .roll-name.portra { color: var(--c-portra); }
+    .roll-name.velvia { color: var(--c-velvia); }
+    .roll-name.vision3 { color: var(--c-vision3); }
+    .roll-name.hp5 { color: var(--c-hp5); }
+    .roll-meta { font-size: 10px; color: var(--app-muted); margin-top: 4px; letter-spacing: 0.08em; font-weight: 400; }
     .roll-arrow { color: var(--app-muted); font-size: 18px; font-weight: 300; }
     .darkroom-empty {
-      flex: 1;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 12px;
-      color: var(--app-muted); font-size: 11px;
-      letter-spacing: 0.2em; font-weight: 700;
-      padding: 40px 20px;
-      text-align: center;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; color: var(--app-muted); font-size: 11px;
+      letter-spacing: 0.2em; font-weight: 700; padding: 40px 20px; text-align: center;
     }
     .darkroom-empty svg { width: 40px; height: 40px; opacity: 0.3; }
 
     /* ---------- More 屏 ---------- */
-    .more-screen {
-      padding: 0 18px;
-      align-items: stretch;
-    }
+    .more-screen { padding: 0 18px; align-items: stretch; }
     .more-section { padding: 12px 0; }
     .more-section-title {
-      font-size: 10px; color: var(--app-muted);
-      letter-spacing: 0.2em; font-weight: 700;
-      margin-bottom: 10px;
+      font-size: 10px; color: var(--app-muted); letter-spacing: 0.2em; font-weight: 700; margin-bottom: 10px;
     }
     .more-row {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--app-border);
-      font-size: 13px;
-      cursor: pointer;
+      padding: 14px 0; border-bottom: 1px solid var(--app-border);
+      font-size: 13px; cursor: pointer;
     }
-    .more-row:hover { color: var(--red); }
+    .more-row:hover { color: var(--c-cinestill); }
     .more-row-arrow { color: var(--app-muted); }
 
 
@@ -667,35 +534,28 @@
 
               <!-- 屏幕 1: 相机主屏 -->
               <div class="screen camera-screen" id="screen-camera">
-                <div class="status-bar">
-                  <span>9:41</span>
-                  <div class="right">
-                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
-                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
-                  </div>
+                <div class="cam-top">
+                  <div class="cam-conn"><span class="dot"></span><span>Connected</span></div>
+                  <div class="cam-fill">Fill Roll</div>
                 </div>
-                <div class="conn"><span class="dot"></span><span>已连接</span></div>
 
                 <button class="film-title-btn" id="film-title-btn">
                   <span class="film-title dim" id="film-title">选择风格</span>
                 </button>
 
                 <div class="ring-wrap">
-                  <svg viewBox="0 0 200 200">
-                    <circle class="ring-bg" cx="100" cy="100" r="94"/>
-                    <circle class="ring-fg" id="ring-fg" cx="100" cy="100" r="94"
-                      stroke-dasharray="590" stroke-dashoffset="590"/>
+                  <svg viewBox="0 0 224 224">
+                    <circle class="ring-bg" cx="112" cy="112" r="106"/>
+                    <circle class="ring-fg" id="ring-fg" cx="112" cy="112" r="106"
+                      stroke-dasharray="665" stroke-dashoffset="665"/>
                   </svg>
                   <div class="ring-center">
                     <button class="ring-count" id="ring-count-btn">36</button>
-                    <div class="ring-label">剩余</div>
+                    <div class="ring-label">Left</div>
                   </div>
                 </div>
 
                 <button class="unload-btn" id="unload-btn">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M12 4v12M7 11l5 5 5-5M5 20h14"/>
-                  </svg>
                   <span id="unload-label">提前卸载</span>
                 </button>
 
@@ -704,19 +564,19 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
                     </svg>
-                    相机
+                    CAMERA
                   </button>
                   <button class="tab" data-tab="darkroom">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
                     </svg>
-                    暗房
+                    DARK ROOM
                   </button>
                   <button class="tab" data-tab="more">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M4 7h16M4 12h16M4 17h16"/>
                     </svg>
-                    更多
+                    MORE
                   </button>
                 </nav>
                 <div class="home-indicator"></div>
@@ -724,24 +584,18 @@
 
               <!-- 屏幕 2: 选胶卷 -->
               <div class="screen select-screen hidden" id="screen-select">
-                <div class="status-bar">
-                  <span>9:41</span>
-                  <div class="right">
-                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
-                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
-                  </div>
-                </div>
-                <div class="select-header">
-                  <button class="back-btn" data-action="back-to-camera">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                <div class="select-top">
+                  <div class="select-title">SELECT A STYLE</div>
+                  <button class="back-btn" data-action="back-to-camera" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--app-muted);cursor:pointer;font-family:inherit">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
                   </button>
                 </div>
                 <div class="select-tabs">
-                  <button class="select-tab active" data-cat="all">全部</button>
-                  <button class="select-tab" data-cat="bw">黑白</button>
-                  <button class="select-tab" data-cat="warm">暖调</button>
-                  <button class="select-tab" data-cat="cold">冷调</button>
-                  <button class="select-tab" data-cat="style">风格</button>
+                  <button class="select-tab active" data-cat="all">all</button>
+                  <button class="select-tab" data-cat="bw">b&amp;w</button>
+                  <button class="select-tab" data-cat="warm">warm</button>
+                  <button class="select-tab" data-cat="cold">cold</button>
+                  <button class="select-tab" data-cat="style">style</button>
                 </div>
                 <div class="film-list" id="film-list">
                   <!-- 动态生成 -->
@@ -752,19 +606,12 @@
               <!-- 屏幕 3: 冲扫中 -->
               <div class="screen develop-screen hidden" id="screen-develop">
                 <div class="develop-anim"></div>
-                <div class="develop-text" id="develop-text">冲扫中</div>
-                <div class="develop-sub" id="develop-sub">卸载胶卷 · 36 张</div>
+                <div class="develop-text" id="develop-text">DEVELOPING</div>
+                <div class="develop-sub" id="develop-sub">UNLOADING · 36 FRAMES</div>
               </div>
 
               <!-- 屏幕 4: 胶卷条 -->
               <div class="screen strip-screen hidden" id="screen-strip">
-                <div class="status-bar">
-                  <span>9:41</span>
-                  <div class="right">
-                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
-                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
-                  </div>
-                </div>
                 <div class="strip-header">
                   <button class="back-btn" data-action="back-to-camera">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
@@ -778,45 +625,32 @@
                 <div class="strip-list" id="strip-list"></div>
                 <button class="save-all-btn" id="save-all-btn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v12M7 11l5 5 5-5"/></svg>
-                  全部保存
+                  SAVE ALL
                 </button>
                 <div class="home-indicator"></div>
               </div>
 
               <!-- 屏幕 5: 暗房列表 -->
               <div class="screen darkroom-screen hidden" id="screen-darkroom">
-                <div class="status-bar">
-                  <span>9:41</span>
-                  <div class="right">
-                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
-                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
-                  </div>
-                </div>
-                <div class="darkroom-header">
-                  <button class="back-btn" data-action="back-to-camera">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-                  </button>
-                  <button class="darkroom-select-btn">选择</button>
-                </div>
                 <div class="darkroom-list" id="darkroom-list"></div>
                 <nav class="tab-bar">
                   <button class="tab" data-tab="camera">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
                     </svg>
-                    相机
+                    CAMERA
                   </button>
                   <button class="tab active" data-tab="darkroom">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
                     </svg>
-                    暗房
+                    DARK ROOM
                   </button>
                   <button class="tab" data-tab="more">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M4 7h16M4 12h16M4 17h16"/>
                     </svg>
-                    更多
+                    MORE
                   </button>
                 </nav>
                 <div class="home-indicator"></div>
@@ -824,15 +658,8 @@
 
               <!-- 屏幕 6: More -->
               <div class="screen more-screen hidden" id="screen-more">
-                <div class="status-bar">
-                  <span>9:41</span>
-                  <div class="right">
-                    <svg viewBox="0 0 16 12" fill="currentColor"><path d="M1 9h2v2H1zm3-2h2v4H4zm3-2h2v6H7zm3-2h2v8h-2zm3-1h2v10h-2z"/></svg>
-                    <svg viewBox="0 0 24 12" fill="none"><rect x="0.5" y="1" width="20" height="10" rx="2" stroke="currentColor"/><rect x="2" y="2.5" width="17" height="7" rx="1" fill="currentColor"/><rect x="21" y="4" width="2" height="4" rx="0.5" fill="currentColor"/></svg>
-                  </div>
-                </div>
-                <div class="more-section">
-                  <div class="more-section-title">设置</div>
+                <div class="more-section" style="padding-top:28px">
+                  <div class="more-section-title">SETTINGS</div>
                   <div class="more-row"><span>通知</span><span class="more-row-arrow">›</span></div>
                   <div class="more-row"><span>外观</span><span class="more-row-arrow">›</span></div>
                   <div class="more-row"><span>关于</span><span class="more-row-arrow">›</span></div>
@@ -842,19 +669,19 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
                     </svg>
-                    相机
+                    CAMERA
                   </button>
                   <button class="tab" data-tab="darkroom">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
                     </svg>
-                    暗房
+                    DARK ROOM
                   </button>
                   <button class="tab active" data-tab="more">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
                       <path d="M4 7h16M4 12h16M4 17h16"/>
                     </svg>
-                    更多
+                    MORE
                   </button>
                 </nav>
                 <div class="home-indicator"></div>
@@ -892,9 +719,9 @@
       id: 'cinestill',
       name: 'CINESTILL 800T',
       cssClass: 'cinestill',
-      tags: ['钨丝灯', '光晕', '冷调'],
+      tags: ['Tungsten', 'Halation', 'Cold'],
       cat: 'cold',
-      exp: '36 张',
+      exp: '36 EXP',
       previews: [
         'photos/日常/DSC_0673.jpg',
         'photos/日常/DSC_0666.jpg',
@@ -905,9 +732,9 @@
       id: 'gold',
       name: 'GOLD 200',
       cssClass: 'gold',
-      tags: ['暖调', '复古', '经典'],
+      tags: ['Warm', 'Vintage', 'Classic'],
       cat: 'warm',
-      exp: '36 张',
+      exp: '36 EXP',
       previews: [
         'photos/熟悉的地方/DSC_0180.jpg',
         'photos/熟悉的地方/DSC_0183.jpg',
@@ -918,9 +745,9 @@
       id: 'hp5',
       name: 'HP5 Plus',
       cssClass: 'hp5',
-      tags: ['黑白', '高反差', '经典'],
+      tags: ['B&W', 'High Contrast', 'Grainy'],
       cat: 'bw',
-      exp: '36 张',
+      exp: '36 EXP',
       previews: [
         'photos/黑白/DSC_0440.jpg',
         'photos/黑白/DSC_3546.jpg',
@@ -929,15 +756,41 @@
     },
     {
       id: 'velvia',
-      name: 'Velvia 50',
+      name: 'VELVIA 50',
       cssClass: 'velvia',
-      tags: ['高饱和', '风光', '鲜艳'],
+      tags: ['Vivid', 'Saturated', 'Landscape'],
       cat: 'style',
-      exp: '36 张',
+      exp: '36 EXP',
       previews: [
         'photos/城隍庙/DSC_0745.jpg',
         'photos/城隍庙/DSC_0770.jpg',
         'photos/城隍庙/DSC_0798.jpg'
+      ]
+    },
+    {
+      id: 'portra',
+      name: 'PORTRA 400',
+      cssClass: 'portra',
+      tags: ['Natural', 'Skin Tone', 'Portrait'],
+      cat: 'warm',
+      exp: '36 EXP',
+      previews: [
+        'photos/熟悉的地方/DSC_0183.jpg',
+        'photos/熟悉的地方/DSC_0180.jpg',
+        'photos/小五郎/DSC_9035.jpg'
+      ]
+    },
+    {
+      id: 'vision3',
+      name: 'VISION3 500T',
+      cssClass: 'vision3',
+      tags: ['Cinematic', 'Fine Grain', 'Cold'],
+      cat: 'cold',
+      exp: '36 EXP',
+      previews: [
+        'photos/日常/DSC_0666.jpg',
+        'photos/日常/DSC_3840.jpg',
+        'photos/小五郎/DSC_9035.jpg'
       ]
     }
   ];
@@ -1043,7 +896,7 @@
   } catch (e) {}
 
   const $ = (id) => document.getElementById(id);
-  const RING_CIRCUMFERENCE = 2 * Math.PI * 94; // ≈ 590
+  const RING_CIRCUMFERENCE = 2 * Math.PI * 106; // ≈ 665.7
 
   function save() {
     try {
@@ -1077,27 +930,28 @@
     const ringFg = $('ring-fg');
     ringFg.setAttribute('stroke-dashoffset', offset);
     const RING_COLORS = {
-      cinestill: '#ef4444',
-      gold: '#fbbf24',
-      hp5: '#d1d5db',
-      velvia: '#4ade80'
+      cinestill: '#E53935',
+      gold: '#F6C83C',
+      portra: '#FCD02C',
+      velvia: '#008000',
+      vision3: '#385E77',
+      hp5: '#C9C9C9'
     };
     ringFg.style.stroke = filmObj ? (RING_COLORS[filmObj.id] || '#fff') : '#333';
 
     const unloadBtn = $('unload-btn');
     const unloadLabel = $('unload-label');
-    unloadBtn.classList.remove('ready', 'develop');
+    unloadBtn.classList.remove('develop');
     if (!filmObj) {
       unloadBtn.disabled = true;
-      unloadLabel.textContent = '提前卸载';
+      unloadLabel.textContent = 'UNLOAD EARLY';
     } else if (state.shots >= 36) {
       unloadBtn.disabled = false;
       unloadBtn.classList.add('develop', filmObj.cssClass);
-      unloadLabel.textContent = '卸载并冲扫';
+      unloadLabel.textContent = 'UNLOAD & DEVELOP';
     } else {
       unloadBtn.disabled = false;
-      unloadBtn.classList.add('ready');
-      unloadLabel.textContent = '提前卸载';
+      unloadLabel.textContent = 'UNLOAD EARLY';
     }
 
     // tab 高亮
@@ -1125,7 +979,7 @@
         </div>
         <div class="film-previews">${previewsHTML}</div>
         <button class="film-select-btn ${film.cssClass}" data-film="${film.id}">
-          选择
+          SELECT
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       `;
@@ -1138,7 +992,7 @@
     const filmObj = FILMS.find(f => f.id === state.film);
     $('strip-film-name').textContent = filmObj.name;
     $('strip-film-name').className = 'name ' + filmObj.cssClass;
-    $('strip-frame-count').textContent = `${state.shots} 张`;
+    $('strip-frame-count').textContent = `${state.shots} FRAMES`;
 
     const list = $('strip-list');
     list.innerHTML = '';
@@ -1180,7 +1034,7 @@
             <circle cx="9" cy="11" r="2"/>
             <path d="M21 16l-5-5-9 9"/>
           </svg>
-          <div>暂无保存的胶卷</div>
+          <div>NO SAVED ROLLS</div>
         </div>
       `;
       return;
@@ -1196,7 +1050,7 @@
         <div class="roll-thumb" style="${thumbBg}"></div>
         <div class="roll-info">
           <div class="roll-name ${roll.cssClass}">${roll.name}</div>
-          <div class="roll-meta">${roll.count || roll.shots} 张 · ${roll.dateStr}</div>
+          <div class="roll-meta">${roll.count || roll.shots} FRAMES</div>
         </div>
         <div class="roll-arrow">›</div>
       `;
@@ -1306,7 +1160,7 @@
     if (!state.film || state.shots === 0) return;
     const filmObj = FILMS.find(f => f.id === state.film);
     const sub = $('develop-sub');
-    sub.textContent = `卸载胶卷 · ${state.shots} 张`;
+    sub.textContent = `UNLOADING · ${state.shots} FRAMES`;
     showScreen('develop');
     setTimeout(() => {
       showScreen('strip');
