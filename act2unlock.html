@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Act2Unlock · AiKen 相机风格选择 Demo</title>
+  <!-- Space Mono（设计稿字体），通过 Google Fonts 加载，确保各设备效果一致 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     /* ───────── 基础 ───────── */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,21 +65,22 @@
         inset 0 0 4px 1px rgba(255, 255, 255, 0.40);
     }
 
+    /* 黑色边框：严格同心（圆角 = 外框圆角 52 − 边框宽 6.67） */
     .phone-bezel {
       position: absolute;
       inset: 6.67px;
       background: #000;
-      border-radius: 50px;
+      border-radius: calc(52px - 6.67px);
       box-shadow: inset 0 0 4px #000;
     }
 
+    /* 屏幕：相对外框偏移 10.83px，圆角严格同心 → 边框四边视觉均匀 */
     .phone-screen {
       position: absolute;
-      inset: 4.16px;
-      inset: calc(4.16px) calc(4.16px) calc(4.16px) calc(4.16px);
+      inset: 10.83px;
       background: var(--app-bg);
       overflow: hidden;
-      border-radius: 44px;
+      border-radius: calc(52px - 10.83px);
     }
 
     /* 右侧物理按钮阴影（与 Figma 一致） */
@@ -179,6 +184,21 @@
       opacity: 0.8;
       border-radius: 9999px;
       z-index: 5;
+    }
+
+    /* ───────── 页面名称（底部标识，便于讨论） ───────── */
+    .page-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 14px;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: rgba(163, 156, 145, 0.65);
+      pointer-events: none;
+      z-index: 6;
+      user-select: none;
     }
 
     /* ───────── Connected 状态 ───────── */
@@ -591,8 +611,8 @@
         </span>
       </div>
 
-      <!-- Connected 提示（两页共用） -->
-      <div class="connected">
+      <!-- Connected 提示（仅页面01显示） -->
+      <div class="connected" id="connectedBar">
         <span class="dot"></span>
         <span>Connected</span>
       </div>
@@ -601,6 +621,7 @@
            PAGE 01 — Camera（默认）
            ================================ -->
       <section class="page active" id="page1">
+        <div class="page-name">01 start</div>
         <div class="p1-fillroll">Fill Roll</div>
 
         <div class="p1-title-wrap">
@@ -631,6 +652,7 @@
            PAGE 02 — Styles 列表
            ================================ -->
       <section class="page" id="page2">
+        <div class="page-name">02 style list</div>
         <!-- 返回箭头 -->
         <div class="p2-back" id="goToPage1" role="button" aria-label="返回相机">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -888,16 +910,17 @@
     // ───────── 页面切换 ─────────
     const page1 = document.getElementById('page1');
     const page2 = document.getElementById('page2');
+    const connectedBar = document.getElementById('connectedBar');
 
-    document.getElementById('goToPage2').addEventListener('click', () => {
-      page1.classList.remove('active');
-      page2.classList.add('active');
-    });
+    function showPage(showPage1) {
+      page1.classList.toggle('active', showPage1);
+      page2.classList.toggle('active', !showPage1);
+      // Connected 提示只在页面01显示
+      connectedBar.style.display = showPage1 ? '' : 'none';
+    }
 
-    document.getElementById('goToPage1').addEventListener('click', () => {
-      page2.classList.remove('active');
-      page1.classList.add('active');
-    });
+    document.getElementById('goToPage2').addEventListener('click', () => showPage(false));
+    document.getElementById('goToPage1').addEventListener('click', () => showPage(true));
 
     // ───────── 标签切换（视觉，不做过滤演示） ─────────
     document.querySelectorAll('.p2-tab').forEach(tab => {
