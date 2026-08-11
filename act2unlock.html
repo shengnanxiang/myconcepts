@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Act2Unlock · AiKen 相机风格选择 Demo</title>
+  <title>完成任务解锁风格</title>
   <!-- Space Mono（设计稿字体），通过 Google Fonts 加载，确保各设备效果一致 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,6 +16,7 @@
       /* 保持原始手机设计 327.20 × 697.45（截掉 4.16 边距的 inner：305.55 × 675.80） */
       --design-w: 305.55;
       --design-h: 675.80;
+      --name-w: 120;          /* 右侧页面名称区宽度（桌面） */
       --scale: 1;             /* 由 JS 实时计算 */
       --screen-bg: #f4f4f5;   /* 浅色背景 */
       --app-bg: #11100F;      /* 暗色 App 屏 */
@@ -26,12 +27,12 @@
 
     html, body {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
+      overflow: hidden;            /* 彻底禁止滚动条 */
       background: var(--screen-bg);
       font-family: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
         -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
       color: var(--text-soft);
-      overflow-x: hidden;
     }
 
     body {
@@ -39,15 +40,14 @@
       justify-content: center;
       align-items: center;
       padding: 0;
-      overflow: hidden;            /* 任何情况都不出现滚动条 */
     }
 
     /* ───────── 手机外框（桌面浏览器才显示） ───────── */
-    /* stage 高度 = 手机高度 + 底部页面名称区，整体一起缩放，避免溢出滚动 */
+    /* stage 宽 = 手机宽 + 右侧名称区(NAME_W)，高 = 手机高；整体一起缩放 */
     .stage {
       position: relative;
-      width: calc(var(--design-w) * 1px);
-      height: calc((var(--design-h) + 22) * 1px);
+      width: calc((var(--design-w) + var(--name-w)) * 1px);
+      height: calc(var(--design-h) * 1px);
       transform: scale(var(--scale));
       transform-origin: center center;
       flex-shrink: 0;
@@ -55,7 +55,7 @@
 
     .phone-frame {
       position: absolute;
-      inset: 0 0 22px 0;
+      inset: 0 calc(var(--name-w) * 1px) 0 0;
       background:
         linear-gradient(135deg,
           #E0A982 0%, #DEA57D 7%, #DCA178 14%, #DA9D73 21%, #D89A6E 29%,
@@ -70,7 +70,7 @@
     /* 黑色边框：严格同心（圆角 = 外框圆角 52 − 边框宽 6.67） */
     .phone-bezel {
       position: absolute;
-      inset: 6.67px 6.67px 28.67px 6.67px;
+      inset: 6.67px calc(var(--name-w) * 1px + 6.67px) 6.67px 6.67px;
       background: #000;
       border-radius: calc(52px - 6.67px);
       box-shadow: inset 0 0 4px #000;
@@ -79,7 +79,7 @@
     /* 屏幕：相对外框偏移 10.83px，圆角严格同心 → 边框四边视觉均匀 */
     .phone-screen {
       position: absolute;
-      inset: 10.83px 10.83px 32.83px 10.83px;
+      inset: 10.83px calc(var(--name-w) * 1px + 10.83px) 10.83px 10.83px;
       background: var(--app-bg);
       overflow: hidden;
       border-radius: calc(52px - 10.83px);
@@ -188,19 +188,20 @@
       z-index: 5;
     }
 
-    /* ───────── 页面名称（手机外壳之下的标识，便于讨论） ───────── */
+    /* ───────── 页面名称（手机右侧空白区，垂直居中） ───────── */
     .page-name {
       position: absolute;
-      left: 50%;
+      left: calc(var(--design-w) * 1px);
+      top: 0;
       bottom: 0;
-      transform: translateX(-50%);
-      width: 100%;
-      height: 22px;
-      line-height: 22px;
-      text-align: center;
+      width: calc(var(--name-w) * 1px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       font-size: 11px;
       letter-spacing: 2px;
-      color: rgba(120, 113, 104, 0.8);
+      color: rgba(120, 113, 104, 0.85);
       pointer-events: none;
       z-index: 1;
       user-select: none;
@@ -903,15 +904,16 @@
     }
 
     // ───────── 自适应缩放 ─────────
-    // 桌面：严格保持 327.20 × (697.45+22名称) 比例缩放到视口，整体居中、无滚动
+    // 桌面：严格保持 (design-w + name-w) × design-h 比例缩放到视口，整体居中、无滚动
     // 手机：不缩放（scale=1），由 CSS 媒体查询让 App 全屏垂直居中
     function fitStage() {
-      const W = 327.20, H = 697.45 + 22; // 含底部页面名称区
+      const W = 327.20 + 120; // 手机外框宽 327.20 + 右侧名称区 120
+      const H = 697.45;
       if (window.innerWidth <= 480) {
         document.documentElement.style.setProperty('--scale', '1');
         return;
       }
-      const maxW = window.innerWidth;     // body 无 padding、overflow hidden
+      const maxW = window.innerWidth;     // html/body 已 overflow:hidden
       const maxH = window.innerHeight;
       const s = Math.min(maxW / W, maxH / H, 1); // 最大不超过原尺寸
       document.documentElement.style.setProperty('--scale', s.toFixed(4));
