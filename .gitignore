@@ -1,0 +1,5 @@
+# CodeBuddy IDE 工作目录（缓存 / Figma 素材缓存）
+.codebuddy/
+
+# Figma MCP 导入的素材缓存
+assets/
