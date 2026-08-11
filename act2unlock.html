@@ -186,19 +186,20 @@
       z-index: 5;
     }
 
-    /* ───────── 页面名称（底部标识，便于讨论） ───────── */
+    /* ───────── 页面名称（手机外壳之外的标识，便于讨论） ───────── */
     .page-name {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 14px;
+      left: 50%;
+      bottom: -28px;
+      transform: translateX(-50%);
       text-align: center;
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 2px;
-      color: rgba(163, 156, 145, 0.65);
+      color: rgba(120, 113, 104, 0.8);
       pointer-events: none;
-      z-index: 6;
+      z-index: 1;
       user-select: none;
+      white-space: nowrap;
     }
 
     /* ───────── Connected 状态 ───────── */
@@ -559,7 +560,8 @@
       }
       .phone-frame,
       .phone-bezel,
-      .phone-side-btn {
+      .phone-side-btn,
+      .page-name {
         display: none !important;
       }
       .phone-screen {
@@ -576,6 +578,10 @@
 
   <!-- 手机舞台（设计稿 327.20 × 697.45） -->
   <div class="stage" id="stage">
+    <!-- 页面名称：显示在手机外壳之外（仅桌面） -->
+    <div class="page-name" id="pageName1">01 start</div>
+    <div class="page-name" id="pageName2">02 style list</div>
+
     <!-- 装饰：手机外壳（仅桌面显示） -->
     <div class="phone-frame"></div>
     <div class="phone-bezel"></div>
@@ -621,7 +627,6 @@
            PAGE 01 — Camera（默认）
            ================================ -->
       <section class="page active" id="page1">
-        <div class="page-name">01 start</div>
         <div class="p1-fillroll">Fill Roll</div>
 
         <div class="p1-title-wrap">
@@ -652,7 +657,6 @@
            PAGE 02 — Styles 列表
            ================================ -->
       <section class="page" id="page2">
-        <div class="page-name">02 style list</div>
         <!-- 返回箭头 -->
         <div class="p2-back" id="goToPage1" role="button" aria-label="返回相机">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -917,10 +921,16 @@
       page2.classList.toggle('active', !showPage1);
       // Connected 提示只在页面01显示
       connectedBar.style.display = showPage1 ? '' : 'none';
+      // 页面名称显示在手机外壳之外，只显示当前页
+      document.getElementById('pageName1').style.display = showPage1 ? '' : 'none';
+      document.getElementById('pageName2').style.display = showPage1 ? 'none' : '';
     }
 
     document.getElementById('goToPage2').addEventListener('click', () => showPage(false));
     document.getElementById('goToPage1').addEventListener('click', () => showPage(true));
+
+    // 初始化页面名称显示状态
+    showPage(true);
 
     // ───────── 标签切换（视觉，不做过滤演示） ─────────
     document.querySelectorAll('.p2-tab').forEach(tab => {
