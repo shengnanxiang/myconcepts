@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyConcepts · AiKen 相机 Demo</title>
+  <title>MyConcepts · 等待3小时冲扫的意义</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0f1115;
@@ -14,342 +17,447 @@
       --muted: #8b93a3;
       --accent: #6c8cff;
       --accent-2: #ff7a59;
-      --bezel: #b97a4f;
-      --phone-bg: #0b0b0d;
       --radius: 14px;
+
+      /* 胶片 App 主题色 —— 严格对齐 Figma */
+      --phone-frame-1: #d49275;
+      --phone-frame-2: #a06850;
+      --app-bg: #11100F;
+      --app-text: #F2ECE4;
+      --app-muted: #A39C91;
+      --app-card: #161513;
+      --app-border: #2C2927;
+      --chip-bg: #2C2927;
+      --chip-text: #E6DFD3;
+      --green: #4ade80;
+      /* 胶片色（Figma 精确值） */
+      --c-cinestill: #E53935;
+      --c-gold: #F6C83C;
+      --c-portra: #FCD02C;
+      --c-velvia: #008000;
+      --c-vision3: #385E77;
+      --c-hp5: #C9C9C9;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; height: 100%; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      font-family: "Space Mono", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
         "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       background: var(--bg);
       color: var(--text);
       height: 100vh;
       overflow: hidden;
     }
+
     .layout { display: flex; height: 100vh; width: 100%; }
 
-    /* ===== 左 2/3 ===== */
+    /* ---------- 左半边：展示区 (2/3) ---------- */
     .stage {
       flex: 0 0 66.6667%;
       max-width: 66.6667%;
-      display: flex;
-      flex-direction: column;
+      /* 沉浸式深色舞台：径向渐变 + 微噪点质感 */
+      background:
+        radial-gradient(120% 80% at 50% 0%, rgba(255,122,89,0.10) 0%, transparent 55%),
+        radial-gradient(90% 70% at 50% 100%, rgba(74,222,128,0.06) 0%, transparent 50%),
+        var(--stage-bg);
       border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
-    .stage__header {
-      padding: 20px 28px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 12px;
-    }
-    .stage__header h1 { font-size: 18px; margin: 0; font-weight: 600; }
-    .badge {
-      font-size: 12px; padding: 3px 10px; border-radius: 999px;
-      background: rgba(255, 122, 89, 0.15); color: var(--accent-2);
-      border: 1px solid rgba(255, 122, 89, 0.3);
-    }
+    /* 舞台底部柔光托底，让手机有「悬浮」感 */
     .stage__body {
       flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1.05fr;
-      gap: 24px;
-      padding: 28px;
-      overflow: auto;
-    }
-
-    /* 左侧：手机交互 */
-    .demo-wrap { display: flex; flex-direction: column; gap: 14px; }
-    .demo-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      overflow: hidden;
+    }
+    .card--app {
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      background: transparent;
+      border: none;
+      padding: 0;
+      flex: 0 0 auto;
     }
     .card__title {
       font-size: 13px; color: var(--muted);
       text-transform: uppercase; letter-spacing: 0.06em;
-    }
-    .step-bar {
-      display: flex; flex-wrap: wrap; gap: 6px;
-    }
-    .step-btn {
-      flex: 1 1 auto;
-      padding: 7px 10px;
-      font-size: 12px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .step-btn:hover { color: var(--text); border-color: var(--accent); }
-    .step-btn.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-    .phone-stage {
-      flex: 1;
-      display: flex; align-items: center; justify-content: center;
-      min-height: 520px;
+      margin-bottom: 14px;
     }
 
-    /* 真机手机框 */
+    /* ---------- 手机外壳 ---------- */
+    /* 用高度反推宽度：iPhone 14 Pro 比例 390:844 */
     .phone {
-      width: 290px;
-      height: 580px;
-      background: var(--phone-bg);
-      border-radius: 36px;
-      border: 8px solid var(--bezel);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.5),
-                  inset 0 0 0 2px #2a1a10;
+      flex: 0 0 auto;
+      height: 100%;
+      max-height: 100%;
+      aspect-ratio: 327.20 / 697.45;
+      border-radius: 44px;
+      padding: 7px;
+      background: linear-gradient(150deg, #2a2a2e 0%, #141416 45%, #0c0c0e 100%);
+      /* 多层阴影：贴地投影 + 悬浮光晕 + 边缘高光 */
+      box-shadow:
+        0 40px 80px -20px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(255,255,255,0.06),
+        inset 0 0 2px 1px rgba(255,255,255,0.12);
+      display: flex;
       position: relative;
-      overflow: hidden;
     }
-    .phone__notch {
-      position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
-      width: 110px; height: 22px; background: #000; border-radius: 0 0 14px 14px;
-      z-index: 5;
+    /* 侧边按键装饰 */
+    .phone::before,
+    .phone::after {
+      content: '';
+      position: absolute;
+      width: 3px;
+      background: linear-gradient(180deg, #3a3a3e, #1a1a1c);
+      border-radius: 2px;
+      left: -3px;
     }
+    .phone::before { top: 130px; height: 30px; }
+    .phone::after  { top: 170px; height: 60px; box-shadow: 0 64px 0 #2a2a2e; }
     .phone__screen {
-      position: absolute; inset: 6px;
-      border-radius: 30px;
-      background: #0b0b0d;
+      flex: 1;
+      border-radius: 44px;
+      background: var(--app-bg);
+      color: var(--app-text);
+      position: relative;
       overflow: hidden;
       display: flex; flex-direction: column;
     }
-    .phone__statusbar {
-      padding: 14px 22px 0;
-      display: flex; justify-content: space-between;
-      font-size: 12px; color: #fff; font-weight: 600;
+    .phone__notch {
+      position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 26px;
+      background: #000; border-radius: 14px; z-index: 10;
     }
-    .phone__screen-body {
-      flex: 1; position: relative; overflow: hidden;
-    }
-    .phone__tabbar {
-      border-top: 1px solid #1c1c1c;
-      padding: 10px 0 18px;
-      display: flex; justify-content: space-around;
-      font-size: 11px;
-    }
-    .phone__tabbar .tab {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      color: #555; cursor: pointer; user-select: none;
-    }
-    .phone__tabbar .tab svg { width: 22px; height: 22px; }
-    .phone__tabbar .tab.active { color: #fff; }
-    .phone__tabbar .tab.active svg { stroke: #fff; fill: none; }
 
-    /* ===== Camera 页 ===== */
-    .cam-screen { padding: 14px 20px 0; height: 100%; display: flex; flex-direction: column; }
-    .connected {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; color: #9aa0a6; margin-bottom: 18px;
+    /* ---------- App 屏幕通用 ---------- */
+    .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+    .screen.hidden { display: none; }
+    /* 所有屏幕统一内边距，保证手机尺寸恒定不闪烁 */
+    .app-inner { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    /* ---------- 相机主屏（Figma 精确还原） ---------- */
+    .camera-screen { align-items: center; }
+    .cam-top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      width: 100%; padding: 24px 24px 16px;
+      position: relative; z-index: 5;
     }
-    .connected::before {
-      content: ""; width: 7px; height: 7px; border-radius: 50%;
-      background: #2ecc71; box-shadow: 0 0 6px #2ecc71;
+    .cam-conn { display: flex; align-items: center; gap: 8px; }
+    .cam-conn .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px rgba(74,222,128,0.6);
     }
-    .cam-style {
-      text-align: center; font-size: 16px; font-weight: 700;
-      letter-spacing: 0.06em; color: #fff; margin-bottom: 18px; min-height: 22px;
+    .cam-conn span {
+      font-size: 12px; color: var(--app-muted);
+      letter-spacing: 1.2px; font-weight: 400;
     }
-    .cam-style.has-style { color: #ff3b3b; }
-    .ring-wrap {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      position: relative;
+    .cam-fill {
+      font-size: 10px; color: var(--app-muted); letter-spacing: 1px; font-weight: 400;
     }
-    .ring {
-      width: 180px; height: 180px; border-radius: 50%;
-      background:
-        conic-gradient(var(--ring-color, #2a2a2a) 0deg 360deg);
+
+    /* 胶片名（点击进入选择） */
+    .film-title-btn {
+      background: none; border: none; cursor: pointer;
+      width: 100%; padding: 100px 0 4px;
       display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 5; font-family: inherit;
+    }
+    .film-title {
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 0.02em; color: var(--app-text);
+      text-align: center; line-height: 1.15;
+    }
+    .film-title.cinestill { color: var(--c-cinestill); }
+    .film-title.gold { color: var(--c-gold); }
+    .film-title.portra { color: var(--c-portra); }
+    .film-title.velvia { color: var(--c-velvia); }
+    .film-title.vision3 { color: var(--c-vision3); }
+    .film-title.hp5 { color: var(--c-hp5); }
+    .film-title.dim { color: var(--app-muted); }
+
+    /* 环形进度 224px */
+    .ring-wrap {
       position: relative;
+      width: 224px; height: 224px;
+      margin: 24px 0;
     }
-    .ring::before {
-      content: ""; position: absolute; inset: 8px;
-      border-radius: 50%; background: #0b0b0d;
+    .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
+    .ring-bg { fill: none; stroke: #1f1d1b; stroke-width: 4; }
+    .ring-fg {
+      fill: none; stroke-width: 4; stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease, stroke 0.3s;
     }
-    .ring-inner {
-      position: relative; text-align: center; color: #fff; z-index: 1;
-    }
-    .ring-num { font-size: 38px; font-weight: 700; letter-spacing: 0.04em; }
-    .ring-label { font-size: 11px; color: #888; letter-spacing: 0.2em; margin-top: 2px; }
-    .unload-btn {
-      margin: 18px 0 8px;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      background: #1a1a1a;
-      color: #555;
-      font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
-      cursor: not-allowed;
-      transition: all 0.2s;
-    }
-    .unload-btn span { margin-right: 8px; }
-    .unload-btn.enabled { background: #ff3b3b; color: #fff; cursor: pointer; }
-    .unload-btn.enabled:hover { background: #ff5252; }
-
-    /* ===== Style List 页 ===== */
-    .style-screen { padding: 14px 20px 0; height: 100%; display: flex; flex-direction: column; }
-    .style-screen__top {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 18px; color: #fff; margin-bottom: 14px;
-    }
-    .back-btn { font-size: 18px; color: #fff; cursor: pointer; user-select: none; }
-    .filters {
-      display: flex; gap: 14px; font-size: 11px; color: #777;
-      margin-bottom: 14px; letter-spacing: 0.08em;
-    }
-    .filters span { cursor: pointer; padding-bottom: 6px; }
-    .filters span.active { color: #fff; border-bottom: 2px solid #fff; }
-    .style-list { flex: 1; overflow-y: auto; padding-bottom: 12px; }
-    .style-list::-webkit-scrollbar { width: 0; }
-    .style-card {
-      background: #15151a; border-radius: 10px; padding: 14px; margin-bottom: 12px;
-      border: 1px solid #222;
-    }
-    .style-card__head {
-      display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: 8px;
-    }
-    .style-card__name { font-size: 14px; font-weight: 700; letter-spacing: 0.05em; }
-    .style-card__name.cine { color: #ff3b3b; }
-    .style-card__name.gold { color: #f5c518; }
-    .style-card__exp { font-size: 10px; color: #888; letter-spacing: 0.08em; }
-    .style-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-    .style-tags span {
-      font-size: 9px; padding: 3px 8px; border-radius: 4px;
-      background: #2a2a2a; color: #aaa; letter-spacing: 0.08em;
-    }
-    .style-thumbs {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 6px; margin-bottom: 12px;
-    }
-    .style-thumbs div {
-      aspect-ratio: 1; border-radius: 4px;
-      background-size: cover; background-position: center;
-    }
-    .select-btn {
-      width: 100%; padding: 10px; border: none; border-radius: 6px;
-      color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      cursor: pointer;
-    }
-    .select-btn.cine { background: #ff3b3b; }
-    .select-btn.gold { background: #f5c518; color: #111; }
-    .select-btn.selected { background: #2a2a2a; color: #999; }
-
-    /* ===== 卷轴详情页（步骤 06）===== */
-    .roll-screen { padding: 12px 18px 0; height: 100%; display: flex; flex-direction: column; }
-    .roll-head {
-      display: flex; justify-content: space-between; align-items: center;
-      color: #ff3b3b; font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
-      margin-bottom: 2px;
-    }
-    .roll-head .sub { color: #888; font-size: 10px; letter-spacing: 0.1em; font-weight: 400; }
-    .roll-back, .roll-select {
-      cursor: pointer; color: #fff; user-select: none;
-    }
-    .roll-grid {
-      flex: 1; overflow-y: auto; padding: 10px 0;
-      display: grid; grid-template-columns: repeat(3, 1fr);
+    .ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       gap: 6px;
     }
-    .roll-grid::-webkit-scrollbar { width: 0; }
-    .roll-cell {
-      position: relative; aspect-ratio: 1;
-      background: #111; border-radius: 4px;
-      background-size: cover; background-position: center;
+    .ring-count {
+      font-size: 60px; font-weight: 400; line-height: 1;
+      color: var(--app-text); letter-spacing: -0.02em;
+      background: none; border: none; font-family: inherit;
+      padding: 4px 18px; cursor: pointer; border-radius: 8px;
+      transition: background 0.15s;
     }
-    .roll-cell::after {
-      content: attr(data-num); position: absolute; bottom: 2px; left: 0; right: 0;
-      text-align: center; font-size: 8px; color: #f5c518; letter-spacing: 0.1em;
-    }
-    .save-pill {
-      align-self: center; margin: 8px 0 12px;
-      padding: 10px 28px; border-radius: 999px;
-      background: rgba(255,255,255,0.95); color: #111;
-      font-size: 12px; font-weight: 600;
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .roll-cell.skeleton {
-      background: linear-gradient(110deg, #1a1a1a 8%, #2a2a2a 18%, #1a1a1a 33%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s linear infinite;
-    }
-    @keyframes shimmer {
-      to { background-position: -200% 0; }
+    .ring-count:hover { background: rgba(255,255,255,0.05); }
+    .ring-label {
+      font-size: 10px; letter-spacing: 1px;
+      color: var(--app-muted); font-weight: 400;
     }
 
-    /* ===== Dark Room 页（步骤 07）===== */
-    .darkroom-list { padding: 12px 18px 0; height: 100%; display: flex; flex-direction: column; }
-    .dr-head { display: flex; justify-content: space-between; padding-bottom: 14px; color: #fff; }
-    .dr-head .select { color: #888; font-size: 13px; cursor: pointer; }
-    .dr-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 0; border-bottom: 1px solid #1c1c1c; cursor: pointer;
+    /* 底部卸载按钮（Figma #2C2927 / #E6DFD3，圆角 6px） */
+    .unload-btn {
+      width: 240px; max-width: 240px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      background: var(--chip-bg); color: var(--chip-text);
+      border: none; border-radius: 6px;
+      font-size: 11px; font-weight: 400; letter-spacing: 1.1px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: inherit;
+      box-shadow: 0 4px 6px -4px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1);
+      transition: filter 0.15s, transform 0.1s;
     }
-    .dr-thumb {
-      width: 56px; height: 56px; border-radius: 6px; flex-shrink: 0;
-      background-size: cover; background-position: center;
-    }
-    .dr-meta { flex: 1; }
-    .dr-meta .name { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 4px; }
-    .dr-meta .sub { font-size: 10px; color: #777; letter-spacing: 0.06em; }
-    .dr-arrow { color: #555; font-size: 16px; }
+    .unload-btn:hover { filter: brightness(1.15); }
+    .unload-btn:active { transform: scale(0.98); }
 
-    /* 右侧输出区 */
-    .output-card { display: flex; flex-direction: column; }
-    .output {
-      flex: 1; min-height: 520px;
-      border-radius: 14px;
-      background: #0b0b0d
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='40' height='40' fill='%230b0b0d'/><path d='M0 20h40M20 0v40' stroke='%231a1a1a' stroke-width='1'/></svg>");
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted); font-size: 13px; text-align: center;
-      padding: 24px; position: relative; overflow: hidden;
+    /* ---------- 底部 Tab Bar ---------- */
+    .tab-bar {
+      display: flex; justify-content: space-around;
+      padding: 12px 0 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: auto;
+      align-self: stretch; width: 100%;
+      position: relative; z-index: 5;
     }
-    .output .empty { line-height: 1.7; }
-    .output .filmstrip {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 18px;
-      padding: 24px;
+    .tab {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      background: none; border: none; color: var(--app-muted);
+      font-size: 9px; cursor: pointer;
+      transition: color 0.15s;
+      font-family: inherit; letter-spacing: 0.05em; padding: 4px 10px;
     }
-    .film-row {
-      display: flex; gap: 10px;
-    }
-    .film-frame {
-      width: 110px; height: 110px;
-      background-size: cover; background-position: center;
-      border-radius: 4px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-      position: relative;
-    }
-    .film-frame::before, .film-frame::after {
-      content: ""; position: absolute; left: 0; right: 0; height: 8px;
-      background: #111;
-      background-image: linear-gradient(90deg, #000 0 4px, transparent 4px 14px);
-      background-size: 14px 8px;
-    }
-    .film-frame::before { top: -8px; }
-    .film-frame::after { bottom: -8px; }
-    .film-caption { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
-    .film-caption strong { color: var(--accent-2); }
+    .tab.active { color: var(--app-text); }
+    .tab svg { width: 22px; height: 22px; }
+    .tab:hover { color: var(--app-text); }
 
-    /* ===== 右侧留言区 ===== */
-    .comments {
-      flex: 1; display: flex; flex-direction: column;
-      background: var(--panel); overflow: hidden;
+    /* Home indicator */
+    .home-indicator {
+      width: 110px; height: 4px;
+      background: var(--app-text); opacity: 0.5;
+      border-radius: 2px; margin: 0 auto 6px;
     }
+
+    /* ---------- 选胶卷屏（Figma 精确还原） ---------- */
+    .select-screen { padding: 0; }
+    .select-top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 24px 24px 16px; width: 100%;
+      position: relative; z-index: 5;
+    }
+    .select-title {
+      font-size: 12px; color: var(--app-muted); letter-spacing: 1.2px; font-weight: 400;
+    }
+    .select-tabs {
+      display: flex; gap: 22px;
+      padding: 4px 24px 12px;
+      font-size: 10px; font-weight: 400;
+      letter-spacing: 1px;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .select-tabs::-webkit-scrollbar { display: none; }
+    .select-tab {
+      color: var(--app-muted); cursor: pointer;
+      padding-bottom: 8px; white-space: nowrap;
+      border-bottom: 1.5px solid transparent;
+      font-family: inherit; background: none; border-top: none; border-left: none; border-right: none;
+    }
+    .select-tab.active { color: #fff; border-bottom-color: #fff; }
+    .film-list {
+      flex: 1; overflow-y: auto;
+      padding: 8px 18px 12px;
+      display: flex; flex-direction: column; gap: 18px;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
+    }
+    .film-list::-webkit-scrollbar { width: 4px; }
+    .film-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .film-card {
+      background: var(--app-card);
+      border: 1px solid var(--app-border);
+      border-radius: 8px; padding: 16px;
+    }
+    .film-card-head {
+      display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;
+    }
+    .film-card-name {
+      font-size: 20px; font-weight: 700; letter-spacing: 0.02em; line-height: 1.1;
+    }
+    .film-card-name.cinestill { color: var(--c-cinestill); }
+    .film-card-name.gold { color: var(--c-gold); }
+    .film-card-name.portra { color: var(--c-portra); }
+    .film-card-name.velvia { color: var(--c-velvia); }
+    .film-card-name.vision3 { color: var(--c-vision3); }
+    .film-card-name.hp5 { color: var(--c-hp5); }
+    .film-card-exp {
+      font-size: 10px; color: var(--app-muted); letter-spacing: 1px; font-weight: 400; white-space: nowrap;
+    }
+    .film-tags { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+    .film-tag {
+      font-size: 10px; padding: 4px 9px; border-radius: 4px;
+      background: var(--chip-bg); color: var(--chip-text); letter-spacing: 0.5px; font-weight: 400;
+    }
+    .film-previews {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 4px; margin-bottom: 14px;
+    }
+    .film-preview {
+      aspect-ratio: 1; border-radius: 3px;
+      background-size: cover; background-position: center; position: relative; overflow: hidden;
+    }
+    .film-select-btn {
+      width: 100%; padding: 12px; border: none; border-radius: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.1px;
+      cursor: pointer; transition: filter 0.15s, transform 0.1s;
+      font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .film-select-btn.cinestill { background: var(--c-cinestill); color: #fff; }
+    .film-select-btn.gold { background: var(--c-gold); color: #000; }
+    .film-select-btn.portra { background: var(--c-portra); color: #000; }
+    .film-select-btn.velvia { background: var(--c-velvia); color: #fff; }
+    .film-select-btn.vision3 { background: var(--c-vision3); color: #fff; }
+    .film-select-btn.hp5 { background: var(--c-hp5); color: #000; }
+    .film-select-btn:hover { filter: brightness(1.1); }
+    .film-select-btn:active { transform: scale(0.98); }
+
+    /* ---------- 冲扫中 ---------- */
+    .develop-screen { align-items: center; justify-content: center; padding: 0 22px; }
+    .develop-anim {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent, var(--c-cinestill));
+      animation: spin 1s linear infinite; margin-bottom: 24px; position: relative;
+    }
+    .develop-anim::after { content: ''; position: absolute; inset: 8px; background: var(--app-bg); border-radius: 50%; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .develop-text { font-size: 12px; letter-spacing: 1.2px; color: var(--app-text); font-weight: 700; }
+    .develop-sub { font-size: 10px; color: var(--app-muted); margin-top: 10px; letter-spacing: 1px; font-weight: 400; }
+
+    /* ---------- 胶卷条屏 ---------- */
+    .strip-screen { padding: 0 18px; }
+    .strip-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 6px 14px; }
+    .strip-title { text-align: center; flex: 1; }
+    .strip-title .name {
+      font-size: 20px; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .strip-title .name.cinestill { color: var(--c-cinestill); }
+    .strip-title .name.gold { color: var(--c-gold); }
+    .strip-title .name.portra { color: var(--c-portra); }
+    .strip-title .name.velvia { color: var(--c-velvia); }
+    .strip-title .name.vision3 { color: var(--c-vision3); }
+    .strip-title .name.hp5 { color: var(--c-hp5); }
+    .strip-title .sub { font-size: 10px; color: var(--app-muted); margin-top: 4px; letter-spacing: 1px; }
+    .strip-list {
+      flex: 1; overflow-y: auto; padding: 4px 0 6px;
+      display: flex; flex-direction: column; gap: 6px;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
+    }
+    .strip-list::-webkit-scrollbar { width: 4px; }
+    .strip-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .strip-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      background: #0a0a0a; border-radius: 4px; padding: 6px 8px; position: relative;
+    }
+    .frame {
+      aspect-ratio: 3/2; border-radius: 2px; background-size: cover; background-position: center;
+      position: relative; overflow: hidden; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 4px 4px 2px;
+    }
+    .frame-top {
+      font-size: 6px; color: rgba(255,255,255,0.4); letter-spacing: 0.05em; line-height: 1;
+      white-space: nowrap; overflow: hidden;
+    }
+    .frame-bottom {
+      font-size: 7px; font-weight: 700; color: rgba(255,255,255,0.8); letter-spacing: 0.05em;
+      line-height: 1; text-shadow: 0 1px 1px rgba(0,0,0,0.5); align-self: flex-end;
+    }
+    .frame.empty { background: #141414; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .frame.empty .frame-top, .frame.empty .frame-bottom { display: none; }
+    .save-all-btn {
+      margin: 10px auto 14px; padding: 10px 22px;
+      background: #fff; color: #000; border: none; border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+      transition: transform 0.1s; font-family: inherit;
+    }
+    .save-all-btn:hover { transform: translateY(-1px); }
+    .save-all-btn svg { width: 12px; height: 12px; }
+
+    /* ---------- 暗房列表 ---------- */
+    .darkroom-screen { padding: 0 18px; }
+    .darkroom-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 6px 16px; }
+    .darkroom-select-btn {
+      background: none; border: none; color: var(--app-muted); font-size: 11px;
+      cursor: pointer; letter-spacing: 1px; font-weight: 400; font-family: inherit; padding: 6px 4px;
+    }
+    .darkroom-select-btn:hover { color: var(--app-text); }
+    .darkroom-list {
+      flex: 1; overflow-y: auto; padding: 0 4px 8px;
+      display: flex; flex-direction: column; gap: 12px;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
+    }
+    .darkroom-list::-webkit-scrollbar { width: 4px; }
+    .darkroom-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .roll-card {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+      background: var(--app-card); border: 1px solid var(--app-border);
+      border-radius: 8px; cursor: pointer; transition: border-color 0.2s, transform 0.1s;
+    }
+    .roll-card:hover { border-color: #3a3633; transform: translateY(-1px); }
+    .roll-thumb {
+      width: 64px; height: 48px; border-radius: 6px;
+      background-size: cover; background-position: center; flex-shrink: 0;
+      position: relative; overflow: hidden;
+    }
+    .roll-info { flex: 1; min-width: 0; }
+    .roll-name { font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
+    .roll-name.cinestill { color: var(--c-cinestill); }
+    .roll-name.gold { color: var(--c-gold); }
+    .roll-name.portra { color: var(--c-portra); }
+    .roll-name.velvia { color: var(--c-velvia); }
+    .roll-name.vision3 { color: var(--c-vision3); }
+    .roll-name.hp5 { color: var(--c-hp5); }
+    .roll-meta { font-size: 10px; color: var(--app-muted); margin-top: 4px; letter-spacing: 0.08em; font-weight: 400; }
+    .roll-arrow { color: var(--app-muted); font-size: 18px; font-weight: 300; }
+    .darkroom-empty {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; color: var(--app-muted); font-size: 11px;
+      letter-spacing: 0.2em; font-weight: 700; padding: 40px 20px; text-align: center;
+    }
+    .darkroom-empty svg { width: 40px; height: 40px; opacity: 0.3; }
+
+    /* ---------- More 屏 ---------- */
+    .more-screen { padding: 0 18px; align-items: stretch; }
+    .more-section { padding: 12px 0; }
+    .more-section-title {
+      font-size: 10px; color: var(--app-muted); letter-spacing: 0.2em; font-weight: 700; margin-bottom: 10px;
+    }
+    .more-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid var(--app-border);
+      font-size: 13px; cursor: pointer;
+    }
+    .more-row:hover { color: var(--c-cinestill); }
+    .more-row-arrow { color: var(--app-muted); }
+
+
+    /* ---------- 右半边：留言区 (1/3) ---------- */
+    .comments { flex: 1; display: flex; flex-direction: column; background: var(--panel); overflow: hidden; }
     .comments__header { padding: 20px 22px; border-bottom: 1px solid var(--border); }
     .comments__header h2 { font-size: 16px; margin: 0; font-weight: 600; }
     .comments__header span { font-size: 12px; color: var(--muted); }
@@ -359,8 +467,8 @@
     }
     .comment { display: flex; gap: 12px; }
     .comment__avatar {
-      flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%;
-      background: var(--accent); color: #fff;
+      flex: 0 0 36px; width: 36px; height: 36px;
+      border-radius: 50%; background: var(--accent); color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 600;
     }
@@ -369,105 +477,214 @@
     .comment__name { font-size: 14px; font-weight: 600; }
     .comment__time { font-size: 11px; color: var(--muted); }
     .comment__text {
-      font-size: 14px; line-height: 1.55; margin: 0; word-break: break-word;
+      font-size: 14px; line-height: 1.55;
+      color: var(--text); margin: 0; word-break: break-word;
     }
-    .comment__empty { color: var(--muted); font-size: 13px; text-align: center; margin-top: 40px; }
+    .comment__empty {
+      color: var(--muted); font-size: 13px;
+      text-align: center; margin-top: 40px;
+    }
     .comments__form {
-      border-top: 1px solid var(--border); padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      padding: 14px 18px;
       display: flex; flex-direction: column; gap: 10px;
     }
     .comments__form input.name {
       background: var(--panel-2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 8px 12px; color: var(--text);
-      font-size: 13px; outline: none;
+      border-radius: 8px; padding: 8px 12px;
+      color: var(--text); font-size: 13px; outline: none;
     }
     .comments__form input.name:focus { border-color: var(--accent); }
     .comments__form .row { display: flex; gap: 10px; }
     .comments__form textarea {
       flex: 1; resize: none; height: 56px;
       background: var(--panel-2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 10px 12px; color: var(--text);
-      font-size: 14px; font-family: inherit; outline: none;
+      border-radius: 8px; padding: 10px 12px;
+      color: var(--text); font-size: 14px;
+      font-family: inherit; outline: none;
     }
     .comments__form textarea:focus { border-color: var(--accent); }
     .comments__form button {
-      padding: 0 18px; background: var(--accent); color: #fff;
-      border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+      flex: 0 0 auto; align-self: stretch; padding: 0 18px;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
       cursor: pointer; transition: filter 0.15s;
     }
     .comments__form button:hover { filter: brightness(1.08); }
+    .comments__form button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    @media (max-width: 980px) {
+    @media (max-width: 900px) {
       .layout { flex-direction: column; height: auto; }
       .stage { flex: none; max-width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
       body { overflow: auto; }
-      .stage__body { grid-template-columns: 1fr; }
+      .stage__body { padding: 24px; }
     }
   </style>
 </head>
 <body>
   <div class="layout">
-    <!-- ===== 左 2/3 ===== -->
+    <!-- 左半边：展示区（直接手机画面） -->
     <section class="stage">
-      <div class="stage__header">
-        <h1>MyConcepts · AiKen Camera</h1>
-        <span class="badge">开发中 · Demo</span>
-      </div>
       <div class="stage__body">
+        <!-- 手机交互 App -->
+        <div class="card card--app">
+          <div class="phone">
+            <div class="phone__screen">
+              <div class="phone__notch"></div>
 
-        <!-- 手机交互 Demo -->
-        <div class="demo-wrap">
-          <div class="demo-card">
-            <div class="card__title">App 交互预览（点击步骤切换）</div>
-            <div class="step-bar" id="stepBar">
-              <button class="step-btn active" data-step="1">01 初始</button>
-              <button class="step-btn" data-step="2">02 已拍 29</button>
-              <button class="step-btn" data-step="3">03 风格列表</button>
-              <button class="step-btn" data-step="4">04 已选风格</button>
-              <button class="step-btn" data-step="5">05 拍满 36</button>
-              <button class="step-btn" data-step="6">06 卷轴照片</button>
-              <button class="step-btn" data-step="7">07 Dark Room</button>
-            </div>
+              <!-- 屏幕 1: 相机主屏 -->
+              <div class="screen camera-screen" id="screen-camera">
+                <div class="cam-top">
+                  <div class="cam-conn"><span class="dot"></span><span>Connected</span></div>
+                  <div class="cam-fill">Fill Roll</div>
+                </div>
 
-            <div class="phone-stage">
-              <div class="phone">
-                <div class="phone__notch"></div>
-                <div class="phone__screen">
-                  <div class="phone__statusbar">
-                    <span>9:41</span>
-                    <span style="opacity:.8">📶 🔋</span>
-                  </div>
-                  <div class="phone__screen-body" id="phoneBody">
-                    <!-- JS 渲染 -->
-                  </div>
-                  <div class="phone__tabbar" id="tabBar">
-                    <div class="tab active" data-tab="camera">
-                      <svg viewBox="0 0 24 24" stroke="#555" stroke-width="1.6" fill="none"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/></svg>
-                      Camera
-                    </div>
-                    <div class="tab" data-tab="style">
-                      <svg viewBox="0 0 24 24" stroke="#555" stroke-width="1.6" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
-                      Style
-                    </div>
-                    <div class="tab" data-tab="darkroom">
-                      <svg viewBox="0 0 24 24" stroke="#555" stroke-width="1.6" fill="none"><path d="M4 7h16M6 7v12a1 1 0 001 1h10a1 1 0 001-1V7M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2"/></svg>
-                      Dark Room
-                    </div>
+                <button class="film-title-btn" id="film-title-btn">
+                  <span class="film-title dim" id="film-title">选择风格</span>
+                </button>
+
+                <div class="ring-wrap">
+                  <svg viewBox="0 0 224 224">
+                    <circle class="ring-bg" cx="112" cy="112" r="106"/>
+                    <circle class="ring-fg" id="ring-fg" cx="112" cy="112" r="106"
+                      stroke-dasharray="665" stroke-dashoffset="665"/>
+                  </svg>
+                  <div class="ring-center">
+                    <button class="ring-count" id="ring-count-btn">36</button>
+                    <div class="ring-label">Left</div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- 输出照片效果 -->
-        <div class="output-card">
-          <div class="demo-card">
-            <div class="card__title">最终输出照片</div>
-            <div class="output" id="output">
-              <div class="empty">
-                点击上方的「06 卷轴照片」或「07 Dark Room」<br>
-                即可在右侧区域看到套用胶片风格后的照片输出效果
+                <button class="unload-btn" id="unload-btn">
+                  <span id="unload-label">提前卸载</span>
+                </button>
+
+                <nav class="tab-bar">
+                  <button class="tab active" data-tab="camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    CAMERA
+                  </button>
+                  <button class="tab" data-tab="darkroom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
+                    </svg>
+                    DARK ROOM
+                  </button>
+                  <button class="tab" data-tab="more">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                    MORE
+                  </button>
+                </nav>
+                <div class="home-indicator"></div>
+              </div>
+
+              <!-- 屏幕 2: 选胶卷 -->
+              <div class="screen select-screen hidden" id="screen-select">
+                <div class="select-top">
+                  <div class="select-title">SELECT A STYLE</div>
+                  <button class="back-btn" data-action="back-to-camera" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--app-muted);cursor:pointer;font-family:inherit">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                </div>
+                <div class="select-tabs">
+                  <button class="select-tab active" data-cat="all">all</button>
+                  <button class="select-tab" data-cat="bw">b&amp;w</button>
+                  <button class="select-tab" data-cat="warm">warm</button>
+                  <button class="select-tab" data-cat="cold">cold</button>
+                  <button class="select-tab" data-cat="style">style</button>
+                </div>
+                <div class="film-list" id="film-list">
+                  <!-- 动态生成 -->
+                </div>
+                <div class="home-indicator"></div>
+              </div>
+
+              <!-- 屏幕 3: 冲扫中 -->
+              <div class="screen develop-screen hidden" id="screen-develop">
+                <div class="develop-anim"></div>
+                <div class="develop-text" id="develop-text">DEVELOPING</div>
+                <div class="develop-sub" id="develop-sub">UNLOADING · 36 FRAMES</div>
+              </div>
+
+              <!-- 屏幕 4: 胶卷条 -->
+              <div class="screen strip-screen hidden" id="screen-strip">
+                <div class="strip-header">
+                  <button class="back-btn" data-action="back-to-camera">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <div class="strip-title">
+                    <div class="name" id="strip-film-name">CINESTILL 800T</div>
+                    <div class="sub" id="strip-frame-count">36 张</div>
+                  </div>
+                  <div style="width:32px"></div>
+                </div>
+                <div class="strip-list" id="strip-list"></div>
+                <button class="save-all-btn" id="save-all-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v12M7 11l5 5 5-5"/></svg>
+                  SAVE ALL
+                </button>
+                <div class="home-indicator"></div>
+              </div>
+
+              <!-- 屏幕 5: 暗房列表 -->
+              <div class="screen darkroom-screen hidden" id="screen-darkroom">
+                <div class="darkroom-list" id="darkroom-list"></div>
+                <nav class="tab-bar">
+                  <button class="tab" data-tab="camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    CAMERA
+                  </button>
+                  <button class="tab active" data-tab="darkroom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
+                    </svg>
+                    DARK ROOM
+                  </button>
+                  <button class="tab" data-tab="more">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                    MORE
+                  </button>
+                </nav>
+                <div class="home-indicator"></div>
+              </div>
+
+              <!-- 屏幕 6: More -->
+              <div class="screen more-screen hidden" id="screen-more">
+                <div class="more-section" style="padding-top:28px">
+                  <div class="more-section-title">SETTINGS</div>
+                  <div class="more-row"><span>通知</span><span class="more-row-arrow">›</span></div>
+                  <div class="more-row"><span>外观</span><span class="more-row-arrow">›</span></div>
+                  <div class="more-row"><span>关于</span><span class="more-row-arrow">›</span></div>
+                </div>
+                <nav class="tab-bar">
+                  <button class="tab" data-tab="camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    CAMERA
+                  </button>
+                  <button class="tab" data-tab="darkroom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-9 9"/>
+                    </svg>
+                    DARK ROOM
+                  </button>
+                  <button class="tab active" data-tab="more">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 7h16M4 12h16M4 17h16"/>
+                    </svg>
+                    MORE
+                  </button>
+                </nav>
+                <div class="home-indicator"></div>
               </div>
             </div>
           </div>
@@ -476,7 +693,7 @@
       </div>
     </section>
 
-    <!-- ===== 右 1/3 留言 ===== -->
+    <!-- 右半边：留言区 -->
     <aside class="comments">
       <div class="comments__header">
         <h2>留言互动</h2>
@@ -496,369 +713,550 @@
   </div>
 
   <script>
-    /* ===== 状态管理 ===== */
-    const state = {
-      currentStep: 1,            // 当前演示的步骤
-      shotsLeft: 36,             // 剩余张数
-      selectedStyle: null,       // 选中的风格
-      devStyle: 'cinestill',     // 当前 demo 演示默认风格
-      outputVisible: false,
-      activeRoll: 'chengHuangMiao'
+  // =================== 胶片相机 App 逻辑 ===================
+  const FILMS = [
+    {
+      id: 'cinestill',
+      name: 'CINESTILL 800T',
+      cssClass: 'cinestill',
+      tags: ['Tungsten', 'Halation', 'Cold'],
+      cat: 'cold',
+      exp: '36 EXP',
+      previews: [
+        'photos/日常/DSC_0673.jpg',
+        'photos/日常/DSC_0666.jpg',
+        'photos/日常/DSC_3840.jpg'
+      ]
+    },
+    {
+      id: 'gold',
+      name: 'GOLD 200',
+      cssClass: 'gold',
+      tags: ['Warm', 'Vintage', 'Classic'],
+      cat: 'warm',
+      exp: '36 EXP',
+      previews: [
+        'photos/熟悉的地方/DSC_0180.jpg',
+        'photos/熟悉的地方/DSC_0183.jpg',
+        'photos/熟悉的地方/NIK_2009.jpg'
+      ]
+    },
+    {
+      id: 'hp5',
+      name: 'HP5 Plus',
+      cssClass: 'hp5',
+      tags: ['B&W', 'High Contrast', 'Grainy'],
+      cat: 'bw',
+      exp: '36 EXP',
+      previews: [
+        'photos/黑白/DSC_0440.jpg',
+        'photos/黑白/DSC_3546.jpg',
+        'photos/黑白/NIK_1940.jpg'
+      ]
+    },
+    {
+      id: 'velvia',
+      name: 'VELVIA 50',
+      cssClass: 'velvia',
+      tags: ['Vivid', 'Saturated', 'Landscape'],
+      cat: 'style',
+      exp: '36 EXP',
+      previews: [
+        'photos/城隍庙/DSC_0745.jpg',
+        'photos/城隍庙/DSC_0770.jpg',
+        'photos/城隍庙/DSC_0798.jpg'
+      ]
+    },
+    {
+      id: 'portra',
+      name: 'PORTRA 400',
+      cssClass: 'portra',
+      tags: ['Natural', 'Skin Tone', 'Portrait'],
+      cat: 'warm',
+      exp: '36 EXP',
+      previews: [
+        'photos/熟悉的地方/DSC_0183.jpg',
+        'photos/熟悉的地方/DSC_0180.jpg',
+        'photos/小五郎/DSC_9035.jpg'
+      ]
+    },
+    {
+      id: 'vision3',
+      name: 'VISION3 500T',
+      cssClass: 'vision3',
+      tags: ['Cinematic', 'Fine Grain', 'Cold'],
+      cat: 'cold',
+      exp: '36 EXP',
+      previews: [
+        'photos/日常/DSC_0666.jpg',
+        'photos/日常/DSC_3840.jpg',
+        'photos/小五郎/DSC_9035.jpg'
+      ]
+    }
+  ];
+
+  // 不同胶卷的色彩调色板（用于胶卷帧样片）
+  const FILM_PALETTES = {
+    cinestill: [
+      ['#0a1f3d', '#e94560', '#1a1a2e'],
+      ['#16213e', '#ff6b6b', '#533483'],
+      ['#1a3a52', '#c83737', '#2a1b3d'],
+      ['#2d1b4e', '#e94560', '#0f3460']
+    ],
+    gold: [
+      ['#f4a261', '#e76f51', '#264653'],
+      ['#f6c90e', '#e07a5f', '#3d2c2e'],
+      ['#d4a574', '#b8845f', '#5c3d2e'],
+      ['#f6bd60', '#f7ede2', '#84a59d']
+    ],
+    hp5: [
+      ['#3a3a3a', '#9a9a9a', '#1a1a1a'],
+      ['#555555', '#b0b0b0', '#2a2a2a'],
+      ['#444444', '#8a8a8a', '#1e1e1e'],
+      ['#666666', '#cccccc', '#333333']
+    ],
+    velvia: [
+      ['#2d5a3d', '#f4a261', '#1a3a2e'],
+      ['#1a6b3a', '#e07a5f', '#0d2818'],
+      ['#3a7d44', '#f6bd60', '#1b3a2a'],
+      ['#2e8b57', '#e8c547', '#143d2a']
+    ]
+  };
+
+  function previewStyle(seed, filmId) {
+    const palette = FILM_PALETTES[filmId] || FILM_PALETTES.cinestill;
+    const idx = seed % palette.length;
+    const [c1, c2, c3] = palette[idx];
+    const angle = (seed * 47) % 360;
+    return `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+  }
+
+  // 暗房列表 —— 来自 photos 文件夹，每个文件夹一卷胶卷
+  const PHOTO_ROLLS = [
+    { folder: '小五郎', film: 'cinestill', cssClass: 'cinestill', name: 'CINESTILL 800T', count: 34,
+      thumb: 'photos/小五郎/DSC_9035.jpg' },
+    { folder: '日常', film: 'cinestill', cssClass: 'cinestill', name: 'CINESTILL 800T', count: 18,
+      thumb: 'photos/日常/DSC_0673.jpg' },
+    { folder: '熟悉的地方', film: 'gold', cssClass: 'gold', name: 'GOLD 200', count: 18,
+      thumb: 'photos/熟悉的地方/DSC_0180.jpg' },
+    { folder: '城隍庙', film: 'velvia', cssClass: 'velvia', name: 'Velvia 50', count: 26,
+      thumb: 'photos/城隍庙/DSC_0745.jpg' },
+    { folder: '黑白', film: 'hp5', cssClass: 'hp5', name: 'HP5 Plus', count: 14,
+      thumb: 'photos/黑白/DSC_0440.jpg' }
+  ];
+
+  function formatDate(d) {
+    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    return `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日`;
+  }
+
+  // 暗房列表中也用对应的视觉色板
+  const ROLL_THUMB_PALETTE = {
+    velvia: [['#2d5a3d', '#f4a261', '#1a3a2e']],
+    gold: [['#f4a261', '#e76f51', '#6b4423']],
+    cinestill: [['#1a3a52', '#e94560', '#2a1b3d']],
+    hp5: [['#3a3a3a', '#9a9a9a', '#1a1a1a']]
+  };
+  function rollThumbStyle(seed, filmId) {
+    const palette = ROLL_THUMB_PALETTE[filmId] || ROLL_THUMB_PALETTE.cinestill;
+    const [c1, c2, c3] = palette[0];
+    const angle = (seed * 31) % 360;
+    return `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+  }
+
+  const STORAGE = {
+    film: 'mc_film',
+    shots: 'mc_shots',
+    rolls: 'mc_rolls',
+    sampleSeen: 'mc_sample_seen'
+  };
+
+  const state = {
+    film: null,
+    shots: 0,
+    rolls: [],
+    screen: 'camera',
+    activeCat: 'all'
+  };
+
+  // 初始化
+  try {
+    const f = localStorage.getItem(STORAGE.film);
+    if (f) state.film = JSON.parse(f);
+    const s = localStorage.getItem(STORAGE.shots);
+    if (s) state.shots = parseInt(s, 10) || 0;
+    const r = localStorage.getItem(STORAGE.rolls);
+    if (r) state.rolls = JSON.parse(r);
+    // 首次访问用 photos 文件夹作为暗房预设
+    if (!localStorage.getItem(STORAGE.sampleSeen)) {
+      state.rolls = PHOTO_ROLLS.slice();
+      localStorage.setItem(STORAGE.sampleSeen, '1');
+      localStorage.setItem(STORAGE.rolls, JSON.stringify(state.rolls));
+    }
+  } catch (e) {}
+
+  const $ = (id) => document.getElementById(id);
+  const RING_CIRCUMFERENCE = 2 * Math.PI * 106; // ≈ 665.7
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE.film, JSON.stringify(state.film));
+      localStorage.setItem(STORAGE.shots, String(state.shots));
+      localStorage.setItem(STORAGE.rolls, JSON.stringify(state.rolls));
+    } catch (e) {}
+  }
+
+  function showScreen(name) {
+    ['camera', 'select', 'develop', 'strip', 'darkroom', 'more'].forEach(s => {
+      $(`screen-${s}`).classList.toggle('hidden', s !== name);
+    });
+    state.screen = name;
+  }
+
+  function renderCamera() {
+    const filmObj = state.film ? FILMS.find(f => f.id === state.film) : null;
+    const title = $('film-title');
+    title.textContent = filmObj ? filmObj.name : '选择风格';
+    title.className = 'film-title' + (filmObj ? ' ' + filmObj.cssClass : ' dim');
+
+    const remaining = 36 - state.shots;
+    const countBtn = $('ring-count-btn');
+    countBtn.textContent = String(remaining).padStart(2, '0');
+    // 始终可点：未装卷→跳转选择，拍满→无操作
+    countBtn.disabled = false;
+
+    const ratio = state.shots / 36;
+    const offset = RING_CIRCUMFERENCE * (1 - ratio);
+    const ringFg = $('ring-fg');
+    ringFg.setAttribute('stroke-dashoffset', offset);
+    const RING_COLORS = {
+      cinestill: '#E53935',
+      gold: '#F6C83C',
+      portra: '#FCD02C',
+      velvia: '#008000',
+      vision3: '#385E77',
+      hp5: '#C9C9C9'
     };
+    ringFg.style.stroke = filmObj ? (RING_COLORS[filmObj.id] || '#fff') : '#333';
 
-    /* 缩略图占位色（用 SVG 渐变模拟胶片色调，避免引入外链）*/
-    function thumb(scheme) {
-      // 不同风格不同色调
-      const palettes = {
-        cine:  ['#0a1a3a', '#7a1a3a', '#ff5a3a', '#1a0a2a'],
-        gold:  ['#3a2a1a', '#d4a85a', '#f5d27a', '#7a5a2a'],
-        velvia:['#1a4a2a', '#3a8a4a', '#ffaa3a', '#0a2a1a'],
-        bw:    ['#222', '#666', '#999', '#333'],
-        warm:  ['#5a3a1a', '#d4884a', '#f5b878', '#8a5a2a'],
-        cold:  ['#1a3a5a', '#3a7aaa', '#aaccdd', '#2a4a6a']
-      };
-      const c = palettes[scheme] || palettes.cine;
-      const id = Math.floor(Math.random() * c.length);
-      return `background:linear-gradient(135deg, ${c[id]}, ${c[(id+1)%c.length]})`;
+    const unloadBtn = $('unload-btn');
+    const unloadLabel = $('unload-label');
+    unloadBtn.classList.remove('develop');
+    if (!filmObj) {
+      unloadBtn.disabled = true;
+      unloadLabel.textContent = 'UNLOAD EARLY';
+    } else if (state.shots >= 36) {
+      unloadBtn.disabled = false;
+      unloadBtn.classList.add('develop', filmObj.cssClass);
+      unloadLabel.textContent = 'UNLOAD & DEVELOP';
+    } else {
+      unloadBtn.disabled = false;
+      unloadLabel.textContent = 'UNLOAD EARLY';
     }
 
-    /* ===== 真实胶卷照片数据 ===== */
-    const PHOTO_BASE = 'photos/';
-    const ROLLS = [
-      { key:'chengHuangMiao', name:'城隍庙',     color:'#ff7a3a', files:[
-        'DSC_0745.jpg','DSC_0747.jpg','DSC_0751.jpg','DSC_0757.jpg','DSC_0759.jpg','DSC_0770.jpg',
-        'DSC_0773.jpg','DSC_0774.jpg','DSC_0775.jpg','DSC_0777.jpg','DSC_0779.jpg','DSC_0783.jpg',
-        'DSC_0786.jpg','DSC_0790.jpg','DSC_0793.jpg','DSC_0796.jpg','DSC_0798.jpg','DSC_0807.jpg',
-        'DSC_0811.jpg','DSC_0814.jpg','DSC_0817.jpg','DSC_0820.jpg','DSC_0821.jpg','DSC_0822.jpg',
-        'DSC_0823.jpg','DSC_0825.jpg'
-      ]},
-      { key:'heiBai', name:'黑白', color:'#cccccc', files:[
-        'DSC_0385.jpg','DSC_0440.jpg','DSC_3357.jpg','DSC_3474.jpg','DSC_3546.jpg','DSC04307.jpg',
-        'DSC04332.jpg','IMG_2183.jpg','NIK_1904.jpg','NIK_1935.jpg','NIK_1939.jpg','NIK_1940.jpg',
-        'NIK_1943.jpg','NIK_1966.jpg'
-      ]},
-      { key:'riChang', name:'日常', color:'#f5c518', files:[
-        'DSC_0660.jpg','DSC_0662.jpg','DSC_0664.jpg','DSC_0666.jpg','DSC_0669.jpg','DSC_0673.jpg',
-        'DSC_0674.jpg','DSC_0675.jpg','DSC_3840.jpg','DSC_3878.jpg','DSC_3881.jpg','DSC_4120.jpg',
-        'DSC_4123.jpg','DSC04172.jpg','DSC04416.jpg','DSC4267.jpg','R0013941.jpg','R0013954.jpg'
-      ]},
-      { key:'shuXiDiFang', name:'熟悉的地方', color:'#3a8aff', files:[
-        'DSC_0081.jpg','DSC_0086.jpg','DSC_0088.jpg','DSC_0170.jpg','DSC_0180.jpg','DSC_0181.jpg',
-        'DSC_0183.jpg','DSC_0186.jpg','DSC_0187.jpg','DSC_0193.jpg','DSC_0194.jpg','DSC_0196.jpg',
-        'NIK_1992.jpg','NIK_1993.jpg','NIK_1995.jpg','NIK_1998.jpg','NIK_2009.jpg','NIK_2015.jpg'
-      ]},
-      { key:'xiaoWuLang', name:'小五郎', color:'#ff3b3b', files:[
-        '_DSC4254.jpg','DSC_0489.jpg','DSC_0598.jpg','DSC_0599.jpg','DSC_0600.jpg','DSC_0601.jpg',
-        'DSC_0635.jpg','DSC_0655.jpg','DSC_0656.jpg','DSC_0659.jpg','DSC_0676.jpg','DSC_0678.jpg',
-        'DSC_0841.jpg','DSC_0887.jpg','DSC_0890.jpg','DSC_3529.jpg','DSC_3631.jpg','DSC_3810.jpg',
-        'DSC_3914.jpg','DSC_4085.jpg','DSC_4093.jpg','DSC_4095.jpg','DSC_4097.jpg','DSC_4101.jpg',
-        'DSC_4117.jpg','DSC04092.jpg','DSC04093.jpg','DSC04407.jpg','IMG_20250721_180730.jpg',
-        'NIK_2140.jpg','R0013958.jpg','R0013961.jpg','R0013964.jpg','R0013965.jpg'
-      ]}
-    ];
-    // 中文目录名需 encodeURI
-    const rollImg = (roll, file) =>
-      PHOTO_BASE + encodeURIComponent(roll.name) + '/' + encodeURIComponent(file);
+    // tab 高亮
+    document.querySelectorAll('#screen-camera .tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === 'camera');
+    });
+  }
 
-    /* ===== 各页面渲染 ===== */
-    function renderCamera(shotsLeft, styleName) {
-      const hasStyle = !!styleName;
-      const full = shotsLeft === 0;
-      const pct = (36 - shotsLeft) / 36;
-      const deg = pct * 360;
-      const ringColor = hasStyle
-        ? (full ? '#ff3b3b' : '#ff3b3b')
-        : '#2a2a2a';
-
-      const btnLabel = full
-        ? 'UNLOAD & DEVELOP'
-        : 'UNLOAD EARLY';
-      const enabled = hasStyle;
-
-      return `
-        <div class="cam-screen">
-          <div class="connected">CONNECTED</div>
-          <div class="cam-style ${hasStyle ? 'has-style' : ''}">
-            ${hasStyle ? styleName : 'SELECT A STYLE'}
-          </div>
-          <div class="ring-wrap">
-            <div class="ring" style="background: conic-gradient(${ringColor} 0deg ${deg}deg, #2a2a2a ${deg}deg 360deg);">
-              <div class="ring-inner">
-                <div class="ring-num">${String(shotsLeft).padStart(2,'0')}</div>
-                <div class="ring-label">LEFT</div>
-              </div>
-            </div>
-          </div>
-          <button class="unload-btn ${enabled ? 'enabled' : ''}" ${enabled ? '' : 'disabled'}>
-            <span>↓</span>${btnLabel}
-          </button>
-        </div>
-      `;
-    }
-
-    function renderStyleList() {
-      const styles = [
-        { key:'cine',   name:'CINESTILL 800T', exp:'36 EXP',
-          tags:['TUNGSTEN','HALATION','COLD'],
-          color:'#ff3b3b', css:'cine',
-          roll:'shuXiDiFang' },
-        { key:'gold',   name:'GOLD 200', exp:'36 EXP',
-          tags:['WARM','VINTAGE','CLASSIC'],
-          color:'#f5c518', css:'gold',
-          roll:'riChang' }
-      ];
-      return `
-        <div class="style-screen">
-          <div class="style-screen__top">
-            <span class="back-btn" id="backFromStyle">←</span>
-          </div>
-          <div class="filters">
-            <span class="active">ALL</span>
-            <span>B&amp;W</span>
-            <span>WARM</span>
-            <span>COLD</span>
-            <span>STYLE</span>
-          </div>
-          <div class="style-list">
-            ${styles.map(s => {
-              const r = ROLLS.find(x => x.key === s.roll);
-              const t1 = r.files[0], t2 = r.files[2], t3 = r.files[5];
-              return `
-              <div class="style-card">
-                <div class="style-card__head">
-                  <div class="style-card__name ${s.css}">${s.name}</div>
-                  <div class="style-card__exp">${s.exp}</div>
-                </div>
-                <div class="style-tags">${s.tags.map(t=>`<span>${t}</span>`).join('')}</div>
-                <div class="style-thumbs">
-                  <div style="background-image:url('${rollImg(r,t1)}');background-size:cover;background-position:center"></div>
-                  <div style="background-image:url('${rollImg(r,t2)}');background-size:cover;background-position:center"></div>
-                  <div style="background-image:url('${rollImg(r,t3)}');background-size:cover;background-position:center"></div>
-                </div>
-                <button class="select-btn ${s.css} ${state.selectedStyle===s.key?'selected':''}" data-pick="${s.key}">
-                  ${state.selectedStyle===s.key ? '✓ SELECTED' : 'SELECT →'}
-                </button>
-              </div>`;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    function renderRoll(rollKey) {
-      // 步骤 06：展示整卷真实照片
-      const r = ROLLS.find(x => x.key === rollKey) || ROLLS[0];
-      const cells = r.files.map((f, i) =>
-        `<div class="roll-cell" style="background-image:url('${rollImg(r,f)}');background-size:cover;background-position:center" data-num="${String(i+1).padStart(2,'0')}"></div>`
+  function renderFilmList() {
+    const list = $('film-list');
+    list.innerHTML = '';
+    FILMS.forEach(film => {
+      const card = document.createElement('div');
+      card.className = 'film-card';
+      const previewsHTML = film.previews.map(url =>
+        `<div class="film-preview" style="background-image:url(${url});background-size:cover;background-position:center"></div>`
       ).join('');
-      return `
-        <div class="roll-screen">
-          <div class="roll-head">
-            <span class="roll-back" id="rollBack">←</span>
-            <div style="text-align:center">
-              <div style="color:${r.color}">${r.name}</div>
-              <div class="sub">${r.files.length} Frames</div>
-            </div>
-            <span class="roll-select">▢</span>
-          </div>
-          <div class="roll-grid">${cells}</div>
-          <div class="save-pill">↓ Save All</div>
+      card.innerHTML = `
+        <div class="film-card-head">
+          <div class="film-card-name ${film.cssClass}">${film.name}</div>
+          <div class="film-card-exp">${film.exp}</div>
+        </div>
+        <div class="film-tags">
+          ${film.tags.map(t => `<span class="film-tag">${t}</span>`).join('')}
+        </div>
+        <div class="film-previews">${previewsHTML}</div>
+        <button class="film-select-btn ${film.cssClass}" data-film="${film.id}">
+          SELECT
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function renderStrip() {
+    if (!state.film) return;
+    const filmObj = FILMS.find(f => f.id === state.film);
+    $('strip-film-name').textContent = filmObj.name;
+    $('strip-film-name').className = 'name ' + filmObj.cssClass;
+    $('strip-frame-count').textContent = `${state.shots} FRAMES`;
+
+    const list = $('strip-list');
+    list.innerHTML = '';
+    const total = 36;
+    const rows = Math.ceil(total / 3);
+    for (let r = 0; r < rows; r++) {
+      const row = document.createElement('div');
+      row.className = 'strip-row';
+      for (let i = 0; i < 3; i++) {
+        const idx = r * 3 + i;
+        const taken = idx < state.shots;
+        const mainNum = String(idx + 1).padStart(2, '0');
+        const halfNum = `${mainNum}A`;
+        // 用奇数帧放主编号、偶数帧放 A 编号，模拟 Figma 06 的双编号样式
+        const label = (i === 0) ? mainNum : (i === 1 ? halfNum : mainNum);
+        const frame = document.createElement('div');
+        frame.className = 'frame' + (taken ? '' : ' empty');
+        if (taken) {
+          frame.style.background = previewStyle(idx + 1, state.film);
+          frame.innerHTML = `
+            <div class="frame-top">${mainNum}${filmObj.name.split(' ')[0]}</div>
+            <div class="frame-bottom">${label}</div>
+          `;
+        }
+        row.appendChild(frame);
+      }
+      list.appendChild(row);
+    }
+  }
+
+  function renderDarkroom() {
+    const list = $('darkroom-list');
+    list.innerHTML = '';
+    if (state.rolls.length === 0) {
+      list.innerHTML = `
+        <div class="darkroom-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <circle cx="9" cy="11" r="2"/>
+            <path d="M21 16l-5-5-9 9"/>
+          </svg>
+          <div>NO SAVED ROLLS</div>
         </div>
       `;
+      return;
     }
-
-    function renderDarkRoom() {
-      return `
-        <div class="darkroom-list">
-          <div class="dr-head">
-            <span class="roll-back" id="drBack">←</span>
-            <span class="select">Select</span>
-          </div>
-          <div style="overflow-y:auto; flex:1;">
-            ${ROLLS.map(r => `
-              <div class="dr-item" data-roll="${r.key}">
-                <div class="dr-thumb" style="background-image:url('${rollImg(r, r.files[0])}');background-size:cover;background-position:center"></div>
-                <div class="dr-meta">
-                  <div class="name" style="color:${r.color}">${r.name}</div>
-                  <div class="sub">${r.files.length} Frames</div>
-                </div>
-                <div class="dr-arrow">›</div>
-              </div>
-            `).join('')}
-          </div>
+    state.rolls.slice().reverse().forEach(roll => {
+      const card = document.createElement('div');
+      card.className = 'roll-card';
+      // 优先用照片缩略图，fallback 到色板
+      const thumbBg = roll.thumb
+        ? `background-image:url(${roll.thumb});background-size:cover;background-position:center`
+        : `background:${rollThumbStyle(roll.firstSeed || 1, roll.film)}`;
+      card.innerHTML = `
+        <div class="roll-thumb" style="${thumbBg}"></div>
+        <div class="roll-info">
+          <div class="roll-name ${roll.cssClass}">${roll.name}</div>
+          <div class="roll-meta">${roll.count || roll.shots} FRAMES</div>
         </div>
+        <div class="roll-arrow">›</div>
       `;
-    }
-
-    /* ===== 步骤映射 ===== */
-    function renderByStep(step) {
-      state.currentStep = step;
-      document.querySelectorAll('#stepBar .step-btn').forEach(b =>
-        b.classList.toggle('active', +b.dataset.step === step)
-      );
-
-      // tabbar active 同步
-      const tabMap = { 1:'camera', 2:'camera', 3:'style', 4:'camera', 5:'camera', 6:'camera', 7:'darkroom' };
-      setActiveTab(tabMap[step]);
-
-      const body = document.getElementById('phoneBody');
-      if (step === 1) body.innerHTML = renderCamera(36, null);
-      else if (step === 2) body.innerHTML = renderCamera(7, null);
-      else if (step === 3) body.innerHTML = renderStyleList();
-      else if (step === 4) body.innerHTML = renderCamera(7, 'CINESTILL 800T');
-      else if (step === 5) body.innerHTML = renderCamera(0, 'CINESTILL 800T');
-      else if (step === 6) body.innerHTML = renderRoll(state.activeRoll || 'chengHuangMiao');
-      else if (step === 7) body.innerHTML = renderDarkRoom();
-
-      bindPhoneEvents();
-      updateOutput(step);
-    }
-
-    function updateOutput(step) {
-      const out = document.getElementById('output');
-      if (step === 6) {
-        const r = ROLLS.find(x => x.key === (state.activeRoll || 'chengHuangMiao')) || ROLLS[0];
-        const frames = r.files.slice(0, 6).map(f =>
-          `<div class="film-frame" style="background-image:url('${rollImg(r,f)}');background-size:cover;background-position:center"></div>`
-        ).join('');
-        out.innerHTML = `
-          <div class="filmstrip">
-            <div class="film-row">${frames}</div>
-            <div class="film-caption">
-              <strong style="color:${r.color}">${r.name}</strong> · 共 ${r.files.length} 张 · 已完成冲扫
-            </div>
-            <div style="font-size:11px;color:var(--muted);max-width:420px;line-height:1.6;text-align:center;">
-              套用该卷胶片风格后的最终输出效果。点击左侧「07 Dark Room」可切换其他卷查看。
-            </div>
-          </div>
-        `;
-      } else if (step === 7) {
-        const total = ROLLS.reduce((s, r) => s + r.files.length, 0);
-        const thumbs = ROLLS.map(r =>
-          `<div class="film-frame" style="background-image:url('${rollImg(r, r.files[0])}');background-size:cover;background-position:center"></div>`
-        ).join('');
-        out.innerHTML = `
-          <div class="filmstrip">
-            <div class="film-row">${thumbs}</div>
-            <div class="film-caption">
-              <strong>Dark Room</strong> · 共 ${ROLLS.length} 卷 · 共 ${total} 张
-            </div>
-            <div style="font-size:11px;color:var(--muted);max-width:420px;line-height:1.6;text-align:center;">
-              每卷独立冲扫。点击左侧某一卷即可进入查看该卷所有照片并预览输出效果。
-            </div>
-          </div>
-        `;
-      } else {
-        out.innerHTML = `<div class="empty">
-          点击上方的「06 卷轴照片」或「07 Dark Room」<br>
-          即可在此区域看到套用胶片风格后的照片输出效果
-        </div>`;
-      }
-    }
-
-    function setActiveTab(name) {
-      document.querySelectorAll('#tabBar .tab').forEach(t =>
-        t.classList.toggle('active', t.dataset.tab === name)
-      );
-    }
-
-    /* ===== 手机内交互绑定 ===== */
-    function bindPhoneEvents() {
-      // 风格列表 → SELECT 按钮
-      document.querySelectorAll('[data-pick]').forEach(btn => {
-        btn.onclick = () => {
-          const key = btn.dataset.pick;
-          state.selectedStyle = key;
-          // 选中后跳回 Camera 步骤 04
-          renderByStep(4);
-        };
-      });
-      // 返回箭头
-      const back = document.getElementById('backFromStyle');
-      if (back) back.onclick = () => renderByStep(1);
-      const rb = document.getElementById('rollBack');
-      if (rb) rb.onclick = () => renderByStep(7);
-      const drb = document.getElementById('drBack');
-      if (drb) drb.onclick = () => renderByStep(7);
-      // Dark Room 卷轴 → 卷详情
-      document.querySelectorAll('[data-roll]').forEach(item => {
-        item.onclick = () => { state.activeRoll = item.dataset.roll; renderByStep(6); };
-      });
-    }
-
-    /* ===== 步骤按钮 ===== */
-    document.querySelectorAll('#stepBar .step-btn').forEach(btn => {
-      btn.addEventListener('click', () => renderByStep(+btn.dataset.step));
+      list.appendChild(card);
     });
+  }
 
-    /* ===== 底部 Tab 也能切换主步骤 ===== */
-    document.querySelectorAll('#tabBar .tab').forEach(t => {
-      t.addEventListener('click', () => {
-        if (t.dataset.tab === 'camera')   renderByStep(1);
-        if (t.dataset.tab === 'style')    renderByStep(3);
-        if (t.dataset.tab === 'darkroom') renderByStep(7);
-      });
-    });
+  function render() {
+    renderCamera();
+  }
 
-    /* ===== 留言功能（localStorage）===== */
-    const STORAGE_KEY = "myconcepts_comments_v1";
-    const listEl = document.getElementById("commentList");
-    const emptyTip = document.getElementById("emptyTip");
-    const countEl = document.getElementById("commentCount");
-    const form = document.getElementById("commentForm");
-    const nameInput = document.getElementById("nameInput");
-    const textInput = document.getElementById("textInput");
+  // =================== 事件绑定 ===================
 
-    const load = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } };
-    const save = (a) => localStorage.setItem(STORAGE_KEY, JSON.stringify(a));
-    const escapeHtml = (s) => s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-    function timeAgo(ts) {
-      const d = Math.floor((Date.now() - ts) / 1000);
-      if (d < 60) return "刚刚";
-      if (d < 3600) return Math.floor(d/60) + " 分钟前";
-      if (d < 86400) return Math.floor(d/3600) + " 小时前";
-      const x = new Date(ts);
-      return `${x.getMonth()+1}月${x.getDate()}日`;
+  // 顶部标题 → 进入风格选择
+  $('film-title-btn').addEventListener('click', () => {
+    showScreen('select');
+  });
+
+  // 拍摄：点击进度圈中间的数字
+  function takeShot() {
+    if (!state.film) {
+      // 未装卷：跳到选择页
+      showScreen('select');
+      return;
     }
-    function render() {
-      const arr = load().slice().reverse();
-      listEl.innerHTML = "";
-      if (arr.length === 0) {
-        listEl.appendChild(emptyTip);
-        countEl.textContent = "还没有留言";
-        return;
-      }
-      countEl.textContent = `共 ${arr.length} 条留言`;
-      arr.forEach(c => {
-        const wrap = document.createElement("div");
-        wrap.className = "comment";
-        const initial = (c.name || "匿").trim().charAt(0).toUpperCase();
-        wrap.innerHTML = `
-          <div class="comment__avatar">${escapeHtml(initial)}</div>
-          <div class="comment__body">
-            <div class="comment__meta">
-              <span class="comment__name">${escapeHtml(c.name || "匿名")}</span>
-              <span class="comment__time">${timeAgo(c.ts)}</span>
-            </div>
-            <p class="comment__text">${escapeHtml(c.text)}</p>
-          </div>`;
-        listEl.appendChild(wrap);
-      });
-    }
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      const t = textInput.value.trim();
-      if (!t) return;
-      const arr = load();
-      arr.push({ name: nameInput.value.trim(), text: t, ts: Date.now() });
-      save(arr);
-      textInput.value = "";
-      render();
-    });
-
-    /* ===== 初始化 ===== */
-    renderByStep(1);
+    if (state.shots >= 36) return;
+    state.shots += 1;
+    save();
     render();
+    // 闪光动效
+    const flash = document.createElement('div');
+    Object.assign(flash.style, {
+      position: 'fixed', inset: '0',
+      background: '#fff', opacity: '0.7',
+      pointerEvents: 'none', zIndex: '9999',
+      transition: 'opacity 0.18s'
+    });
+    document.body.appendChild(flash);
+    requestAnimationFrame(() => { flash.style.opacity = '0'; });
+    setTimeout(() => flash.remove(), 200);
+
+    if (state.shots >= 36) {
+      setTimeout(() => developFilm(), 350);
+    }
+  }
+  $('ring-count-btn').addEventListener('click', takeShot);
+
+  // 卸载 / 冲扫按钮
+  $('unload-btn').addEventListener('click', () => {
+    if (!state.film) return;
+    developFilm();
+  });
+
+  // 选胶卷返回
+  document.querySelectorAll('[data-action="back-to-camera"]').forEach(b => {
+    b.addEventListener('click', () => showScreen('camera'));
+  });
+
+  // 选胶卷 - 分类切换
+  document.querySelectorAll('.select-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.select-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.activeCat = tab.dataset.cat;
+      const cards = document.querySelectorAll('.film-card');
+      cards.forEach(c => {
+        const filmId = c.querySelector('[data-film]').dataset.film;
+        const film = FILMS.find(f => f.id === filmId);
+        const match = state.activeCat === 'all' || film.cat === state.activeCat;
+        c.style.display = match ? 'block' : 'none';
+      });
+    });
+  });
+
+  // 选胶卷 - 选择按钮
+  $('film-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-film]');
+    if (!btn) return;
+    state.film = btn.dataset.film;
+    state.shots = 0; // 装入新胶卷清零
+    save();
+    showScreen('camera');
+    render();
+  });
+
+  // 标签栏切换
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab;
+      if (target === 'camera') {
+        showScreen('camera');
+        render();
+      } else if (target === 'darkroom') {
+        showScreen('darkroom');
+        renderDarkroom();
+        document.querySelectorAll('#screen-darkroom .tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.tab === 'darkroom');
+        });
+      } else if (target === 'more') {
+        showScreen('more');
+      }
+    });
+  });
+
+  // 冲扫流程
+  function developFilm() {
+    if (!state.film || state.shots === 0) return;
+    const filmObj = FILMS.find(f => f.id === state.film);
+    const sub = $('develop-sub');
+    sub.textContent = `UNLOADING · ${state.shots} FRAMES`;
+    showScreen('develop');
+    setTimeout(() => {
+      showScreen('strip');
+      renderStrip();
+    }, 1800);
+  }
+
+  // 保存全部到暗房
+  $('save-all-btn').addEventListener('click', () => {
+    if (!state.film || state.shots === 0) return;
+    const filmObj = FILMS.find(f => f.id === state.film);
+    state.rolls.push({
+      film: state.film,
+      cssClass: filmObj.cssClass,
+      name: filmObj.name,
+      shots: state.shots,
+      firstSeed: Math.floor(Math.random() * 20) + 1,
+      dateStr: formatDate(new Date())
+    });
+    // 重置
+    state.film = null;
+    state.shots = 0;
+    save();
+    showScreen('camera');
+    render();
+  });
+
+  // 初始化
+  renderFilmList();
+  render();
+
+  // =================== 留言板逻辑 ===================
+  const COMMENTS_KEY = "myconcepts_comments_v1";
+  const listEl = document.getElementById("commentList");
+  const emptyTip = document.getElementById("emptyTip");
+  const countEl = document.getElementById("commentCount");
+  const form = document.getElementById("commentForm");
+  const nameInput = document.getElementById("nameInput");
+  const textInput = document.getElementById("textInput");
+
+  function loadComments() {
+    try { return JSON.parse(localStorage.getItem(COMMENTS_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function saveComments(arr) {
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(arr));
+  }
+  function timeAgo(ts) {
+    const diff = Math.floor((Date.now() - ts) / 1000);
+    if (diff < 60) return "刚刚";
+    if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
+    if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
+    const d = new Date(ts);
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
+  }
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+  }
+  function renderComments() {
+    const arr = loadComments().slice().reverse();
+    listEl.innerHTML = "";
+    if (arr.length === 0) {
+      listEl.appendChild(emptyTip);
+      countEl.textContent = "还没有留言";
+      return;
+    }
+    countEl.textContent = `共 ${arr.length} 条留言`;
+    arr.forEach((c) => {
+      const wrap = document.createElement("div");
+      wrap.className = "comment";
+      const initial = (c.name || "匿").trim().charAt(0).toUpperCase();
+      wrap.innerHTML = `
+        <div class="comment__avatar">${escapeHtml(initial)}</div>
+        <div class="comment__body">
+          <div class="comment__meta">
+            <span class="comment__name">${escapeHtml(c.name || "匿名")}</span>
+            <span class="comment__time">${timeAgo(c.ts)}</span>
+          </div>
+          <p class="comment__text">${escapeHtml(c.text)}</p>
+        </div>`;
+      listEl.appendChild(wrap);
+    });
+  }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const text = textInput.value.trim();
+    if (!text) return;
+    const arr = loadComments();
+    arr.push({ name: nameInput.value.trim(), text: text, ts: Date.now() });
+    saveComments(arr);
+    textInput.value = "";
+    renderComments();
+  });
+  renderComments();
   </script>
 </body>
 </html>

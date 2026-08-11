@@ -3,19 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyConcepts · 概念原型库</title>
+  <title>一些想法</title>
   <style>
     :root {
-      --bg: #0f1115;
-      --panel: #171a21;
-      --panel-2: #1f242e;
-      --border: #2a303c;
-      --text: #e6e9ef;
-      --muted: #8b93a3;
-      --accent: #6c8cff;
+      --bg: #f5f6fa;
+      --card-bg: #ffffff;
+      --primary: #4c6ef5;
+      --primary-hover: #3b5bdb;
+      --text: #212529;
+      --text-secondary: #6c757d;
+      --text-muted: #adb5bd;
+      --border: #e9ecef;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-hover: 0 8px 30px rgba(0,0,0,0.10);
+      --radius: 16px;
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
         "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -25,98 +30,163 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 80px 24px;
+      padding: 3rem 1.5rem;
     }
-    .hero { text-align: center; margin-bottom: 56px; }
-    .hero h1 {
-      font-size: 34px; font-weight: 700; margin: 0 0 12px;
-      letter-spacing: 0.02em;
+
+    .container {
+      width: 100%;
+      max-width: 520px;
     }
-    .hero p {
-      font-size: 15px; color: var(--muted); margin: 0; max-width: 480px;
-      line-height: 1.7; margin: 0 auto;
+
+    /* ── 头部 ── */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
     }
-    .grid {
-      width: 100%; max-width: 760px;
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 26px;
-      text-decoration: none;
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
       color: var(--text);
+      letter-spacing: 0.5px;
+    }
+
+    .header .dot {
+      color: var(--primary);
+    }
+
+    .header p {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── 卡片列表 ── */
+    .card-list {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
-      position: relative;
-      overflow: hidden;
+      gap: 1.25rem;
     }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
     .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
     }
-    .card__thumb {
-      height: 160px; border-radius: 10px;
-      background: linear-gradient(135deg, #2a1a10, #7a3a2a 60%, #ff7a59);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 40px;
-      position: relative;
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
     }
-    .card__thumb::after {
-      content: "3h"; position: absolute; right: 14px; bottom: 10px;
-      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85);
-      letter-spacing: 0.1em;
-      background: rgba(0,0,0,0.35); padding: 3px 10px; border-radius: 999px;
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
     }
-    .card__title { font-size: 18px; font-weight: 600; margin: 0; }
-    .card__meta {
-      font-size: 12px; color: var(--muted);
-      display: flex; gap: 10px; align-items: center;
+
+    .card-arrow {
+      font-size: 1rem;
+      color: var(--text-muted);
+      transition: transform 0.2s ease, color 0.2s ease;
     }
-    .card__status {
-      font-size: 11px; padding: 3px 9px; border-radius: 999px;
-      background: rgba(255, 122, 89, 0.15); color: #ff7a59;
-      border: 1px solid rgba(255, 122, 89, 0.3);
+
+    .card:hover .card-arrow {
+      transform: translateX(3px);
+      color: var(--primary);
     }
-    .card__desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin: 0; }
-    .card__arrow {
-      margin-top: auto; font-size: 13px; color: var(--accent);
-      display: flex; align-items: center; gap: 6px; font-weight: 600;
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
     }
-    footer {
-      margin-top: 64px; font-size: 12px; color: var(--muted); text-align: center;
+
+    .card-meta {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: #edf2ff;
+      color: var(--primary);
+    }
+
+    .tag.soon {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    /* ── 页脚 ── */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    .footer span {
+      color: var(--primary);
     }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <h1>MyConcepts</h1>
-    <p>我的概念原型库。这里收集日常探索的产品概念与交互 Demo，点击卡片进入对应的原型演示。</p>
+  <div class="container">
+
+    <!-- 头部 -->
+    <div class="header">
+      <h1>一些想法<span class="dot">.</span></h1>
+      <p>正在孵化的实验项目</p>
+    </div>
+
+    <!-- 项目卡片列表 -->
+    <div class="card-list">
+
+      <a class="card" href="developing.html">
+        <div class="card-header">
+          <span class="card-title">等待3小时冲扫的意义</span>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card-desc">
+          在即影即有的数字时代，用真实的胶片等待冲扫的那3个小时，也许是某种被遗忘的意义所在。
+        </div>
+        <div class="card-meta">
+          <span class="tag">胶片摄影</span>
+          <span class="tag">冲扫</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+      myconcepts <span>·</span> 一些想法正在生长
+    </div>
+
   </div>
-
-  <main class="grid">
-    <a class="card" href="developing.html" target="_blank" rel="noopener">
-      <div class="card__thumb">📷</div>
-      <h2 class="card__title">冲扫 3 小时的意义</h2>
-      <div class="card__meta">
-        <span class="card__status">开发中</span>
-        <span>2026-08</span>
-        <span>AiKen 相机</span>
-      </div>
-      <p class="card__desc">
-        AiKen 是一台模拟胶卷体验的数码相机：每次最多拍 36 张，可选胶片风格，
-        随时「取出冲扫」让照片进入 Dark Room。本项目还原了选风格、环形进度、
-        冲扫、卷轴与 Dark Room 的完整交互，右侧可留言互动。
-      </p>
-      <span class="card__arrow">打开原型 →</span>
-    </a>
-  </main>
-
-  <footer>MyConcepts · 用概念去理解产品</footer>
 </body>
 </html>
