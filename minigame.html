@@ -27,7 +27,7 @@ body{display:flex;justify-content:center;align-items:center}
 .game-score{font-size:14px;font-weight:700;color:var(--gold)}
 .progress-track{width:100%;height:3px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
 .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:999px;transition:width .1s linear}
-.rhythm-area{position:absolute;top:120px;left:50%;transform:translateX(-50%);width:80px;bottom:200px;overflow:hidden}
+.rhythm-area{position:absolute;top:120px;left:50%;transform:translateX(-50%);width:80px;bottom:210px;overflow:hidden}
 .lane{position:relative;width:100%;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(229,57,53,.06) 50%,rgba(255,255,255,.02));border-left:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)}
 .lane::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.04);transform:translateX(-50%)}
 .hit-line{position:absolute;left:-10px;right:-10px;bottom:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 12px rgba(246,200,60,.4);z-index:3}
@@ -41,15 +41,21 @@ body{display:flex;justify-content:center;align-items:center}
 @keyframes noteHit{0%{transform:translateX(-50%) scale(1);opacity:1}100%{transform:translateX(-50%) scale(2.5);opacity:0}}
 .note.miss-anim{animation:noteMiss .4s ease-out forwards}
 @keyframes noteMiss{0%{opacity:.6}100%{opacity:0;transform:translateX(-50%) translateY(20px)}}
-.lever-zone{position:absolute;left:0;right:0;bottom:85.61px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:8px;z-index:4}
-.lever-hint{font-size:9px;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase}
-.lever-track{position:relative;width:120px;height:60px;background:rgba(255,255,255,.04);border-radius:30px;border:1px solid rgba(255,255,255,.08);overflow:hidden}
-.lever-track::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;height:1px;background:rgba(255,255,255,.06)}
-.lever{position:absolute;left:50%;top:6px;transform:translateX(-50%);width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#E0A982,#A35E2E);box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.3),inset 0 -1px 2px rgba(0,0,0,.2);cursor:grab;transition:top .15s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center}
-.lever.grabbing{cursor:grabbing;transition:none}
-.lever.pulled{box-shadow:0 2px 6px rgba(229,57,53,.5),inset 0 1px 2px rgba(255,255,255,.3),0 0 20px rgba(229,57,53,.3)}
-.lever svg{width:20px;height:20px;opacity:.5}
-.judge-text{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;letter-spacing:2px;pointer-events:none;z-index:5;opacity:0}
+/* ── 相机产品图 ── */
+.camera-zone{position:absolute;left:0;right:0;bottom:85.61px;height:130px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:4px;z-index:4}
+.camera-hint{font-size:9px;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;transition:color .2s}
+.camera-hint.active{color:var(--accent)}
+.camera-container{position:relative;width:200px;height:78px;cursor:grab;transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
+.camera-container.grabbing{cursor:grabbing;transition:none}
+.camera-container.pulled{transform:translateY(8px)}
+.camera-sprite{width:200px;height:78px;background-image:url(assets/aiken-2-ref.jpg);background-size:400px 78px;background-position:0 0;transition:background-position .15s cubic-bezier(.34,1.56,.64,1);border-radius:6px}
+.camera-sprite.open{background-position:-200px 0}
+.camera-container.grabbing .camera-sprite{transition:none}
+.camera-glow{position:absolute;inset:-4px;border-radius:8px;box-shadow:0 0 0 0 rgba(229,57,53,0);transition:box-shadow .2s;pointer-events:none}
+.camera-container.pulled .camera-glow{box-shadow:0 0 20px 4px rgba(229,57,53,.3)}
+.pull-arrow{position:absolute;left:50%;top:-20px;transform:translateX(-50%);font-size:14px;color:var(--text-dim);opacity:.6;animation:bounceDown 1.5s ease-in-out infinite;pointer-events:none}
+@keyframes bounceDown{0%,100%{transform:translateX(-50%) translateY(0);opacity:.3}50%{transform:translateX(-50%) translateY(6px);opacity:.7}}
+.judge-text{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;letter-spacing:2px;pointer-events:none;z-index:5;opacity:0}
 .judge-text.show{animation:judgePop .5s ease-out forwards}
 @keyframes judgePop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(1) translateY(-20px)}}
 .judge-text.perfect{color:var(--gold);text-shadow:0 0 12px rgba(246,200,60,.5)}
@@ -82,7 +88,7 @@ body{display:flex;justify-content:center;align-items:center}
 </head>
 <body>
 <div class="stage" id="stage">
-<div class="page-name">rhythm pull</div>
+<div class="page-name">minigame</div>
 <div class="phone-frame"></div>
 <div class="phone-bezel"></div>
 <div class="phone-side-btn"></div>
@@ -104,14 +110,18 @@ body{display:flex;justify-content:center;align-items:center}
 <div class="combo-display" id="comboDisplay"><div class="combo-num" id="comboNum">0</div><div class="combo-label">COMBO</div></div>
 <div class="judge-text" id="judgeText"></div>
 <div class="rhythm-area" id="rhythmArea"><div class="lane" id="lane"><div class="hit-line"></div></div></div>
-<div class="lever-zone">
-<div class="lever-hint" id="leverHint">PULL TO ADVANCE</div>
-<div class="lever-track" id="leverTrack"><div class="lever" id="lever"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M6 13l6 6 6-6" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+<div class="camera-zone">
+<div class="camera-hint" id="cameraHint">PULL CAMERA DOWN</div>
+<div class="camera-container" id="cameraContainer">
+<div class="pull-arrow">↓</div>
+<div class="camera-glow"></div>
+<div class="camera-sprite" id="cameraSprite"></div>
+</div>
 </div>
 <div class="overlay" id="startOverlay">
 <div class="overlay-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7z" fill="#E53935"/></svg></div>
 <div class="overlay-title">UNLOCK BEAT</div>
-<div class="overlay-desc">跟随节奏抽拉过片手柄，完成全部节点即可解锁新风格。<br/><br/><span style="color:var(--accent)">●</span> 普通抽拉 &nbsp;<span style="color:var(--gold)">●</span> 快速抽拉 &nbsp;<span style="color:#385E77">●</span> 长按抽拉</div>
+<div class="overlay-desc">跟随节奏向下抽拉相机，完成全部节点即可解锁新风格。<br/><br/><span style="color:var(--accent)">●</span> 普通抽拉 &nbsp;<span style="color:var(--gold)">●</span> 快速抽拉 &nbsp;<span style="color:#385E77">●</span> 长按抽拉<br/><br/>拖拽相机机身向下，或按空格键</div>
 <button class="overlay-btn" id="startBtn">START</button>
 </div>
 <div class="overlay hidden" id="endOverlay">
@@ -138,8 +148,8 @@ body{display:flex;justify-content:center;align-items:center}
 (function(){
 'use strict';
 var $=function(id){return document.getElementById(id)};
-var lever=$('lever'),leverTrack=$('leverTrack'),lane=$('lane');
-var judgeText=$('judgeText'),scoreDisplay=$('scoreDisplay');
+var cameraContainer=$('cameraContainer'),cameraSprite=$('cameraSprite'),cameraHint=$('cameraHint');
+var lane=$('lane'),judgeText=$('judgeText'),scoreDisplay=$('scoreDisplay');
 var progressFill=$('progressFill'),comboDisplay=$('comboDisplay'),comboNum=$('comboNum');
 var startOverlay=$('startOverlay'),endOverlay=$('endOverlay');
 var startBtn=$('startBtn'),retryBtn=$('retryBtn');
@@ -147,7 +157,8 @@ var endScore=$('endScore'),endMaxCombo=$('endMaxCombo'),endAccuracy=$('endAccura
 var endTitle=$('endTitle'),endDesc=$('endDesc'),gameScreen=$('gameScreen');
 
 var state='idle',notes=[],score=0,combo=0,maxCombo=0,hitCount=0,totalNotes=0;
-var startTime=0,leverY=6,isGrabbing=false,grabOffsetY=0,hasPulledThisNote=false,rafId=null;
+var startTime=0,isGrabbing=false,grabStartY=0,hasPulledThisNote=false,rafId=null;
+var pullThreshold=20; // px drag distance to trigger pull
 
 var chart=[
 {t:2000,type:'pull'},{t:3000,type:'pull'},{t:4000,type:'fast'},
@@ -192,7 +203,7 @@ function startGame(){
   scoreDisplay.textContent='0';
   comboDisplay.classList.remove('show');
   progressFill.style.width='0%';
-  leverY=6;lever.style.top=leverY+'px';
+  resetCamera();
   totalNotes=chart.length;
   chart.forEach(function(c){notes.push({t:c.t,type:c.type,hit:false,missed:false,el:null,spawned:false})});
   state='playing';
@@ -225,6 +236,9 @@ function gameLoop(now){
       showJudge('miss','MISS');playMissSound();
     }
   });
+  // 节点接近判定线时高亮提示
+  var nearHit=notes.some(function(n){return n.spawned&&!n.hit&&!n.missed&&Math.abs(n.t-elapsed)<HIT_WINDOW});
+  cameraHint.classList.toggle('active',nearHit);
   if(notes.every(function(n){return n.hit||n.missed})&&elapsed>lastT+500){endGame();return}
   rafId=requestAnimationFrame(gameLoop);
 }
@@ -304,42 +318,66 @@ function spawnConfetti(){
   }
 }
 
-function getLeverMax(){return leverTrack.getBoundingClientRect().height-48-6}
+// ── 相机交互 ──
+function resetCamera(){
+  cameraContainer.classList.remove('pulled','grabbing');
+  cameraSprite.classList.remove('open');
+  hasPulledThisNote=false;
+}
 
+function triggerPull(){
+  // 触发抽拉：相机切换到拉开状态，判定节奏
+  cameraContainer.classList.add('pulled');
+  cameraSprite.classList.add('open');
+  checkPullHit();
+  // 0.2s 后弹回合上状态
+  setTimeout(function(){
+    cameraContainer.classList.remove('pulled');
+    cameraSprite.classList.remove('open');
+  },200);
+  // 0.35s 后允许下一次抽拉
+  setTimeout(function(){hasPulledThisNote=false},350);
+}
+
+// Pointer Events 拖拽
 function onDown(e){
   if(state!=='playing')return;
-  e.preventDefault();isGrabbing=true;
-  lever.classList.add('grabbing');
-  var r=lever.getBoundingClientRect();
-  grabOffsetY=e.clientY-(r.top+r.height/2);
+  e.preventDefault();
+  isGrabbing=true;
+  grabStartY=e.clientY;
   hasPulledThisNote=false;
-  try{lever.setPointerCapture(e.pointerId)}catch(err){}
+  cameraContainer.classList.add('grabbing');
+  try{cameraContainer.setPointerCapture(e.pointerId)}catch(err){}
 }
 function onMove(e){
   if(!isGrabbing)return;
   e.preventDefault();
-  var tr=leverTrack.getBoundingClientRect();
-  var newY=e.clientY-tr.top-grabOffsetY-24;
-  newY=Math.max(6,Math.min(getLeverMax(),newY));
-  leverY=newY;lever.style.top=newY+'px';
-  if(newY>30&&!hasPulledThisNote){
+  var deltaY=e.clientY-grabStartY;
+  // 向下拖拽时，相机跟随移动（最多 12px）
+  var visualY=Math.max(0,Math.min(12,deltaY));
+  cameraContainer.style.transform=visualY?'translateY('+visualY+'px)':'';
+  // 拖拽超过阈值时触发抽拉
+  if(deltaY>pullThreshold&&!hasPulledThisNote){
     hasPulledThisNote=true;
-    lever.classList.add('pulled');
-    checkPullHit();
+    triggerPull();
   }
 }
 function onUp(e){
   if(!isGrabbing)return;
   isGrabbing=false;
-  lever.classList.remove('grabbing','pulled');
-  leverY=6;lever.style.top='6px';
+  cameraContainer.classList.remove('grabbing');
+  cameraContainer.style.transform='';
+  // 如果没有拖拽（视为点击），也触发抽拉
+  if(!hasPulledThisNote){
+    hasPulledThisNote=true;
+    triggerPull();
+  }
 }
 
-lever.addEventListener('pointerdown',onDown);
-lever.addEventListener('pointermove',onMove);
-lever.addEventListener('pointerup',onUp);
-lever.addEventListener('pointercancel',onUp);
-lever.addEventListener('pointerleave',onUp);
+cameraContainer.addEventListener('pointerdown',onDown);
+cameraContainer.addEventListener('pointermove',onMove);
+cameraContainer.addEventListener('pointerup',onUp);
+cameraContainer.addEventListener('pointercancel',onUp);
 
 startBtn.addEventListener('click',startGame);
 retryBtn.addEventListener('click',startGame);
@@ -350,14 +388,7 @@ document.addEventListener('keydown',function(e){
     e.preventDefault();
     if(!hasPulledThisNote){
       hasPulledThisNote=true;
-      lever.classList.add('pulled');
-      lever.style.top=(getLeverMax())+'px';
-      checkPullHit();
-      setTimeout(function(){
-        lever.classList.remove('pulled');
-        lever.style.top='6px';
-        hasPulledThisNote=false;
-      },200);
+      triggerPull();
     }
   }
   if(e.code==='Enter'&&state!=='playing'){startGame()}
